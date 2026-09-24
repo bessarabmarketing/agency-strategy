@@ -3,122 +3,140 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agency Strategy OS</title>
+<title>Конструктор стратегій</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700&display=swap&subset=cyrillic,cyrillic-ext,latin" rel="stylesheet">
 <style>
-:root{--bg:#f6f7f9;--panel:#fff;--line:#e4e7ec;--line2:#d0d5dd;--tx:#101828;--tx2:#475467;--tx3:#98a2b3;--ac:#3538cd;--ac2:#eef0ff;--ok:#067647;--ok2:#ecfdf3;--warn:#b54708;--warn2:#fffaeb;--bad:#b42318;--bad2:#fef3f2;--info:#175cd3;--info2:#eff8ff;--r:8px}
+/* BMA / BESSARAB M.A. — dark, acid-lime accent, Unbounded + Manrope */
+:root{--bg:#0b0b0c;--panel:#141416;--panel2:#1a1a1c;--line:rgba(244,243,238,.13);--line2:rgba(244,243,238,.24);--tx:#f4f3ee;--tx2:#a5a49d;--tx3:#6c6b66;
+--ac:#cbff2e;--ac2:rgba(203,255,46,.10);--acd:#93b81f;--acink:#0c1300;--acline:rgba(203,255,46,.38);
+--ok:#7ddc8f;--ok2:rgba(125,220,143,.10);--okl:rgba(125,220,143,.35);--warn:#f5b84b;--warn2:rgba(245,184,75,.10);--warnl:rgba(245,184,75,.35);
+--bad:#ff7a70;--bad2:rgba(255,122,112,.10);--badl:rgba(255,122,112,.35);--info:#7cb7ff;--info2:rgba(124,183,255,.10);--infol:rgba(124,183,255,.35);
+--r:18px;--fd:'Unbounded','Manrope',sans-serif;--fb:'Manrope',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+body{font:14px/1.55 var(--fb);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
 button{font:inherit;cursor:pointer}
 a{color:var(--ac)}
-#app{display:grid;grid-template-columns:232px 1fr;height:100vh}
-#side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
-#main{overflow-y:auto;min-width:0}
-.brand{padding:16px 16px 10px;font-weight:700;letter-spacing:-.01em;display:flex;gap:8px;align-items:center}
-.brand i{width:22px;height:22px;border-radius:6px;background:var(--ac);display:inline-block}
-.nav{padding:4px 8px}
-.nav h6{margin:14px 8px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);font-weight:600}
-.nav a{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:var(--tx2);text-decoration:none;cursor:pointer;font-size:13.5px}
-.nav a:hover{background:var(--bg)}
-.nav a.on{background:var(--ac2);color:var(--ac);font-weight:600}
+::selection{background:var(--ac);color:var(--acink)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:rgba(244,243,238,.18);border-radius:10px}::-webkit-scrollbar-track{background:transparent}
+#app{display:grid;grid-template-columns:244px 1fr;height:100vh}
+#side{background:var(--bg);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+#main{overflow-y:auto;min-width:0;background:var(--bg)}
+.brand{padding:20px 18px 12px;font-family:var(--fd);font-weight:600;font-size:13px;letter-spacing:-.01em;display:flex;gap:10px;align-items:center;line-height:1.2}
+.brand i{width:26px;height:26px;border-radius:8px;background:var(--ac);display:inline-block;flex:none}
+.nav{padding:4px 10px}
+.nav h6{margin:16px 10px 6px;font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--tx3);font-weight:700}
+.nav a{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;color:var(--tx2);text-decoration:none;cursor:pointer;font-size:13.5px;font-weight:500;transition:background .15s,color .15s}
+.nav a:hover{background:var(--panel);color:var(--tx)}
+.nav a.on{background:var(--ac);color:var(--acink);font-weight:700}
+.nav a.on .dot{color:var(--acink)}
 .nav .dot{margin-left:auto;font-size:11px;color:var(--tx3)}
-.side-foot{margin-top:auto;padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--tx3)}
-.top{position:sticky;top:0;z-index:5;background:rgba(246,247,249,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.top h1{font-size:17px;margin:0;font-weight:650}
+.side-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--tx3)}
+.top{position:sticky;top:0;z-index:5;background:rgba(11,11,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-family:var(--fd);font-size:17px;margin:0;font-weight:600;letter-spacing:-.01em}
 .top .sp{flex:1}
-.wrap{padding:20px 24px 60px;max-width:1240px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
-.card h3{margin:0 0 8px;font-size:15px}
-.card h4{margin:14px 0 6px;font-size:13px;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
-.grid{display:grid;gap:14px}
+.wrap{padding:24px 28px 70px;max-width:1240px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font-family:var(--fd);font-size:14px;font-weight:600;letter-spacing:-.005em}
+.card h4{margin:16px 0 6px;font-size:11.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+h2{font-family:var(--fd);font-weight:600;letter-spacing:-.01em}
+.grid{display:grid;gap:16px}
 .g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:1000px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){#app{grid-template-columns:1fr}#side{display:none}.g2,.g3,.g4{grid-template-columns:1fr}}
-.btn{border:1px solid var(--line2);background:var(--panel);border-radius:6px;padding:6px 12px;color:var(--tx);white-space:nowrap}
-.btn:hover{background:var(--bg)}
-.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}.btn.pri:hover{background:#2b2eb0}
-.btn.sm{padding:3px 9px;font-size:12.5px}
-.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
-.btn.danger{color:var(--bad);border-color:#fda29b}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid var(--line2);color:var(--tx2);background:#fff;white-space:nowrap}
-.chip.ok{background:var(--ok2);border-color:#abefc6;color:var(--ok)}.chip.warn{background:var(--warn2);border-color:#fedf89;color:var(--warn)}.chip.bad{background:var(--bad2);border-color:#fecdca;color:var(--bad)}.chip.info{background:var(--info2);border-color:#b2ddff;color:var(--info)}.chip.ac{background:var(--ac2);border-color:#c7d0ff;color:var(--ac)}
+@media(max-width:760px){#app{grid-template-columns:1fr}#side{display:none}.g2,.g3,.g4{grid-template-columns:1fr}.wrap{padding:16px}.top{padding:12px 16px}}
+.btn{border:1px solid var(--line2);background:transparent;border-radius:999px;padding:7px 16px;color:var(--tx);white-space:nowrap;font-weight:600;transition:background .15s,border-color .15s,color .15s}
+.btn:hover{background:var(--panel2);border-color:var(--tx3)}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:var(--acink);font-weight:700}.btn.pri:hover{background:#d9ff62;border-color:#d9ff62}
+.btn.sm{padding:4px 12px;font-size:12.5px}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#06210d;font-weight:700}
+.btn.danger{color:var(--bad);border-color:var(--badl)}.btn.danger:hover{background:var(--bad2);border-color:var(--bad)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:12px;border:1px solid var(--line2);color:var(--tx2);background:transparent;white-space:nowrap;font-weight:500}
+.chip.ok{background:var(--ok2);border-color:var(--okl);color:var(--ok)}.chip.warn{background:var(--warn2);border-color:var(--warnl);color:var(--warn)}.chip.bad{background:var(--bad2);border-color:var(--badl);color:var(--bad)}.chip.info{background:var(--info2);border-color:var(--infol);color:var(--info)}.chip.ac{background:var(--ac2);border-color:var(--acline);color:var(--ac)}
 .muted{color:var(--tx3)}.sm{font-size:12.5px}.t2{color:var(--tx2)}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.bar{height:8px;border-radius:99px;background:#eaecf0;overflow:hidden}.bar>i{display:block;height:100%;background:var(--ac);border-radius:99px;transition:width .3s}
-.bar.ok>i{background:#12b76a}.bar.warn>i{background:#f79009}
-label.f{display:block;margin-bottom:10px}
-label.f>span{display:block;font-size:12.5px;color:var(--tx2);margin-bottom:3px;font-weight:550}
-input[type=text],input[type=url],input[type=number],select,textarea{width:100%;font:inherit;padding:7px 10px;border:1px solid var(--line2);border-radius:6px;background:#fff;color:var(--tx)}
-textarea{min-height:64px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid #c7d0ff;border-color:var(--ac)}
-.tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{padding:4px 10px;border:1px solid var(--line2);border-radius:99px;cursor:pointer;background:#fff;font-size:13px;user-select:none}
-.tag.on{background:var(--ac2);border-color:var(--ac);color:var(--ac);font-weight:600}
-.stepper{display:flex;gap:4px;overflow-x:auto;padding:2px 0}
-.step{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:12.5px;cursor:pointer;white-space:nowrap;color:var(--tx2)}
-.step b{width:18px;height:18px;border-radius:50%;background:var(--line);display:inline-grid;place-items:center;font-size:11px;color:var(--tx2)}
-.step.done{border-color:#abefc6}.step.done b{background:#12b76a;color:#fff}
-.step.cur{border-color:var(--ac);color:var(--ac);font-weight:600}.step.cur b{background:var(--ac);color:#fff}
+.bar{height:8px;border-radius:99px;background:rgba(244,243,238,.10);overflow:hidden}.bar>i{display:block;height:100%;background:var(--ac);border-radius:99px;transition:width .3s}
+.bar.ok>i{background:var(--ok)}.bar.warn>i{background:var(--warn)}
+label.f{display:block;margin-bottom:12px}
+label.f>span{display:block;font-size:12.5px;color:var(--tx2);margin-bottom:4px;font-weight:600}
+input[type=text],input[type=url],input[type=number],select,textarea{width:100%;font:inherit;padding:9px 14px;border:1px solid var(--line2);border-radius:14px;background:var(--panel2);color:var(--tx)}
+input::placeholder,textarea::placeholder{color:var(--tx3)}
+select option{background:var(--panel2);color:var(--tx)}
+textarea{min-height:68px;resize:vertical}
+input[type=checkbox],input[type=radio]{accent-color:var(--ac)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acline);outline-offset:0;border-color:var(--ac)}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:5px 14px;border:1px solid var(--line2);border-radius:99px;cursor:pointer;background:transparent;font-size:13px;user-select:none;color:var(--tx2);transition:all .15s}
+.tag:hover{border-color:var(--tx3);color:var(--tx)}
+.tag.on{background:var(--ac);border-color:var(--ac);color:var(--acink);font-weight:700}
+.stepper{display:flex;gap:6px;overflow-x:auto;padding:2px 0}
+.step{display:flex;align-items:center;gap:8px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:transparent;font-size:12.5px;cursor:pointer;white-space:nowrap;color:var(--tx2)}
+.step b{width:20px;height:20px;border-radius:50%;background:rgba(244,243,238,.10);display:inline-grid;place-items:center;font-size:11px;color:var(--tx2)}
+.step.done{border-color:var(--okl)}.step.done b{background:var(--ok);color:#06210d}
+.step.cur{border-color:var(--ac);color:var(--ac);font-weight:700}.step.cur b{background:var(--ac);color:var(--acink)}
 table{border-collapse:collapse;width:100%}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-tr.click:hover{background:#fafbfc;cursor:pointer}
-.mod{border:1px solid var(--line);border-radius:var(--r);background:#fff;margin-bottom:12px}
-.mod>.mh{display:flex;gap:10px;align-items:center;padding:12px 14px;cursor:pointer;flex-wrap:wrap}
-.mod>.mh .ttl{font-weight:600;font-size:15px}
-.mod>.mb{padding:0 14px 14px;border-top:1px solid var(--line)}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+tr.click:hover{background:var(--panel2);cursor:pointer}
+.mod{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);margin-bottom:14px}
+.mod>.mh{display:flex;gap:10px;align-items:center;padding:14px 18px;cursor:pointer;flex-wrap:wrap}
+.mod>.mh .ttl{font-family:var(--fd);font-weight:600;font-size:13.5px}
+.mod>.mb{padding:0 18px 18px;border-top:1px solid var(--line)}
 .mod.blocked>.mh{opacity:.85}
-.sec{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.sec>.sh{padding:8px 12px;background:#fafbfc;font-weight:600;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
-.sec>.sb{padding:10px 12px}
-.kv{display:grid;grid-template-columns:190px 1fr;gap:4px 12px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.sec{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sec>.sh{padding:10px 14px;background:var(--panel2);font-weight:700;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
+.sec>.sb{padding:12px 14px}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:4px 12px;padding:6px 0;border-bottom:1px dashed var(--line)}
 .kv:last-child{border-bottom:0}
 .kv .k{color:var(--tx3);font-size:12.5px}.kv .v{white-space:pre-wrap;word-break:break-word}
 @media(max-width:760px){.kv{grid-template-columns:1fr}}
-.item{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:#fff}
-.item>.ih{padding:7px 12px;background:#f9fafb;border-bottom:1px solid var(--line);font-weight:600;display:flex;gap:8px;align-items:center}
-.item>.ib{padding:6px 12px}
-.impl{margin-top:10px;background:var(--ac2);border:1px solid #c7d0ff;border-radius:8px;padding:10px 12px}
+.item{border:1px solid var(--line);border-radius:14px;margin:10px 0;background:var(--panel)}
+.item>.ih{padding:9px 14px;background:var(--panel2);border-bottom:1px solid var(--line);font-weight:700;display:flex;gap:8px;align-items:center;border-radius:14px 14px 0 0}
+.item>.ib{padding:8px 14px}
+.impl{margin-top:12px;background:var(--ac2);border:1px solid var(--acline);border-radius:14px;padding:12px 14px}
 .impl b.t{color:var(--ac);display:block;margin-bottom:4px}
-.impl .kv{border-color:#d5dbff}
+.impl .kv{border-color:var(--acline)}
 .claims{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
-.claim{font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--line2);max-width:100%}
-.claim.client_data{background:var(--info2);border-color:#b2ddff}.claim.external_research{background:var(--ok2);border-color:#abefc6}.claim.ai_inference{background:#f2f4f7}.claim.ai_hypothesis{background:var(--warn2);border-color:#fedf89}
-.warnbox{background:var(--warn2);border:1px solid #fedf89;border-radius:8px;padding:8px 12px;margin:10px 0;color:#7a2e0e}
-.errbox{background:var(--bad2);border:1px solid #fecdca;border-radius:8px;padding:8px 12px;margin:10px 0;color:var(--bad)}
-.okbox{background:var(--ok2);border:1px solid #abefc6;border-radius:8px;padding:8px 12px;margin:10px 0;color:var(--ok)}
-.infobox{background:var(--info2);border:1px solid #b2ddff;border-radius:8px;padding:8px 12px;margin:10px 0;color:#0b4a8f}
-.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
-.tabs a{padding:8px 14px;cursor:pointer;color:var(--tx2);border-bottom:2px solid transparent;white-space:nowrap}
-.tabs a.on{color:var(--ac);border-color:var(--ac);font-weight:600}
-.dnd{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:6px}
+.claim{font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--line2);max-width:100%}
+.claim.client_data{background:var(--info2);border-color:var(--infol)}.claim.external_research{background:var(--ok2);border-color:var(--okl)}.claim.ai_inference{background:rgba(244,243,238,.06)}.claim.ai_hypothesis{background:var(--warn2);border-color:var(--warnl)}
+.warnbox{background:var(--warn2);border:1px solid var(--warnl);border-radius:14px;padding:10px 14px;margin:12px 0;color:var(--warn)}
+.errbox{background:var(--bad2);border:1px solid var(--badl);border-radius:14px;padding:10px 14px;margin:12px 0;color:var(--bad)}
+.okbox{background:var(--ok2);border:1px solid var(--okl);border-radius:14px;padding:10px 14px;margin:12px 0;color:var(--ok)}
+.infobox{background:var(--info2);border:1px solid var(--infol);border-radius:14px;padding:10px 14px;margin:12px 0;color:var(--info)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tabs a{padding:9px 16px;cursor:pointer;color:var(--tx2);border-bottom:2px solid transparent;white-space:nowrap;font-weight:500}
+.tabs a:hover{color:var(--tx)}
+.tabs a.on{color:var(--ac);border-color:var(--ac);font-weight:700}
+.dnd{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:8px}
 .dnd.over{border-color:var(--ac);background:var(--ac2)}
-.dnd.hid{opacity:.55}
+.dnd.hid{opacity:.5}
 .dnd .h{cursor:grab;color:var(--tx3);font-size:16px;user-select:none}
 .dnd .ttl{flex:1;min-width:0}
-.dnd input.rn{border:1px solid transparent;background:transparent;padding:2px 6px;font-weight:600}
-.dnd input.rn:hover,.dnd input.rn:focus{border-color:var(--line2);background:#fff}
-.svc{border:1px solid var(--line2);border-radius:10px;padding:12px;background:#fff;cursor:pointer;display:flex;gap:10px}
+.dnd input.rn{border:1px solid transparent;background:transparent;padding:2px 8px;font-weight:700;border-radius:8px}
+.dnd input.rn:hover,.dnd input.rn:focus{border-color:var(--line2);background:var(--panel2)}
+.svc{border:1px solid var(--line2);border-radius:16px;padding:14px;background:var(--panel);cursor:pointer;display:flex;gap:12px;transition:border-color .15s,background .15s}
+.svc:hover{border-color:var(--tx3)}
 .svc.on{border-color:var(--ac);background:var(--ac2)}
-.svc.base{cursor:default}
 .svc input{margin-top:3px}
-.lock-banner{display:flex;gap:12px;align-items:center;background:#101828;color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px}
-.spinner{display:inline-block;width:12px;height:12px;border:2px solid #c7d0ff;border-top-color:var(--ac);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
+.lock-banner{display:flex;gap:12px;align-items:center;background:var(--ac);color:var(--acink);border-radius:16px;padding:16px 18px;margin-bottom:18px;font-weight:600}
+.lock-banner .sm{color:var(--acink)}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(203,255,46,.25);border-top-color:var(--ac);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
-.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;padding:10px 14px;border-radius:8px;z-index:50;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.toast.err{background:var(--bad)}
-.modal-bg{position:fixed;inset:0;background:rgba(16,24,40,.45);display:grid;place-items:center;z-index:40}
-.modal{background:#fff;border-radius:12px;padding:20px;width:min(560px,92vw);max-height:88vh;overflow:auto}
-.modal h3{margin:0 0 12px}
-.cm{border-left:3px solid var(--line2);padding:4px 10px;margin:6px 0;background:#fafbfc}
+.toast{position:fixed;right:18px;bottom:78px;background:var(--panel2);border:1px solid var(--line2);color:var(--tx);padding:12px 18px;border-radius:14px;z-index:50;max-width:380px;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.toast.err{background:#2a1211;border-color:var(--badl);color:var(--bad)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:40}
+.modal{background:var(--panel);border:1px solid var(--line2);border-radius:24px;padding:26px;width:min(560px,92vw);max-height:88vh;overflow:auto}
+.modal h3{margin:0 0 14px;font-family:var(--fd);font-size:16px;font-weight:600}
+.cm{border-left:3px solid var(--ac);padding:6px 12px;margin:8px 0;background:var(--panel2);border-radius:0 10px 10px 0}
 .cm.res{opacity:.55}
-pre.json{background:#f2f4f7;border-radius:8px;padding:10px;overflow:auto;max-height:420px;font-size:12px}
-svg text{font:12px -apple-system,Segoe UI,sans-serif}
+pre.json{background:var(--panel2);border-radius:14px;padding:12px;overflow:auto;max-height:420px;font-size:12px;color:var(--tx2)}
+svg text{font:12px var(--fb);fill:var(--tx)}
 .node{cursor:pointer}
-.doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 34px}
-.doc h1{font-size:26px;margin:0 0 4px}.doc h2{font-size:20px;margin:28px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}.doc h3{font-size:16px;margin:18px 0 6px}.doc h4{font-size:13px;margin:12px 0 4px;color:var(--tx2)}
-@media print{#side,.top,.no-print{display:none!important}#app{display:block}#main{overflow:visible}.doc{border:0;padding:0}body{background:#fff}}
+.doc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:32px 38px}
+.doc h1{font-family:var(--fd);font-size:24px;margin:0 0 4px;font-weight:600}.doc h2{font-size:18px;margin:30px 0 10px;border-bottom:1px solid var(--line);padding-bottom:8px}.doc h3{font-family:var(--fd);font-size:14px;margin:20px 0 6px;font-weight:600}.doc h4{font-size:12px;margin:14px 0 4px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}
+hr{border:0;border-top:1px solid var(--line)}
+@media print{#side,.top,.no-print{display:none!important}#app{display:block;height:auto}#main{overflow:visible;background:#fff}.doc{border:0;padding:0;background:#fff;color:#111}.doc *{color:#111!important;background:transparent!important;border-color:#ccc!important}body{background:#fff;color:#111}}
 </style>
 </head>
 <body>
@@ -129,7 +147,7 @@ svg text{font:12px -apple-system,Segoe UI,sans-serif}
    МЕТОДОЛОГІЯ АГЕНЦІЇ (CFG) — декларативна конфігурація.
    Тут описано: послуги, правила Service→Module, модулі та їхні секції,
    залежності, агенти. Змінення методології = зміна цього блоку (або
-   перевизначення промптів у розділі «AI Agents»), а не UI-коду.
+   перевизначення промптів у розділі «AI-агенти»), а не UI-коду.
    ===================================================================== */
 const F = s => s.split('|').map(x => { const i = x.indexOf(':'); return { k: x.slice(0, i), l: x.slice(i + 1) }; });
 const CFG = {};
@@ -138,24 +156,24 @@ CFG.VERSION = '1.0';
 /* ---------- Послуги ---------- */
 CFG.SERVICES = [
   { id: 'instagram', group: 'CONTENT', label: 'Instagram', channel: 'smm', desc: 'Контент-супровід Instagram' },
-  { id: 'facebook', group: 'CONTENT', label: 'Facebook Cross-posting', channel: 'smm', desc: 'Кросспостинг / контент Facebook' },
+  { id: 'facebook', group: 'CONTENT', label: 'Facebook (кросспостинг)', channel: 'smm', desc: 'Кросспостинг / контент Facebook' },
   { id: 'meta_ads', group: 'PAID MEDIA', label: 'Meta Ads', channel: 'meta', desc: 'Реклама у Facebook / Instagram' },
   { id: 'google_ads', group: 'PAID MEDIA', label: 'Google Ads', channel: 'google', desc: 'Search, PMax, Shopping — за потреби' },
-  { id: 'tiktok_org', group: 'TIKTOK', label: 'TikTok Organic', channel: 'tiktok', desc: 'Органічний контент у TikTok' },
+  { id: 'tiktok_org', group: 'TIKTOK', label: 'TikTok органіка', channel: 'tiktok', desc: 'Органічний контент у TikTok' },
   { id: 'tiktok_ads', group: 'TIKTOK', label: 'TikTok Ads', channel: 'tta', desc: 'Реклама у TikTok' },
 ];
-CFG.CHANNEL_LABELS = { smm: 'Instagram / Facebook (контент)', meta: 'Meta Ads', google: 'Google Ads', tiktok: 'TikTok Organic', tta: 'TikTok Ads' };
+CFG.CHANNEL_LABELS = { smm: 'Instagram / Facebook (контент)', meta: 'Meta Ads', google: 'Google Ads', tiktok: 'TikTok органіка', tta: 'TikTok Ads' };
 
 /* ---------- Групи модулів = розділи sidebar ---------- */
 CFG.GROUPS = {
-  research: { label: 'Research', page: 'research' },
-  brand: { label: 'Brand', page: 'brand' },
+  research: { label: 'Дослідження', page: 'research' },
+  brand: { label: 'Бренд', page: 'brand' },
   smm: { label: 'SMM', page: 'smm' },
   meta: { label: 'Meta Ads', page: 'meta', svc: 'meta_ads' },
   tiktok: { label: 'TikTok', page: 'tiktok', svc: 'tiktok_org' },
   ttads: { label: 'TikTok Ads', page: 'ttads', svc: 'tiktok_ads' },
   google: { label: 'Google Ads', page: 'google', svc: 'google_ads' },
-  cross: { label: 'Cross-channel', page: 'cross' },
+  cross: { label: 'Кросканальність', page: 'cross' },
 };
 CFG.LEVEL = { mandatory: { icon: '🔒', label: 'Обов\'язковий', w: 3 }, recommended: { icon: '★', label: 'Рекомендований', w: 2 }, optional: { icon: '○', label: 'Опціональний', w: 1 } };
 
@@ -190,32 +208,32 @@ CFG.evalWhen = function (w, c) {
 };
 
 /* ---------- Агенти ---------- */
-CFG.GLOBAL_RULES = `Ти — старший стратег digital-агенції. Працюєш ТІЛЬКИ в межах Project Context, який надано у запиті.
+CFG.GLOBAL_RULES = `Ти — старший стратег digital-агенції. Працюєш ТІЛЬКИ в межах Контекст проєкту, який надано у запиті.
 ЖОРСТКІ ПРАВИЛА:
 1. Відповідай виключно українською. Виводь ТІЛЬКИ валідний JSON за заданою схемою — без markdown-огорож, коментарів і пояснень поза JSON.
 2. НЕ вигадуй статистику, результати досліджень, назви конкурентів, рекламні показники конкурентів, бюджети. Якщо даних бракує — пиши «Немає даних: <що саме потрібно уточнити>» замість припущення.
 3. Кожне ключове твердження в "claims" має тип: client_data (з брифу), external_research (ТІЛЬКИ якщо є конкретний URL джерела зі web search або з наданих даних парсингу), ai_inference (логічний висновок із наданих даних), ai_hypothesis (припущення, яке треба перевірити). Гіпотезу ніколи не подавай як факт.
-4. НЕ змінюй і не переписуй те, що вже зафіксовано в Project Context (Brand Platform, УТП, Tone of Voice, сегменти, Big Idea, аватари). Використовуй як є та посилайся на нього. Не створюй власну версію.
-5. Логіка кожного аналітичного блоку: Research → Insight → Decision → Action. Уникай загальних фраз («створювати якісний контент», «підвищувати впізнаваність», «бути ближчими до аудиторії») — завжди поясни ЩО, ЯК і ЧОМУ саме для цього бізнесу.
+4. НЕ змінюй і не переписуй те, що вже зафіксовано в Контекст проєкту (Платформа бренду, УТП, Тон комунікації (ToV), сегменти, Велика ідея, аватари). Використовуй як є та посилайся на нього. Не створюй власну версію.
+5. Логіка кожного аналітичного блоку: Дослідження → Висновок → Рішення → Дія. Уникай загальних фраз («створювати якісний контент», «підвищувати впізнаваність», «бути ближчими до аудиторії») — завжди поясни ЩО, ЯК і ЧОМУ саме для цього бізнесу.
 6. Пиши конкретно: формулювання, формати, кількість, приклади — у межах даних проєкту. Не дублюй аналіз, який уже є в контексті — посилайся на нього.`;
 
 CFG.AGENTS = {
-  market: { name: 'Market Intelligence', prompt: 'Ти досліджуєш категорію та ринок. Використовуй web search для перевірених зовнішніх фактів і завжди вказуй URL. Без джерела — тільки ai_inference або ai_hypothesis.' },
-  audience: { name: 'Audience Intelligence', prompt: 'Ти сегментуєш аудиторію насамперед за потребою, мотивацією, ситуацією, Job To Be Done, поведінкою, рівнем усвідомлення проблеми та причиною покупки — НЕ за демографією («жінки 25–45»). Сегменти не повинні перетинатися та суперечити один одному.' },
-  avatar: { name: 'Customer Avatar Builder', prompt: 'Ти створюєш аватари СТРОГО з наявних сегментів. Кожен аватар посилається на segmentId існуючого сегмента. Ланцюг: Segment → Avatar → Pain → Trigger → Message → Content → Offer.' },
-  competitor: { name: 'Competitor Intelligence', prompt: 'Ти аналізуєш ЛИШЕ конкурентів із брифу (не додавай інших). Використовуй дані парсингу та web search. Рекламні й контентні показники конкурентів — тільки з наданих даних; інакше «Немає даних». Єдина база: розширюй секції, не дублюй аналіз.' },
-  architect: { name: 'Strategy Architect', prompt: 'Ти формуєш стратегічні висновки. Кожен інсайт: Факт → Що це означає → Стратегічне рішення → Як реалізувати. Спирайся тільки на зафіксовані дослідження.' },
-  brand: { name: 'Brand Strategist', prompt: 'Ти будуєш Brand Platform на основі Market, Audience, Competitor Intelligence та Strategic Insights. Це єдина логіка бренду для всіх каналів.' },
-  valueprop: { name: 'Value Proposition Agent', prompt: 'Ти формуєш УТП як систему (продуктове, функціональне, емоційне), а не рекламний слоган. Спирайся на Brand Platform, аудиторію та конкурентів.' },
-  comm: { name: 'Communication Agent', prompt: 'Ти формуєш Big Idea, Key Message і Tone of Voice. Це єдина комунікаційна платформа, яку далі використовують усі канали без змін.' },
-  content: { name: 'Content Strategist', prompt: 'Ти формуєш SMM-стратегію та контентні системи (рубрикатори, візуал, звук). Tone of Voice, Big Idea, сегменти беруться з контексту без змін.' },
-  meta: { name: 'Meta Ads Strategist', prompt: 'Ти будуєш стратегію Meta Ads. Аудиторії — лише адаптація наявних сегментів (Segment → Meta Audience → Message → Offer → Creative Angle). Tone of Voice, УТП, бренд — з контексту без змін.' },
-  tiktok: { name: 'TikTok Strategist', prompt: 'Ти будуєш органічну стратегію TikTok. Вона НЕ повинна бути копією Instagram-стратегії: native-формати, hooks, серійність. Сегменти лише адаптуєш, не створюєш нові.' },
-  ttads: { name: 'TikTok Ads Strategist', prompt: 'Ти будуєш рекламну стратегію TikTok Ads: адаптація сегментів, creator-style і UGC-підходи, тестування креативів.' },
-  google: { name: 'Google Ads Strategist', prompt: 'Ти будуєш стратегію Google Ads на основі пошукового наміру. Використовуй наявну УТП. Shopping і Performance Max додавай ТІЛЬКИ якщо бізнес-модель цього потребує — і обґрунтуй.' },
-  cross: { name: 'Cross-channel Architect', prompt: 'Ти збираєш єдину міжканальну воронку строго з ролей каналів і зафіксованих стратегій. Не копіюй шаблонну воронку — будуй під цей бізнес.' },
-  synergy: { name: 'Synergy Checker', prompt: 'Ти ПЕРЕВІРЯЄШ узгодженість контенту та реклами. Не генеруй нову стратегію — виносиш вердикти та конкретні виправлення.' },
-  reviewer: { name: 'Strategy Reviewer', prompt: 'Ти НЕ генеруєш стратегію. Ти перевіряєш готову: узгодженість аудиторії, бренду, воронки, контенту й реклами, підґрунтя рішень, загальні фрази. Не став оцінку «8/10» — тільки чекліст із поясненням проблем.' },
+  market: { name: 'Аналіз ринку', prompt: 'Ти досліджуєш категорію та ринок. Використовуй web search для перевірених зовнішніх фактів і завжди вказуй URL. Без джерела — тільки ai_inference або ai_hypothesis.' },
+  audience: { name: 'Аналіз аудиторії', prompt: 'Ти сегментуєш аудиторію насамперед за потребою, мотивацією, ситуацією, Завдання клієнта (JTBD), поведінкою, рівнем усвідомлення проблеми та причиною покупки — НЕ за демографією («жінки 25–45»). Сегменти не повинні перетинатися та суперечити один одному.' },
+  avatar: { name: 'Конструктор аватарів', prompt: 'Ти створюєш аватари СТРОГО з наявних сегментів. Кожен аватар посилається на segmentId існуючого сегмента. Ланцюг: Segment → Avatar → Pain → Trigger → Message → Content → Offer.' },
+  competitor: { name: 'Аналіз конкурентів', prompt: 'Ти аналізуєш ЛИШЕ конкурентів із брифу (не додавай інших). Використовуй дані парсингу та web search. Рекламні й контентні показники конкурентів — тільки з наданих даних; інакше «Немає даних». Єдина база: розширюй секції, не дублюй аналіз.' },
+  architect: { name: 'Архітектор стратегії', prompt: 'Ти формуєш стратегічні висновки. Кожен інсайт: Факт → Що це означає → Стратегічне рішення → Як реалізувати. Спирайся тільки на зафіксовані дослідження.' },
+  brand: { name: 'Brand Strategist', prompt: 'Ти будуєш платформу бренду на основі аналізу ринку, аналізу аудиторії, аналізу конкурентів і стратегічних висновків. Це єдина логіка бренду для всіх каналів.' },
+  valueprop: { name: 'Агент ціннісної пропозиції', prompt: 'Ти формуєш УТП як систему (продуктове, функціональне, емоційне), а не рекламний слоган. Спирайся на Платформа бренду, аудиторію та конкурентів.' },
+  comm: { name: 'Агент комунікації', prompt: 'Ти формуєш Велика ідея, Ключове повідомлення і Тон комунікації (ToV). Це єдина комунікаційна платформа, яку далі використовують усі канали без змін.' },
+  content: { name: 'Content Strategist', prompt: 'Ти формуєш SMM-стратегію та контентні системи (рубрикатори, візуал, звук). Тон комунікації (ToV), Велика ідея, сегменти беруться з контексту без змін.' },
+  meta: { name: 'Стратег Meta Ads', prompt: 'Ти будуєш стратегію Meta Ads. Аудиторії — лише адаптація наявних сегментів (Segment → Аудиторія в Meta → Message → Offer → Креативний кут). Тон комунікації (ToV), УТП, бренд — з контексту без змін.' },
+  tiktok: { name: 'Стратег TikTok', prompt: 'Ти будуєш органічну стратегію TikTok. Вона НЕ повинна бути копією Instagram-стратегії: native-формати, hooks, серійність. Сегменти лише адаптуєш, не створюєш нові.' },
+  ttads: { name: 'Стратег TikTok Ads', prompt: 'Ти будуєш рекламну стратегію TikTok Ads: адаптація сегментів, creator-style і UGC-підходи, тестування креативів.' },
+  google: { name: 'Стратег Google Ads', prompt: 'Ти будуєш стратегію Google Ads на основі пошукового наміру. Використовуй наявну УТП. Shopping і Performance Max додавай ТІЛЬКИ якщо бізнес-модель цього потребує — і обґрунтуй.' },
+  cross: { name: 'Кросканальність · Архітектор', prompt: 'Ти збираєш єдину міжканальну воронку строго з ролей каналів і зафіксованих стратегій. Не копіюй шаблонну воронку — будуй під цей бізнес.' },
+  synergy: { name: 'Перевірка синергії', prompt: 'Ти ПЕРЕВІРЯЄШ узгодженість контенту та реклами. Не генеруй нову стратегію — виносиш вердикти та конкретні виправлення.' },
+  reviewer: { name: 'Рецензент стратегії', prompt: 'Ти НЕ генеруєш стратегію. Ти перевіряєш готову: узгодженість аудиторії, бренду, воронки, контенту й реклами, підґрунтя рішень, загальні фрази. Не став оцінку «8/10» — тільки чекліст із поясненням проблем.' },
 };
 
 /* ---------- Спільні схеми ---------- */
@@ -227,81 +245,81 @@ const TXT = (key, title, o = {}) => Object.assign({ key, title, kind: 'text' }, 
 /* ---------- Модулі ---------- */
 CFG.MODULES = [
   /* ===== RESEARCH ===== */
-  { id: 'market', group: 'research', agent: 'market', title: 'Market Intelligence', web: true, impl: true, claims: true, brief: [...BK.core, 'channels'], deps: { hard: [], soft: [] },
+  { id: 'market', group: 'research', agent: 'market', title: 'Аналіз ринку', web: true, impl: true, claims: true, brief: [...BK.core, 'channels'], deps: { hard: [], soft: [] },
     desc: 'Категорія, ринок, тренди, бар\'єри, ризики — з висновками для стратегії',
     role: 'Проаналізуй категорію та ринок клієнта. Для кожного блоку дай конкретику для цієї ніші та географії; зовнішні факти — тільки з URL. Наприкінці кожного блоку — «Що це означає для нашої стратегії?».',
     sections: ['category:Категорія', 'market:Ринок', 'state:Стан ринку', 'behavior:Поведінка споживачів', 'trends:Тренди', 'demand:Зміни у попиті', 'choice:Фактори вибору', 'barriers:Бар\'єри покупки', 'niche:Особливості ніші', 'opps:Можливості', 'risks:Ризики', 'infoField:Інформаційне поле', 'patterns:Маркетингові патерни категорії'].map(x => TXT(x.split(':')[0], x.split(':')[1])) },
-  { id: 'audience', group: 'research', agent: 'audience', title: 'Audience Intelligence', impl: true, claims: true, web: true, brief: [...BK.core], deps: { hard: [], soft: ['market'] },
+  { id: 'audience', group: 'research', agent: 'audience', title: 'Аналіз аудиторії', impl: true, claims: true, web: true, brief: [...BK.core], deps: { hard: [], soft: ['market'] },
     desc: 'Сегменти за потребою, мотивацією та JTBD — а не за демографією',
     role: 'Сформуй 3–6 сегментів аудиторії, що не перетинаються. Сегментація: потреба, мотивація, ситуація, JTBD, поведінка, рівень усвідомлення проблеми, причина покупки. Кожне поле заповнюй конкретно (не «хоче якості»).',
     sections: [
       TXT('logic', 'Логіка сегментації'),
-      LIST('segments', 'Сегменти аудиторії', 'name:Назва сегмента|context:Контекст|jtbd:Job To Be Done|need:Потреба|pain:Pain|trigger:Trigger|barrier:Barrier|outcome:Desired Outcome|criteria:Критерії вибору|objections:Заперечення|behavior:Поведінка|awareness:Рівень усвідомлення проблеми|reason:Причина покупки|message:Message|offer:Offer|contentAngle:Content Angle|adAngle:Advertising Angle', { min: 3, max: 6, ids: 'S', titleField: 'name' })] },
-  { id: 'avatars', group: 'research', agent: 'avatar', title: 'Customer Avatars', impl: false, claims: false, brief: [], deps: { hard: ['audience'], soft: [] },
+      LIST('segments', 'Сегменти аудиторії', 'name:Назва сегмента|context:Контекст|jtbd:Завдання клієнта (JTBD)|need:Потреба|pain:Біль|trigger:Тригер|barrier:Барʼєр|outcome:Бажаний результат|criteria:Критерії вибору|objections:Заперечення|behavior:Поведінка|awareness:Рівень усвідомлення проблеми|reason:Причина покупки|message:Повідомлення|offer:Оффер|contentAngle:Контентний кут|adAngle:Рекламний кут', { min: 3, max: 6, ids: 'S', titleField: 'name' })] },
+  { id: 'avatars', group: 'research', agent: 'avatar', title: 'Аватари клієнтів', impl: false, claims: false, brief: [], deps: { hard: ['audience'], soft: [] },
     desc: 'Аватари клієнтів — суворо з сегментів: Segment → Avatar → Pain → Trigger → Message → Content → Offer',
     role: 'Для КОЖНОГО сегмента з контексту створи рівно один аватар (можна два для великих сегментів). Обов\'язково вкажи segmentId існуючого сегмента. Pain/Trigger/Message/Offer мають бути узгоджені із сегментом, а не вигадані окремо.',
-    sections: [LIST('avatars', 'Аватари', 'segmentId:Сегмент (ID)|name:Імʼя аватара|portrait:Портрет і життєва ситуація|pain:Pain|trigger:Trigger|message:Message|content:Content (що показуємо)|offer:Offer', { min: 3, max: 8, titleField: 'name', ref: 'segmentId' })] },
-  { id: 'competitors', group: 'research', agent: 'competitor', title: 'Competitor Intelligence', web: true, impl: true, claims: true, requires: 'competitors', brief: [...BK.comp, 'niche', 'geo', 'products'], deps: { hard: [], soft: ['market'] },
+    sections: [LIST('avatars', 'Аватари', 'segmentId:Сегмент (ID)|name:Імʼя аватара|portrait:Портрет і життєва ситуація|pain:Біль|trigger:Тригер|message:Повідомлення|content:Контент (що показуємо)|offer:Оффер', { min: 3, max: 8, titleField: 'name', ref: 'segmentId' })] },
+  { id: 'competitors', group: 'research', agent: 'competitor', title: 'Аналіз конкурентів', web: true, impl: true, claims: true, requires: 'competitors', brief: [...BK.comp, 'niche', 'geo', 'products'], deps: { hard: [], soft: ['market'] },
     desc: 'Єдина база конкурентного аналізу; розширюється залежно від підключених послуг',
     role: 'Проаналізуй ТІЛЬКИ конкурентів із брифу (за назвою, як у контексті). Використовуй дані парсингу (якщо є) та web search. Показники, яких немає в наданих даних, не вигадуй: «Немає даних».',
     sections: [
-      LIST('matrix', 'Матриця конкурентів', 'name:Назва (як у брифі)|positioning:Позиціонування|usp:УТП|product:Продукт|price:Ціна|valueProp:Ціннісна пропозиція|tov:Tone of Voice|visual:Візуальна комунікація|messages:Ключові повідомлення|content:Контент|rubrics:Рубрики|formats:Формати|cta:CTA|strengths:Сильні сторони|weaknesses:Слабкі сторони|differentiation:Можливості для диференціації', { titleField: 'name', core: true, competitorRows: true }),
+      LIST('matrix', 'Матриця конкурентів', 'name:Назва (як у брифі)|positioning:Позиціонування|usp:УТП|product:Продукт|price:Ціна|valueProp:Ціннісна пропозиція|tov:Тон комунікації (ToV)|visual:Візуальна комунікація|messages:Ключові повідомлення|content:Контент|rubrics:Рубрики|formats:Формати|cta:CTA|strengths:Сильні сторони|weaknesses:Слабкі сторони|differentiation:Можливості для диференціації', { titleField: 'name', core: true, competitorRows: true }),
       FLD('conclusions', 'Висновки', 'use:Що ми можемо використати?|avoid:Чого варто уникати?|whitespace:Де є незайнята комунікаційна територія?|brandOpps:Які можливості має наш бренд?', { core: true }),
-      LIST('ext_meta', 'Розширення: Meta Ads', 'name:Конкурент|adOffers:Рекламні офери|adsLibrary:Ads Library / доступні матеріали|adMessages:Рекламні меседжі|cta:CTA|creativeFormats:Креативні формати|funnels:Воронки|landings:Посадкові сторінки|angles:Creative angles', { ext: true, titleField: 'name', competitorRows: true, svc: 'meta_ads' }),
-      LIST('ext_tiktok', 'Розширення: TikTok', 'name:Конкурент|content:TikTok-контент|hooks:Hooks|formats:Формати|recurring:Recurring formats|viral:Viral mechanics|engagement:Engagement|creator:Creator-style контент|frequency:Частота', { ext: true, titleField: 'name', competitorRows: true, svc: 'tiktok' }),
-      LIST('ext_google', 'Розширення: Google Ads', 'name:Конкурент|adOffers:Рекламні пропозиції|search:Search positioning|landings:Landing pages|offers:Офери|demand:Категорії попиту', { ext: true, titleField: 'name', competitorRows: true, svc: 'google_ads' })] },
-  { id: 'insightsA', group: 'research', agent: 'architect', title: 'Strategic Insights (Architect · A)', impl: false, claims: false, brief: [...BK.core], deps: { hard: ['market', 'audience', 'competitors'], soft: ['avatars'] },
-    desc: 'Інсайти, можливості, ризики, пріоритети та гіпотези — за результатами Research',
-    role: 'Сформуй стратегічні висновки з зафіксованого Research. Кожен інсайт: Факт/спостереження → Що це означає → Стратегічне рішення → Як реалізувати. Гіпотези — з планом перевірки.',
+      LIST('ext_meta', 'Розширення: Meta Ads', 'name:Конкурент|adOffers:Рекламні офери|adsLibrary:Бібліотека реклами / доступні матеріали|adMessages:Рекламні меседжі|cta:CTA|creativeFormats:Креативні формати|funnels:Воронки|landings:Посадкові сторінки|angles:Креативні кути', { ext: true, titleField: 'name', competitorRows: true, svc: 'meta_ads' }),
+      LIST('ext_tiktok', 'Розширення: TikTok', 'name:Конкурент|content:TikTok-контент|hooks:Хуки|formats:Формати|recurring:Повторювані формати|viral:Вірусні механіки|engagement:Залучення|creator:Контент у стилі креаторів|frequency:Частота', { ext: true, titleField: 'name', competitorRows: true, svc: 'tiktok' }),
+      LIST('ext_google', 'Розширення: Google Ads', 'name:Конкурент|adOffers:Рекламні пропозиції|search:Позиціювання в пошуку|landings:Посадкові сторінки|offers:Офери|demand:Категорії попиту', { ext: true, titleField: 'name', competitorRows: true, svc: 'google_ads' })] },
+  { id: 'insightsA', group: 'research', agent: 'architect', title: 'Стратегічні висновки (Архітектор · A)', impl: false, claims: false, brief: [...BK.core], deps: { hard: ['market', 'audience', 'competitors'], soft: ['avatars'] },
+    desc: 'Інсайти, можливості, ризики, пріоритети та гіпотези — за результатами досліджень',
+    role: 'Сформуй стратегічні висновки з зафіксованих досліджень. Кожен інсайт: Факт/спостереження → Що це означає → Стратегічне рішення → Як реалізувати. Гіпотези — з планом перевірки.',
     sections: [
-      LIST('insights', 'Strategic Insights', 'fact:Факт / спостереження|meaning:Що це означає|decision:Стратегічне рішення|how:Як реалізувати', { min: 5, max: 10, titleField: 'fact' }),
-      LIST('opportunities', 'Strategic Opportunities', 'title:Можливість|why:Чому саме вона|action:Що робимо', { titleField: 'title' }),
-      LIST('commOpps', 'Communication Opportunities', 'title:Можливість|angle:Кут комунікації|for:Для якого сегмента', { titleField: 'title' }),
+      LIST('insights', 'Стратегічні висновки', 'fact:Факт / спостереження|meaning:Що це означає|decision:Стратегічне рішення|how:Як реалізувати', { min: 5, max: 10, titleField: 'fact' }),
+      LIST('opportunities', 'Стратегічні можливості', 'title:Можливість|why:Чому саме вона|action:Що робимо', { titleField: 'title' }),
+      LIST('commOpps', 'Комунікаційні можливості', 'title:Можливість|angle:Кут комунікації|for:Для якого сегмента', { titleField: 'title' }),
       LIST('risks', 'Ризики', 'risk:Ризик|impact:Наслідок|mitigation:Як знижуємо', { titleField: 'risk' }),
-      LIST('priorities', 'Strategic Priorities', 'priority:Пріоритет|reason:Чому|metric:Як вимірюємо', { titleField: 'priority' }),
+      LIST('priorities', 'Стратегічні пріоритети', 'priority:Пріоритет|reason:Чому|metric:Як вимірюємо', { titleField: 'priority' }),
       LIST('hypotheses', 'Основні маркетингові гіпотези', 'hypothesis:Гіпотеза|test:Як перевіряємо|success:Критерій успіху', { titleField: 'hypothesis' })] },
 
   /* ===== BRAND ===== */
-  { id: 'brand', group: 'brand', agent: 'brand', title: 'Brand Platform', impl: true, claims: true, brief: [...BK.core, 'likedBrands', 'dislikedBrands'], deps: { hard: ['insightsA', 'market', 'audience', 'competitors'], soft: ['avatars'] },
+  { id: 'brand', group: 'brand', agent: 'brand', title: 'Платформа бренду', impl: true, claims: true, brief: [...BK.core, 'likedBrands', 'dislikedBrands'], deps: { hard: ['insightsA', 'market', 'audience', 'competitors'], soft: ['avatars'] },
     desc: 'Сутність, місія, цінності, характер, обіцянка, диференціація, територія бренду',
-    role: 'Сформуй Brand Platform на основі зафіксованих Market, Audience, Competitor Intelligence та Strategic Insights. Не загальні формулювання — саме для цього бренду.',
-    sections: [FLD('platform', 'Brand Platform', 'essence:Сутність бренду|mission:Місія|vision:Бачення|purpose:Brand Purpose|values:Цінності|beliefs:Переконання|principles:Принципи|character:Характер бренду|role:Роль бренду у житті клієнта|strengths:Сильні сторони|advantages:Конкурентні переваги|promise:Brand Promise|rtb:Reasons to Believe|brandEssence:Brand Essence (одна фраза)|differentiation:Диференціація|territory:Комунікаційна територія бренду')] },
-  { id: 'valueprop', group: 'brand', agent: 'valueprop', title: 'Value Proposition / УТП', impl: true, claims: true, brief: [...BK.core], deps: { hard: ['brand', 'audience', 'competitors'], soft: [] },
+    role: 'Сформуй платформу бренду на основі зафіксованих аналізу ринку, аналізу аудиторії, аналізу конкурентів і стратегічних висновків. Не загальні формулювання — саме для цього бренду.',
+    sections: [FLD('platform', 'Платформа бренду', 'essence:Сутність бренду|mission:Місія|vision:Бачення|purpose:Призначення бренду|values:Цінності|beliefs:Переконання|principles:Принципи|character:Характер бренду|role:Роль бренду у житті клієнта|strengths:Сильні сторони|advantages:Конкурентні переваги|promise:Обіцянка бренду|rtb:Підстави довіряти|brandEssence:Суть бренду (одна фраза)|differentiation:Диференціація|territory:Комунікаційна територія бренду')] },
+  { id: 'valueprop', group: 'brand', agent: 'valueprop', title: 'Ціннісна пропозиція / УТП', impl: true, claims: true, brief: [...BK.core], deps: { hard: ['brand', 'audience', 'competitors'], soft: [] },
     desc: 'Основна ціннісна пропозиція та система УТП — не слоган',
-    role: 'Сформуй систему УТП. УТП — це аргументована пропозиція для конкретних сегментів, а не рекламний слоган. Brand Promise і RTB бери з Brand Platform без змін.',
-    sections: [FLD('vp', 'Ціннісна пропозиція', 'main:Основна ціннісна пропозиція|productUsp:Product USP|functionalUsp:Functional USP|emotionalUsp:Emotional USP|promise:Brand Promise (з Brand Platform)|rtb:Reason to Believe'), LIST('messages', 'Основні Communication Messages', 'message:Повідомлення|segment:Для якого сегмента|proof:Чим підтверджуємо', { titleField: 'message' })] },
-  { id: 'communication', group: 'brand', agent: 'comm', title: 'Communication Platform (Big Idea · ToV)', impl: false, claims: false, brief: ['wishes', 'limits', 'lang', 'refs'], deps: { hard: ['brand', 'valueprop', 'audience'], soft: ['competitors'] },
-    desc: 'Big Idea → Key Message → Supporting Messages та Tone of Voice — єдині для всіх каналів',
-    role: 'Сформуй єдину комунікаційну платформу: Big Idea → Key Message → Supporting Messages та повний Tone of Voice (з прикладами «говоримо так / не говоримо так»). Це джерело для всіх каналів.',
-    sections: [FLD('bigidea', 'Big Idea', 'bigIdea:Big Idea|keyMessage:Key Message|supporting:Supporting Messages'), FLD('tov', 'Tone of Voice', 'voice:Характер голосу|style:Стиль|emotion:Емоційність|lexicon:Лексика|address:Звернення до аудиторії|humor:Гумор|allowed:Допустимі формулювання|forbidden:Недопустимі формулювання|sayThis:Приклади «говоримо так»|notThis:Приклади «не говоримо так»')] },
-  { id: 'architectB', group: 'brand', agent: 'architect', title: 'Ролі каналів і логіка воронки (Architect · B)', impl: false, claims: false, svcSig: true, brief: ['budget', 'channels'], deps: { hard: ['insightsA', 'brand', 'valueprop', 'communication'], soft: [] },
+    role: 'Сформуй систему УТП. УТП — це аргументована пропозиція для конкретних сегментів, а не рекламний слоган. Обіцянка бренду і RTB бери з Платформа бренду без змін.',
+    sections: [FLD('vp', 'Ціннісна пропозиція', 'main:Основна ціннісна пропозиція|productUsp:УТП продукту|functionalUsp:Функціональне УТП|emotionalUsp:Емоційне УТП|promise:Обіцянка бренду (з платформи бренду)|rtb:Підстава довіряти'), LIST('messages', 'Основні комунікаційні повідомлення', 'message:Повідомлення|segment:Для якого сегмента|proof:Чим підтверджуємо', { titleField: 'message' })] },
+  { id: 'communication', group: 'brand', agent: 'comm', title: 'Комунікаційна платформа (велика ідея · ToV)', impl: false, claims: false, brief: ['wishes', 'limits', 'lang', 'refs'], deps: { hard: ['brand', 'valueprop', 'audience'], soft: ['competitors'] },
+    desc: 'Велика ідея → Ключове повідомлення → Підтримувальні повідомлення та Тон комунікації (ToV) — єдині для всіх каналів',
+    role: 'Сформуй єдину комунікаційну платформу: Велика ідея → Ключове повідомлення → Підтримувальні повідомлення та повний Тон комунікації (ToV) (з прикладами «говоримо так / не говоримо так»). Це джерело для всіх каналів.',
+    sections: [FLD('bigidea', 'Велика ідея', 'bigIdea:Велика ідея|keyMessage:Ключове повідомлення|supporting:Підтримувальні повідомлення'), FLD('tov', 'Тон комунікації (ToV)', 'voice:Характер голосу|style:Стиль|emotion:Емоційність|lexicon:Лексика|address:Звернення до аудиторії|humor:Гумор|allowed:Допустимі формулювання|forbidden:Недопустимі формулювання|sayThis:Приклади «говоримо так»|notThis:Приклади «не говоримо так»')] },
+  { id: 'architectB', group: 'brand', agent: 'architect', title: 'Ролі каналів і логіка воронки (Архітектор · B)', impl: false, claims: false, svcSig: true, brief: ['budget', 'channels'], deps: { hard: ['insightsA', 'brand', 'valueprop', 'communication'], soft: [] },
     desc: 'Визначає роль кожного активного каналу та логіку воронки',
     role: 'Визнач ролі ТІЛЬКИ активних каналів (список у контексті) і логіку воронки під цей бізнес. Не копіюй шаблон.',
     sections: [LIST('roles', 'Канали та їхня роль', 'channel:Канал|role:Роль|stage:Етап воронки|audience:Головні сегменти|kpi:KPI|why:Чому саме так', { titleField: 'channel' }), TXT('funnelLogic', 'Логіка воронки')] },
 
   /* ===== SMM ===== */
   { id: 'smm_audit', group: 'smm', agent: 'content', title: 'Аудит поточного контенту та конкурентний аналіз контенту', impl: false, claims: false, web: false, brief: ['instagram', 'facebook', 'results', 'works', 'notWorks'], deps: { hard: ['competitors'], soft: [] },
-    desc: 'Аналіз поточних рубрик, форматів, engagement + порівняння з Competitor Intelligence',
-    role: 'Проаналізуй поточний контент клієнта на основі даних парсингу власних акаунтів та брифу. Якщо даних немає — «Немає даних: потрібен доступ/парсинг». Конкурентний аналіз контенту — ЛИШЕ на основі Competitor Intelligence з контексту (без нового аналізу).',
-    sections: [FLD('audit', 'Аудит поточного контенту', 'rubrics:Поточні рубрики|formats:Формати|reels:Reels|stories:Stories|static:Статичний контент|visual:Візуал|engagement:Engagement|cta:CTA|regularity:Регулярність|strengths:Сильні сторони|weaknesses:Слабкі сторони|growth:Точки росту'),
-      FLD('competitorContent', 'Конкурентний аналіз контенту', 'rubrics:Рубрики|reels:Reels|stories:Stories|hooks:Hooks|cta:CTA|visualSystem:Візуальна система|frequency:Частота|mechanics:Engagement mechanics|recurring:Recurring formats|takeaways:Що беремо / чого уникаємо')] },
-  { id: 'smm_sound', group: 'smm', agent: 'content', title: 'Sound Identity / Звукова айдентика', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: [] },
-    desc: 'Музичний характер бренду, Brand Sound Moodboard, правила трендових аудіо',
+    desc: 'Аналіз поточних рубрик, форматів, engagement + порівняння з Аналіз конкурентів',
+    role: 'Проаналізуй поточний контент клієнта на основі даних парсингу власних акаунтів та брифу. Якщо даних немає — «Немає даних: потрібен доступ/парсинг». Конкурентний аналіз контенту — ЛИШЕ на основі Аналіз конкурентів з контексту (без нового аналізу).',
+    sections: [FLD('audit', 'Аудит поточного контенту', 'rubrics:Поточні рубрики|formats:Формати|reels:Reels|stories:Stories|static:Статичний контент|visual:Візуал|engagement:Залучення|cta:CTA|regularity:Регулярність|strengths:Сильні сторони|weaknesses:Слабкі сторони|growth:Точки росту'),
+      FLD('competitorContent', 'Конкурентний аналіз контенту', 'rubrics:Рубрики|reels:Reels|stories:Stories|hooks:Хуки|cta:CTA|visualSystem:Візуальна система|frequency:Частота|mechanics:Механіки залучення|recurring:Повторювані формати|takeaways:Що беремо / чого уникаємо')] },
+  { id: 'smm_sound', group: 'smm', agent: 'content', title: 'Звукова айдентика', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: [] },
+    desc: 'Музичний характер бренду, Звуковий мудборд бренду, правила трендових аудіо',
     role: 'Сформуй звукову айдентику. НЕ вигадуй назви конкретних треків чи виконавців як «факти» — давай жанрові та настроєві референси і пошукові запити для підбору.',
-    sections: [FLD('sound', 'Sound Identity', 'musicChar:Музичний характер бренду|mood:Mood|genres:Жанри|tempo:Темп|emotion:Емоційність|vocal:Тип вокалу|atmosphere:Атмосфера|soundChar:Характер звуку|recurring:Recurring sounds|trendRule:Принцип використання трендових аудіо|useInReels:Яку музику використовувати в Reels|avoid:Яку музику не використовувати'),
-      LIST('moodboard', 'Brand Sound Moodboard', 'direction:Напрямок|description:Опис звучання|useCase:Де використовуємо|searchQueries:Пошукові запити для підбору', { titleField: 'direction', min: 4, max: 8 })] },
-  { id: 'smm_visual', group: 'smm', agent: 'content', title: 'Visual Moodboards', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: ['competitors'] },
+    sections: [FLD('sound', 'Звукова айдентика', 'musicChar:Музичний характер бренду|mood:Настрій|genres:Жанри|tempo:Темп|emotion:Емоційність|vocal:Тип вокалу|atmosphere:Атмосфера|soundChar:Характер звуку|recurring:Повторювані звуки|trendRule:Принцип використання трендових аудіо|useInReels:Яку музику використовувати в Reels|avoid:Яку музику не використовувати'),
+      LIST('moodboard', 'Звуковий мудборд бренду', 'direction:Напрямок|description:Опис звучання|useCase:Де використовуємо|searchQueries:Пошукові запити для підбору', { titleField: 'direction', min: 4, max: 8 })] },
+  { id: 'smm_visual', group: 'smm', agent: 'content', title: 'Візуальні мудборди', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: ['competitors'] },
     desc: 'Візуальна система: кольори, світло, композиція, відеостиль, типографіка',
-    role: 'Сформуй візуальну систему, узгоджену з Brand Platform і Tone of Voice. Референси — як напрямки й пошукові запити, не вигадані посилання.',
-    sections: [FLD('visual', 'Візуальна система', 'colors:Кольори|light:Світло|composition:Композиція|people:Люди|product:Предметна зйомка|video:Відеостиль|editing:Монтаж|typography:Typography|graphics:Graphic elements'), LIST('refs', 'Reference direction', 'direction:Напрямок|description:Опис|searchQueries:Пошукові запити', { titleField: 'direction', min: 3, max: 6 })] },
+    role: 'Сформуй візуальну систему, узгоджену з Платформа бренду і Тон комунікації (ToV). Референси — як напрямки й пошукові запити, не вигадані посилання.',
+    sections: [FLD('visual', 'Візуальна система', 'colors:Кольори|light:Світло|composition:Композиція|people:Люди|product:Предметна зйомка|video:Відеостиль|editing:Монтаж|typography:Типографіка|graphics:Графічні елементи'), LIST('refs', 'Напрям референсів', 'direction:Напрямок|description:Опис|searchQueries:Пошукові запити', { titleField: 'direction', min: 3, max: 6 })] },
   { id: 'smm_rubrics', group: 'smm', agent: 'content', title: 'Рубрикатор постів і Stories', impl: false, brief: [...BK.core], deps: { hard: ['brand', 'valueprop', 'communication', 'audience', 'avatars', 'competitors', 'smm_audit'], soft: [] },
     desc: 'Рубрики для постів і окремо для Stories: задача, сегмент, етап воронки, формат, теми, CTA',
-    role: 'Сформуй рубрикатор постів і окремий рубрикатор Stories. Кожна рубрика привʼязана до сегмента (segmentId/назва з контексту) та етапу воронки. Tone of Voice, Big Idea — з контексту без змін.',
+    role: 'Сформуй рубрикатор постів і окремий рубрикатор Stories. Кожна рубрика привʼязана до сегмента (segmentId/назва з контексту) та етапу воронки. Тон комунікації (ToV), Велика ідея — з контексту без змін.',
     sections: [LIST('posts', 'Рубрикатор постів', 'name:Назва рубрики|goal:Задача|segment:Сегмент ЦА|stage:Етап воронки|format:Формат|topics:Теми|cta:CTA|examples:Приклади', { titleField: 'name', min: 5, max: 9 }), LIST('stories', 'Рубрикатор Stories', 'name:Назва рубрики|goal:Задача|segment:Сегмент ЦА|stage:Етап воронки|format:Формат (стікери, опитування…)|topics:Теми|cta:CTA|examples:Приклади', { titleField: 'name', min: 4, max: 8 }), FLD('cadence', 'Частота та ритм', 'posts:Пости на тиждень|reels:Reels на тиждень|stories:Stories на день|logic:Логіка розподілу')] },
   { id: 'smm_examples', group: 'smm', agent: 'content', title: 'Приклади контенту', impl: false, brief: [], deps: { hard: ['smm_rubrics'], soft: [] },
     desc: 'Конкретні приклади реалізації стратегії',
     role: 'Створи 8–12 конкретних прикладів контенту по рубриках із рубрикатора: готовий hook, концепція, текст/сценарій, візуал, CTA.',
-    sections: [LIST('examples', 'Приклади контенту', 'rubric:Рубрика|format:Формат|hook:Hook|concept:Концепція|copy:Текст / сценарій|visual:Візуал|cta:CTA|segment:Сегмент', { titleField: 'hook', min: 8, max: 12 })] },
+    sections: [LIST('examples', 'Приклади контенту', 'rubric:Рубрика|format:Формат|hook:Хук|concept:Концепція|copy:Текст / сценарій|visual:Візуал|cta:CTA|segment:Сегмент', { titleField: 'hook', min: 8, max: 12 })] },
   { id: 'smm_contests', group: 'smm', agent: 'content', title: 'Конкурси та активації', impl: false, brief: ['budget', 'goals'], deps: { hard: ['brand', 'audience'], soft: ['smm_rubrics'] },
     desc: 'Механіки залучення: задача, умови, канал, CTA, очікувана дія',
     role: 'Запропонуй 3–5 механік. Враховуй правила платформ (не вимагай заборонених дій) і бюджет із брифу.',
@@ -311,40 +329,40 @@ CFG.MODULES = [
   { id: 'meta_audit', group: 'meta', agent: 'meta', title: 'Meta · Первинний аудит', impl: false, brief: ['results', 'budget', 'works', 'notWorks', 'channels'], deps: { hard: [], soft: [] },
     desc: 'Чекліст первинного аудиту (Business Manager, Pixel, CAPI, кампанії, аудиторії, креативи, tracking)',
     role: 'AI не бачить рекламний кабінет. Для кожного пункту: що відомо з брифу (client_data), що НЕ відомо, і що конкретно перевірити в кабінеті. Не вигадуй стан Pixel/CAPI/кампаній.',
-    sections: [FLD('audit', 'Первинний аудит', 'bm:Business Manager|pixel:Pixel|capi:CAPI|account:Рекламний акаунт|campaigns:Кампанії|audiences:Аудиторії|creatives:Креативи|results:Результати|analytics:Аналітика|funnel:Воронка|tracking:Tracking')] },
+    sections: [FLD('audit', 'Первинний аудит', 'bm:Business Manager|pixel:Pixel|capi:CAPI|account:Рекламний акаунт|campaigns:Кампанії|audiences:Аудиторії|creatives:Креативи|results:Результати|analytics:Аналітика|funnel:Воронка|tracking:Відстеження')] },
   { id: 'meta_audience', group: 'meta', agent: 'meta', title: 'Meta · Адаптація аудиторій', impl: false, brief: [], deps: { hard: ['audience', 'valueprop', 'communication'], soft: ['avatars'] },
-    desc: 'Marketing Segment → Meta Audience → Message → Offer → Creative Angle',
-    role: 'НЕ створюй сегменти заново. Для кожного сегмента з Audience Intelligence визнач, як його знайти в Meta (interest/behavior/lookalike/custom — як гіпотези для тестування), і привʼяжи Message/Offer/Creative Angle з контексту.',
-    sections: [LIST('adapt', 'Адаптація сегментів для Meta', 'segmentId:Сегмент (ID)|metaAudience:Meta Audience|targeting:Targeting-гіпотези|message:Message|offer:Offer|angle:Creative Angle', { titleField: 'segmentId', ref: 'segmentId' })] },
-  { id: 'meta_strategy', group: 'meta', agent: 'meta', title: 'Meta · Facebook / Instagram Ads Strategy', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'competitors', 'valueprop', 'communication', 'smm_rubrics', 'architectB', 'meta_audience'], soft: ['meta_audit'] },
+    desc: 'Маркетинговий сегмент → Аудиторія в Meta → Message → Offer → Креативний кут',
+    role: 'НЕ створюй сегменти заново. Для кожного сегмента з аналізу аудиторії визнач, як його знайти в Meta (interest/behavior/lookalike/custom — як гіпотези для тестування), і привʼяжи Message/Offer/Креативний кут з контексту.',
+    sections: [LIST('adapt', 'Адаптація сегментів для Meta', 'segmentId:Сегмент (ID)|metaAudience:Аудиторія в Meta|targeting:Гіпотези таргетингу|message:Повідомлення|offer:Оффер|angle:Креативний кут', { titleField: 'segmentId', ref: 'segmentId' })] },
+  { id: 'meta_strategy', group: 'meta', agent: 'meta', title: 'Meta · Рекламна стратегія Facebook / Instagram', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'competitors', 'valueprop', 'communication', 'smm_rubrics', 'architectB', 'meta_audience'], soft: ['meta_audit'] },
     desc: 'Роль Meta Ads, цілі, воронка: acquisition, warm, retargeting, conversion, retention',
-    role: 'Роль Meta Ads береш з ролей каналів (Architect B). Використай висновки Competitor Intelligence (розширення Meta). Бюджет — тільки з брифу, інакше «Немає даних».',
+    role: 'Роль Meta Ads береш з ролей каналів (Архітектор B). Використай висновки аналізу конкурентів (розширення Meta). Бюджет — тільки з брифу, інакше «Немає даних».',
     sections: [FLD('role', 'Роль і цілі', 'role:Роль Meta Ads|objectives:Рекламні цілі|budgetLogic:Логіка розподілу бюджету'), LIST('funnel', 'Funnel', 'stage:Етап (acquisition / warm / retargeting / conversion / retention)|goal:Ціль|audience:Аудиторії|structure:Структура кампаній|kpi:KPI', { titleField: 'stage' })] },
   { id: 'meta_launch', group: 'meta', agent: 'meta', title: 'Meta · План запуску', impl: false, brief: ['budget'], deps: { hard: ['meta_strategy'], soft: [] },
     desc: 'Поетапний launch plan',
     role: 'Створи поетапний launch plan (3–5 етапів).',
-    sections: [LIST('stages', 'План запуску', 'stage:Етап|goal:Ціль|audience:Аудиторія|offer:Офер|message:Message|creative:Creative|landing:Landing|action:Expected Action|kpi:KPI', { titleField: 'stage' })] },
-  { id: 'meta_creative', group: 'meta', agent: 'meta', title: 'Meta · Communication & Creative Strategy', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['meta_strategy', 'communication'], soft: ['smm_visual'] },
+    sections: [LIST('stages', 'План запуску', 'stage:Етап|goal:Ціль|audience:Аудиторія|offer:Офер|message:Повідомлення|creative:Креатив|landing:Посадкова|action:Очікувана дія|kpi:KPI', { titleField: 'stage' })] },
+  { id: 'meta_creative', group: 'meta', agent: 'meta', title: 'Meta · Комунікація та креативна стратегія', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['meta_strategy', 'communication'], soft: ['smm_visual'] },
     desc: 'Формати креативів: Format → Hook → Message → Offer → CTA; референси',
     role: 'Для кожного релевантного формату (Static, Carousel, Dynamic, Catalog, Reels Ads, Stories Ads, UGC, Video) дай Format → Hook → Message → Offer → CTA. Нерелевантні формати (наприклад Catalog без каталогу) познач у полі relevant як «Ні» з причиною.',
-    sections: [LIST('formats', 'Формати креативів', 'format:Формат|relevant:Релевантність (Так/Ні + чому)|hook:Hook|message:Message|offer:Offer|cta:CTA', { titleField: 'format' }), { key: 'refs', title: 'Creative References (зберігаються вручну)', kind: 'refs', manual: true }] },
+    sections: [LIST('formats', 'Формати креативів', 'format:Формат|relevant:Релевантність (Так/Ні + чому)|hook:Хук|message:Повідомлення|offer:Оффер|cta:CTA', { titleField: 'format' }), { key: 'refs', title: 'Креативні референси (зберігаються вручну)', kind: 'refs', manual: true }] },
 
   /* ===== TIKTOK ORGANIC ===== */
-  { id: 'tt_org', group: 'tiktok', agent: 'tiktok', title: 'TikTok Organic Strategy', impl: false, brief: ['tiktok', 'budget', 'goals'], deps: { hard: ['audience', 'communication', 'valueprop', 'competitors', 'architectB'], soft: ['smm_rubrics'] },
+  { id: 'tt_org', group: 'tiktok', agent: 'tiktok', title: 'Органічна стратегія TikTok', impl: false, brief: ['tiktok', 'budget', 'goals'], deps: { hard: ['audience', 'communication', 'valueprop', 'competitors', 'architectB'], soft: ['smm_rubrics'] },
     desc: 'Native-контент, hooks, серійність, механіки росту — не копія Instagram',
     role: 'Побудуй TikTok-стратегію як самостійну систему, що НЕ дублює SMM/Instagram-рубрикатор (він у контексті — уникай копіювання). Сегменти лише адаптуй.',
-    sections: [FLD('role', 'Роль і цілі', 'role:Роль TikTok|goals:Цілі|behavior:Поведінка аудиторії в TikTok'), LIST('adapt', 'Адаптація Audience Intelligence', 'segmentId:Сегмент (ID)|tiktokBehavior:Як цей сегмент поводиться в TikTok|angle:Кут', { titleField: 'segmentId', ref: 'segmentId' }), LIST('pillars', 'Content pillars', 'name:Pillar|purpose:Задача|native:Native-підхід|hooks:Hooks|formats:Формати', { titleField: 'name' }), FLD('formats', 'Формати та сторітелінг', 'storytelling:Storytelling|trends:Трендові механіки|recurring:Recurring formats|creator:Creator-style контент|series:Серійний контент'), FLD('growth', 'Зростання', 'frequency:Частота|growth:Механіки росту|community:Community|cta:CTA|kpi:KPI'), LIST('examples', 'Приклади контенту', 'pillar:Pillar|hook:Hook|concept:Сценарій / концепція|cta:CTA', { titleField: 'hook', min: 6, max: 10 })] },
+    sections: [FLD('role', 'Роль і цілі', 'role:Роль TikTok|goals:Цілі|behavior:Поведінка аудиторії в TikTok'), LIST('adapt', 'Адаптація Аналіз аудиторії', 'segmentId:Сегмент (ID)|tiktokBehavior:Як цей сегмент поводиться в TikTok|angle:Кут', { titleField: 'segmentId', ref: 'segmentId' }), LIST('pillars', 'Контентні стовпи', 'name:Стовп|purpose:Задача|native:Нативний підхід|hooks:Хуки|formats:Формати', { titleField: 'name' }), FLD('formats', 'Формати та сторітелінг', 'storytelling:Сторітелінг|trends:Трендові механіки|recurring:Повторювані формати|creator:Контент у стилі креаторів|series:Серійний контент'), FLD('growth', 'Зростання', 'frequency:Частота|growth:Механіки росту|community:Спільнота|cta:CTA|kpi:KPI'), LIST('examples', 'Приклади контенту', 'pillar:Стовп|hook:Хук|concept:Сценарій / концепція|cta:CTA', { titleField: 'hook', min: 6, max: 10 })] },
 
   /* ===== TIKTOK ADS ===== */
   { id: 'tta_strategy', group: 'ttads', agent: 'ttads', title: 'TikTok Ads · Стратегія', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'valueprop', 'communication', 'competitors', 'architectB'], soft: ['tt_org'] },
     desc: 'Аудит, роль, воронка, аудиторії, структура кампаній, тестування, KPI, бюджет',
     role: 'Побудуй стратегію TikTok Ads. Бюджет тільки з брифу («Немає даних» — якщо не вказано).',
-    sections: [FLD('audit', 'Аудит', 'state:Поточний стан (з брифу)|toCheck:Що перевірити в кабінеті'), FLD('role', 'Роль та воронка', 'role:Роль TikTok Ads|funnel:Рекламна воронка'), LIST('audiences', 'Адаптація сегментів і аудиторії', 'segmentId:Сегмент (ID)|audience:Audience|offer:Offer', { titleField: 'segmentId', ref: 'segmentId' }), FLD('structure', 'Структура та тестування', 'campaigns:Структура кампаній|retargeting:Ретаргетинг|testing:Testing framework|kpi:KPI|budget:Бюджет')] },
+    sections: [FLD('audit', 'Аудит', 'state:Поточний стан (з брифу)|toCheck:Що перевірити в кабінеті'), FLD('role', 'Роль та воронка', 'role:Роль TikTok Ads|funnel:Рекламна воронка'), LIST('audiences', 'Адаптація сегментів і аудиторії', 'segmentId:Сегмент (ID)|audience:Аудиторія|offer:Оффер', { titleField: 'segmentId', ref: 'segmentId' }), FLD('structure', 'Структура та тестування', 'campaigns:Структура кампаній|retargeting:Ретаргетинг|testing:Схема тестування|kpi:KPI|budget:Бюджет')] },
   { id: 'tta_creative', group: 'ttads', agent: 'ttads', title: 'TikTok Ads · Креатив', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['tta_strategy', 'communication'], soft: [] },
-    desc: 'Creative angles, hooks, UGC та creator-style ads, сценарії, референси',
-    role: 'Сформуй креативну систему: angles, hooks, UGC-концепції, creator-style ads і сценарії. Tone of Voice — з контексту.',
-    sections: [LIST('angles', 'Creative angles', 'angle:Angle|segment:Сегмент|hook:Hook|ugc:UGC-концепція|creatorStyle:Creator-style|offer:Offer', { titleField: 'angle', min: 5, max: 8 }), LIST('scripts', 'Сценарії', 'title:Назва|length:Тривалість|script:Сценарій по кадрах|cta:CTA', { titleField: 'title', min: 3, max: 6 }), { key: 'refs', title: 'Creative References (зберігаються вручну)', kind: 'refs', manual: true }] },
-  { id: 'tt_synergy', group: 'ttads', agent: 'ttads', title: 'Синергія TikTok Organic × TikTok Ads', impl: false, brief: [], deps: { hard: ['tt_org', 'tta_strategy'], soft: [] },
+    desc: 'Креативні кути, hooks, UGC та creator-style ads, сценарії, референси',
+    role: 'Сформуй креативну систему: angles, hooks, UGC-концепції, creator-style ads і сценарії. Тон комунікації (ToV) — з контексту.',
+    sections: [LIST('angles', 'Креативні кути', 'angle:Кут|segment:Сегмент|hook:Хук|ugc:Концепція UGC|creatorStyle:У стилі креаторів|offer:Оффер', { titleField: 'angle', min: 5, max: 8 }), LIST('scripts', 'Сценарії', 'title:Назва|length:Тривалість|script:Сценарій по кадрах|cta:CTA', { titleField: 'title', min: 3, max: 6 }), { key: 'refs', title: 'Креативні референси (зберігаються вручну)', kind: 'refs', manual: true }] },
+  { id: 'tt_synergy', group: 'ttads', agent: 'ttads', title: 'Синергія органіки та реклами TikTok', impl: false, brief: [], deps: { hard: ['tt_org', 'tta_strategy'], soft: [] },
     desc: 'Як органіка живить рекламу і навпаки',
     role: 'Опиши синергію двох стратегій з контексту (не створюй нових): як органічний контент, що спрацював, стає рекламою; спільні креатори; цикл тестування; конфлікти.',
     sections: [FLD('syn', 'Синергія', 'flow:Органіка → Реклама|reverse:Реклама → Органіка|creators:Спільні креатори / формати|testing:Цикл тестування|conflicts:Конфлікти й ризики|actions:Що робимо')] },
@@ -353,25 +371,25 @@ CFG.MODULES = [
   { id: 'g_audit', group: 'google', agent: 'google', title: 'Google Ads · Аудит', impl: false, brief: ['site', 'results', 'budget', 'channels'], deps: { hard: [], soft: [] },
     desc: 'Первинний аудит (з брифу) та що перевірити в акаунті',
     role: 'AI не бачить акаунт. Що відомо з брифу, чого не відомо, що перевірити (конверсії, кампанії, пошукові запити, landing).',
-    sections: [FLD('audit', 'Аудит', 'state:Що відомо з брифу|unknown:Чого не відомо|toCheck:Що перевірити|tracking:Conversion tracking')] },
-  { id: 'g_intent', group: 'google', agent: 'google', title: 'Google Ads · Search Intent і попит', web: true, impl: false, brief: [...BK.core], deps: { hard: ['audience', 'valueprop', 'competitors'], soft: ['g_audit'] },
+    sections: [FLD('audit', 'Аудит', 'state:Що відомо з брифу|unknown:Чого не відомо|toCheck:Що перевірити|tracking:Відстеження конверсій')] },
+  { id: 'g_intent', group: 'google', agent: 'google', title: 'Google Ads · Пошуковий намір і попит', web: true, impl: false, brief: [...BK.core], deps: { hard: ['audience', 'valueprop', 'competitors'], soft: ['g_audit'] },
     desc: 'Роль Google Ads, пошуковий намір, категорії попиту, brand / non-brand',
     role: 'Побудуй карту пошукового наміру для цього бізнесу. Не вигадуй обсяги пошуку та CPC — можеш назвати ЛИШЕ якщо є джерело; інакше вказуй, що обсяги потрібно перевірити в Keyword Planner.',
-    sections: [FLD('role', 'Роль', 'role:Роль Google Ads|demand:Демандні категорії'), LIST('intents', 'Search Intent', 'intent:Намір|examples:Приклади запитів (гіпотези)|segment:Сегмент|stage:Етап|offer:Офер', { titleField: 'intent' }), FLD('brandSplit', 'Brand vs Non-brand', 'brand:Brand Search|nonBrand:Non-brand Search')] },
+    sections: [FLD('role', 'Роль', 'role:Роль Google Ads|demand:Демандні категорії'), LIST('intents', 'Пошуковий намір', 'intent:Намір|examples:Приклади запитів (гіпотези)|segment:Сегмент|stage:Етап|offer:Офер', { titleField: 'intent' }), FLD('brandSplit', 'Брендові та небрендові запити', 'brand:Брендовий пошук|nonBrand:Небрендовий пошук')] },
   { id: 'g_structure', group: 'google', agent: 'google', title: 'Google Ads · Структура, KPI, бюджет', impl: false, brief: ['budget', 'bizModel', 'site', 'mainGoal', 'avgCheck'], deps: { hard: ['g_intent', 'valueprop', 'communication'], soft: [] },
     desc: 'Структура кампаній, Search, PMax (за потреби), Shopping (для e-commerce), remarketing, tracking',
     role: 'Shopping та Performance Max НЕ обовʼязкові: спочатку дай вердикт релевантності з обґрунтуванням за бізнес-моделлю; план — тільки якщо релевантно. Бюджет — тільки з брифу.',
-    sections: [FLD('structure', 'Структура кампаній', 'structure:Структура кампаній|search:Search|remarketing:Remarketing|landings:Landing pages|offers:Офери'), FLD('pmax', 'Performance Max (якщо релевантно)', 'relevance:Релевантність (Так/Ні + чому)|plan:План (якщо релевантно)'), FLD('shopping', 'Shopping (e-commerce)', 'plan:План Shopping|feed:Вимоги до фіду', { ext: true }), FLD('tracking', 'Tracking, KPI, бюджет', 'tracking:Conversion tracking|kpi:KPI|budget:Бюджет')] },
+    sections: [FLD('structure', 'Структура кампаній', 'structure:Структура кампаній|search:Пошук|remarketing:Ремаркетинг|landings:Посадкові сторінки|offers:Офери'), FLD('pmax', 'Performance Max (якщо доречно)', 'relevance:Релевантність (Так/Ні + чому)|plan:План (якщо релевантно)'), FLD('shopping', 'Shopping (інтернет-магазин)', 'plan:План Shopping|feed:Вимоги до фіду', { ext: true }), FLD('tracking', 'Tracking, KPI, бюджет', 'tracking:Відстеження конверсій|kpi:KPI|budget:Бюджет')] },
 
   /* ===== CROSS-CHANNEL ===== */
-  { id: 'cross_funnel', group: 'cross', agent: 'cross', title: 'Cross-channel Funnel', impl: false, svcSig: true, brief: [], deps: { hard: ['architectB', 'smm_rubrics', 'meta_strategy', 'tt_org', 'tta_strategy', 'g_structure'], soft: [] },
+  { id: 'cross_funnel', group: 'cross', agent: 'cross', title: 'Кросканальна воронка', impl: false, svcSig: true, brief: [], deps: { hard: ['architectB', 'smm_rubrics', 'meta_strategy', 'tt_org', 'tta_strategy', 'g_structure'], soft: [] },
     desc: 'Єдина міжканальна воронка: роль кожного каналу',
     role: 'Збери воронку з ролей каналів та зафіксованих стратегій. Кожен вузол — активний канал із контексту. Опиши передачу між етапами.',
-    sections: [LIST('nodes', 'Cross-channel Funnel', 'order:№|stage:Етап|channel:Канал|role:Роль|entry:Вхід (звідки приходить)|handoff:Передача далі|kpi:KPI', { titleField: 'stage' }), TXT('logic', 'Логіка воронки')] },
-  { id: 'synergy_paid', group: 'cross', agent: 'synergy', title: 'Синергія Content × Paid Media', impl: false, svcSig: true, brief: [], deps: { hard: ['smm_rubrics', 'communication', 'meta_strategy', 'tta_strategy', 'g_structure'], soft: ['tt_org'] },
+    sections: [LIST('nodes', 'Кросканальна воронка', 'order:№|stage:Етап|channel:Канал|role:Роль|entry:Вхід (звідки приходить)|handoff:Передача далі|kpi:KPI', { titleField: 'stage' }), TXT('logic', 'Логіка воронки')] },
+  { id: 'synergy_paid', group: 'cross', agent: 'synergy', title: 'Синергія контенту та платного трафіку', impl: false, svcSig: true, brief: [], deps: { hard: ['smm_rubrics', 'communication', 'meta_strategy', 'tta_strategy', 'g_structure'], soft: ['tt_org'] },
     desc: 'Перевірка: контент підтримує рекламні меседжі, офери, прогрів, social proof, retargeting',
     role: 'Перевір, чи стратегія — єдина екосистема. Для КОЖНОЇ перевірки дай вердикт (ok/warn/conflict), проблему та виправлення. Не генеруй нову стратегію.',
-    sections: [LIST('checks', 'Перевірки', 'check:Перевірка|verdict:Вердикт (ok / warn / conflict)|problem:Що не так / чому ok|fix:Що виправити', { titleField: 'check', fixedChecks: ['Органічний контент підтримує рекламні меседжі', 'Сегменти визначені однаково в контенті та рекламі', 'Немає суперечностей між Tone of Voice і рекламою', 'Контент підтримує рекламні офери', 'Є контент для прогріву', 'Є контент для social proof', 'Є контент для retargeting'] })] },
+    sections: [LIST('checks', 'Перевірки', 'check:Перевірка|verdict:Вердикт (ok / warn / conflict)|problem:Що не так / чому ok|fix:Що виправити', { titleField: 'check', fixedChecks: ['Органічний контент підтримує рекламні меседжі', 'Сегменти визначені однаково в контенті та рекламі', 'Немає суперечностей між Тон комунікації (ToV) і рекламою', 'Контент підтримує рекламні офери', 'Є контент для прогріву', 'Є контент для social proof', 'Є контент для retargeting'] })] },
 ];
 CFG.M = Object.fromEntries(CFG.MODULES.map(m => [m.id, m]));
 
@@ -405,7 +423,7 @@ CFG.RECOMMENDED_COMPETITORS = 4;
 /* ---------- Кроки flow ---------- */
 CFG.STEPS = [
   { n: 1, id: 'overview', label: 'Проєкт' }, { n: 2, id: 'brief', label: 'Бриф' }, { n: 3, id: 'services', label: 'Послуги' },
-  { n: 4, id: 'structure', label: 'Структура стратегії' }, { n: 5, id: 'research', label: 'AI Research' }, { n: 6, id: 'insights', label: 'Стратегічні висновки' },
+  { n: 4, id: 'structure', label: 'Структура стратегії' }, { n: 5, id: 'research', label: 'AI-дослідження' }, { n: 6, id: 'insights', label: 'Стратегічні висновки' },
   { n: 7, id: 'generate', label: 'Генерація стратегії' }, { n: 8, id: 'qa', label: 'QA-перевірка' }, { n: 9, id: 'final', label: 'Фінальна стратегія' },
 ];
 
@@ -417,10 +435,10 @@ CFG.EXPORTERS = [
   { id: 'gdocs_api', label: 'Google Docs (пряма інтеграція)', ready: false }, { id: 'notion_api', label: 'Notion (пряма інтеграція)', ready: false },
 ];
 
-/* ---------- Фрази-маркери «generic AI» для Strategy Reviewer ---------- */
+/* ---------- Фрази-маркери «generic AI» для Рецензент стратегії ---------- */
 CFG.GENERIC = [/створюва(ти|ємо) якісн\S* контент/i, /підвищ(увати|ити|ення) впізнаваність/i, /бути ближч\S* до аудиторії/i, /ефективн\S* комунікаці/i, /унікальн\S* контент/i, /залучати цільову аудиторію/i, /побудува(ти|ння) довіри/i, /індивідуальн\S* підхід/i, /цікав\S* та корисн\S* контент/i, /лояльн\S* спільнот/i, /комплексн\S* підхід/i];
 /* =====================================================================
-   CORE: стан, Rule Engine, залежності, Project Context, AI-агенти, QA, Final, Export
+   CORE: стан, Рушій правил, залежності, Контекст проєкту, AI-агенти, QA, Final, Export
    ===================================================================== */
 const S = { view: 'projects', pid: null, page: 'overview', project: null, rev: 0, projects: [], status: {}, user: '', dirty: false, saving: false, conflict: null, lib: [], prompts: {}, ui: { open: {}, edit: {}, tab: {}, instr: {}, cm: {} } };
 const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch { } } };
@@ -451,7 +469,7 @@ function newProject(name, client) {
 }
 function logEv(p, text) { p.log.unshift({ at: nowIso(), by: S.user || '—', text }); if (p.log.length > 200) p.log.length = 200; }
 
-/* ---------- Rule Engine ---------- */
+/* ---------- Рушій правил ---------- */
 let _rc = { k: '', v: null };
 function ctxOf(p) { const svc = new Set(p.services); const channels = new Set(CFG.SERVICES.filter(s => svc.has(s.id)).map(s => s.channel)); return { svc, channels, brief: p.brief || {} }; }
 function resolveRules(p) {
@@ -605,7 +623,7 @@ function nextActions(p) {
   return a.sort((x, y) => x.pr - y.pr).slice(0, 8);
 }
 
-/* ---------- Project Context ---------- */
+/* ---------- Контекст проєкту ---------- */
 function briefObj(p) {
   const o = {}; CFG.BRIEF.forEach(s => s.fields.forEach(f => { const v = p.brief[f.k]; if (Array.isArray(v) ? v.length : String(v || '').trim()) o[f.l] = Array.isArray(v) ? v.join(', ') : v; }));
   if (p.brief.bizModel) { const f = briefFlat().find(x => x.k === 'bizModel'); const hit = f.o.find(x => x[0] === p.brief.bizModel); if (hit) o['Бізнес-модель'] = hit[1]; }
@@ -641,7 +659,7 @@ function buildContext(p, id) {
   parts.push('## АКТИВНІ ПОСЛУГИ ТА КАНАЛИ\nПослуги: ' + svc.join(', ') + '\nКанали (тільки ці): ' + ch.join('; '));
   const comps = competitorsOf(p); if (comps.length) parts.push('## КОНКУРЕНТИ З БРИФУ (аналізуй ТІЛЬКИ їх)\n' + JSON.stringify(comps.map(c => ({ name: c.name, site: c.site, instagram: c.instagram, facebook: c.facebook, tiktok: c.tiktok, comment: c.comment }))));
   const pc = parsedContext(p, id); if (pc) parts.push(pc);
-  const lc = lockedContext(p, id); parts.push('## ЗАФІКСОВАНІ РЕЗУЛЬТАТИ ПОПЕРЕДНІХ МОДУЛІВ (Project Context — використовуй як є, не змінюй)\n' + (lc || '(поки немає)'));
+  const lc = lockedContext(p, id); parts.push('## ЗАФІКСОВАНІ РЕЗУЛЬТАТИ ПОПЕРЕДНІХ МОДУЛІВ (Контекст проєкту — використовуй як є, не змінюй)\n' + (lc || '(поки немає)'));
   const srcs = p.sources.slice(0, 40).map(s => `- ${s.url} — ${s.title || ''} (${s.date || ''})`).join('\n'); if (srcs) parts.push('## ВІДОМІ ДЖЕРЕЛА\n' + srcs);
   const lib = libraryContext(p, id); if (lib) parts.push(lib);
   const m = p.modules[id]; const cm = (m ? m.comments : []).filter(c => !c.resolved && c.forAi !== false).map(c => '- ' + c.text); if (cm.length) parts.push('## КОМЕНТАРІ PM ДО ЦЬОГО МОДУЛЯ (обовʼязково врахуй)\n' + cm.join('\n'));
@@ -654,7 +672,7 @@ function schemaExample(p, id, only) {
     let data;
     if (s.kind === 'text') data = '<текст>';
     else if (s.kind === 'fields') { data = {}; s.fields.forEach(f => data[f.k] = '<' + f.l + '>'); }
-    else { const it = {}; s.fields.forEach(f => it[f.k] = '<' + f.l + '>'); data = [it]; hints.push(`- "${s.key}" («${s.title}»): масив об'єктів${s.min ? `, ${s.min}–${s.max} елементів` : ''}.` + (s.competitorRows ? ' По одному запису на КОЖНОГО конкурента з брифу: ' + competitorsOf(p).map(c => c.name).join('; ') + '. Поле name — точно як у брифі.' : '') + (s.ref ? ` Поле ${s.ref} — ID існуючого сегмента з Audience Intelligence (S1, S2…).` : '') + (s.fixedChecks ? ' Рівно ці перевірки: ' + s.fixedChecks.map(x => '«' + x + '»').join('; ') + '.' : '')); }
+    else { const it = {}; s.fields.forEach(f => it[f.k] = '<' + f.l + '>'); data = [it]; hints.push(`- "${s.key}" («${s.title}»): масив об'єктів${s.min ? `, ${s.min}–${s.max} елементів` : ''}.` + (s.competitorRows ? ' По одному запису на КОЖНОГО конкурента з брифу: ' + competitorsOf(p).map(c => c.name).join('; ') + '. Поле name — точно як у брифі.' : '') + (s.ref ? ` Поле ${s.ref} — ID існуючого сегмента з аналізу аудиторії (S1, S2…).` : '') + (s.fixedChecks ? ' Рівно ці перевірки: ' + s.fixedChecks.map(x => '«' + x + '»').join('; ') + '.' : '')); }
     const o = { data }; if (def.impl) o.implication = { learned: '<Що ми дізналися>', why: '<Чому це важливо>', impact: '<Як це впливає на стратегію>', action: '<Що конкретно ми робимо>' };
     if (def.claims) o.claims = [{ text: '<ключове твердження>', type: 'client_data|external_research|ai_inference|ai_hypothesis', source: '<URL або null>' }];
     sch.sections[s.key] = o;
@@ -788,7 +806,7 @@ function resumeJobs() {
 function setState(id, st) {
   const p = S.project; const m = ensureMod(p, id);
   if (st === 'locked') { const w = warningsOf(m).length; if (w && !confirm('У модулі є попередження (' + w + '). Зафіксувати все одно?')) return; }
-  m.state = st; m.hist.unshift({ at: nowIso(), by: S.user, text: { accepted: 'Прийнято', locked: 'Зафіксовано — тепер частина Project Context', draft: 'Повернуто в чернетку' }[st] });
+  m.state = st; m.hist.unshift({ at: nowIso(), by: S.user, text: { accepted: 'Прийнято', locked: 'Зафіксовано — тепер частина Контекст проєкту', draft: 'Повернуто в чернетку' }[st] });
   logEv(p, `«${titleOf(p, id)}»: ${STATE_LABEL[st].toLowerCase()}`); touch(STATE_LABEL[st] + ': ' + titleOf(p, id)); render();
 }
 function editField(id, secKey, idx, field, val) {
@@ -863,20 +881,20 @@ function qaProgrammatic(p) {
     const st = statusOf(p, x.id);
     if (!hasOutput(p.modules[x.id])) add('consistency', x.level === 'mandatory' ? 'conflict' : 'warn', x.id, `«${x.title}» не запущено`, 'Запустіть модуль або приховайте, якщо він не обовʼязковий');
     else if (st.k === 'stale') add('consistency', 'conflict', x.id, `«${x.title}» застарів: ${st.reasons.join('; ')}`, 'Перегенеруйте або підтвердіть актуальність');
-    else if (p.modules[x.id].state !== 'locked') add('consistency', 'warn', x.id, `«${x.title}» не зафіксовано — не потрапить у Final Strategy`, 'Перевірте та зафіксуйте');
+    else if (p.modules[x.id].state !== 'locked') add('consistency', 'warn', x.id, `«${x.title}» не зафіксовано — не потрапить у Фінальна стратегія`, 'Перевірте та зафіксуйте');
   });
   const seg = segmentIds(p);
   const av = p.modules.avatars && p.modules.avatars.sections.avatars; if (av) { const used = new Set(av.data.map(a => a.segmentId));
     av.data.filter(a => !seg.includes(a.segmentId)).forEach(a => add('consistency', 'conflict', 'avatars', `Аватар «${a.name}» посилається на неіснуючий сегмент «${a.segmentId}»`, 'Перегенеруйте аватари з актуальних сегментів'));
     seg.filter(s => !used.has(s)).forEach(s => add('consistency', 'warn', 'avatars', `Сегмент ${s} не має аватара`, 'Додайте аватар для сегмента')); }
-  [['meta_audience', 'adapt', 'Meta'], ['tt_org', 'adapt', 'TikTok'], ['tta_strategy', 'audiences', 'TikTok Ads']].forEach(([mid, sk, nm]) => { const sc = p.modules[mid] && p.modules[mid].sections[sk]; if (sc && seg.length) { const used = sc.data.map(a => a.segmentId); const un = seg.filter(s => !used.includes(s)); if (un.length) add('consistency', 'warn', mid, `${nm}: не адаптовано сегменти ${un.join(', ')} — аудиторія в каналах не збігається з Audience Intelligence`, 'Додайте адаптацію або поясніть, чому сегмент не використовується'); else add('consistency', 'ok', mid, `${nm}: усі сегменти з Audience Intelligence адаптовано`, ''); } });
+  [['meta_audience', 'adapt', 'Meta'], ['tt_org', 'adapt', 'TikTok'], ['tta_strategy', 'audiences', 'TikTok Ads']].forEach(([mid, sk, nm]) => { const sc = p.modules[mid] && p.modules[mid].sections[sk]; if (sc && seg.length) { const used = sc.data.map(a => a.segmentId); const un = seg.filter(s => !used.includes(s)); if (un.length) add('consistency', 'warn', mid, `${nm}: не адаптовано сегменти ${un.join(', ')} — аудиторія в каналах не збігається з аналізу аудиторії`, 'Додайте адаптацію або поясніть, чому сегмент не використовується'); else add('consistency', 'ok', mid, `${nm}: усі сегменти з аналізу аудиторії адаптовано`, ''); } });
   const roles = p.modules.architectB && p.modules.architectB.sections.roles; const cf = p.modules.cross_funnel && p.modules.cross_funnel.sections.nodes;
   const rx = { smm: /instagram|facebook|smm|контент/i, meta: /meta/i, google: /google/i, tiktok: /tiktok|тікток|тік-ток/i, tta: /tiktok|тікток/i };
-  if (cf) [...ctxOf(p).channels].forEach(c => { const txt = JSON.stringify(cf.data); if (!rx[c].test(txt)) add('funnel', 'conflict', 'cross_funnel', `У Cross-channel Funnel немає каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Перегенеруйте воронку'); });
-  if (roles) [...ctxOf(p).channels].forEach(c => { if (!rx[c].test(JSON.stringify(roles.data))) add('funnel', 'warn', 'architectB', `Не визначено роль каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Оновіть Architect B'); });
+  if (cf) [...ctxOf(p).channels].forEach(c => { const txt = JSON.stringify(cf.data); if (!rx[c].test(txt)) add('funnel', 'conflict', 'cross_funnel', `У Кросканальна воронка немає каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Перегенеруйте воронку'); });
+  if (roles) [...ctxOf(p).channels].forEach(c => { if (!rx[c].test(JSON.stringify(roles.data))) add('funnel', 'warn', 'architectB', `Не визначено роль каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Оновіть Архітектора B'); });
   let hyp = 0, tot = 0; includedList(p).filter(x => x.def && p.modules[x.id]).forEach(x => { let h = 0, t = 0; Object.values(p.modules[x.id].sections).forEach(s => (s.claims || []).forEach(c => { t++; if (c.type === 'ai_hypothesis') h++; })); tot += t; hyp += h;
-    if (t >= 4 && h / t > .5) add('evidence', 'warn', x.id, `«${x.title}»: ${h} із ${t} тверджень — гіпотези без підтвердження`, 'Додайте джерела (Research Hub → Джерела) або позначте рішення як тест'); });
-  if (tot) add('evidence', hyp / tot > .4 ? 'warn' : 'ok', '', `Твердження в стратегії: ${tot - hyp} підкріплено / ${hyp} гіпотез (гіпотези не подаються як факти у Final)`, hyp / tot > .4 ? 'Збільште частку підкріплених тверджень' : '');
+    if (t >= 4 && h / t > .5) add('evidence', 'warn', x.id, `«${x.title}»: ${h} із ${t} тверджень — гіпотези без підтвердження`, 'Додайте джерела (Центр досліджень → Джерела) або позначте рішення як тест'); });
+  if (tot) add('evidence', hyp / tot > .4 ? 'warn' : 'ok', '', `Твердження в стратегії: ${tot - hyp} підкріплено / ${hyp} гіпотез (гіпотези не подаються як факти у фінальній стратегії)`, hyp / tot > .4 ? 'Збільште частку підкріплених тверджень' : '');
   const gen = []; includedList(p).filter(x => x.def && p.modules[x.id]).forEach(x => Object.values(p.modules[x.id].sections).forEach(s => (s.warnings || []).forEach(w => { if (w.startsWith('Загальні фрази')) gen.push([x.id, x.title, w]); })));
   gen.forEach(g => add('generic', 'warn', g[0], `«${g[1]}»: ${g[2]}`, 'Замініть на конкретику: ЩО, ЯК і ЧОМУ саме для цього бізнесу'));
   if (!gen.length) add('generic', 'ok', '', 'Типових загальних фраз не знайдено (автоматична перевірка)', '');
@@ -889,8 +907,8 @@ async function runQA() {
     const prog = qaProgrammatic(p);
     const inc = includedList(p).filter(x => x.def && hasOutput(p.modules[x.id]));
     const body = inc.map(x => { const o = {}; Object.entries(p.modules[x.id].sections).forEach(([k, s]) => o[k] = s.data); let j = JSON.stringify(o); if (!scope.includes(x.id) && j.length > 2500) j = j.slice(0, 2500) + '…'; return `### ${x.title} [${x.id}]${scope.includes(x.id) ? ' (У ЗОНІ ПЕРЕВІРКИ)' : ''}\n${j}`; }).join('\n\n');
-    const prompt = `# ЗАВДАННЯ\nТи Strategy Reviewer. Перевір ГОТОВУ стратегію. НЕ генеруй нову стратегію і не пропонуй переписати її повністю.\nЗона перевірки (змінені модулі та залежні від них): ${scope.length ? scope.join(', ') : 'усе'}. Решта модулів — лише контекст.\nПеревір категорії: consistency (чи однакова аудиторія/сегменти в різних каналах), brand (чи контент і реклама відповідають Brand Platform і Tone of Voice), funnel (чи логічно пов'язані канали), contentads (чи контент підтримує рекламу), evidence (чи мають рішення підґрунтя), generic (загальні фрази без ЩО/ЯК/ЧОМУ).\nБЕЗ абстрактних оцінок. Для кожної знайденої проблеми: status warn|conflict, target (id модуля), problem (конкретно, з цитатою), fix (що зробити). Якщо категорія в порядку — один запис status ok з тим, що саме перевірено.\n# ФОРМАТ\n<<<SCHEMA\n{"findings":[{"category":"consistency|brand|funnel|contentads|evidence|generic","status":"ok|warn|conflict","target":"<id модуля або порожньо>","problem":"<текст>","fix":"<текст>"}]}\nSCHEMA>>>\n# СТРАТЕГІЯ\n${body}\n\n# БРИФ\n${JSON.stringify(briefObj(p))}`;
-    const res = await runJob('ai', { system: CFG.GLOBAL_RULES + '\n\nРОЛЬ: Strategy Reviewer. ' + CFG.AGENTS.reviewer.prompt + ((S.prompts || {}).reviewer ? '\n' + S.prompts.reviewer : ''), prompt, web: false, maxTokens: 8000 });
+    const prompt = `# ЗАВДАННЯ\nТи Рецензент стратегії. Перевір ГОТОВУ стратегію. НЕ генеруй нову стратегію і не пропонуй переписати її повністю.\nЗона перевірки (змінені модулі та залежні від них): ${scope.length ? scope.join(', ') : 'усе'}. Решта модулів — лише контекст.\nПеревір категорії: consistency (чи однакова аудиторія/сегменти в різних каналах), brand (чи контент і реклама відповідають Платформа бренду і Тон комунікації (ToV)), funnel (чи логічно пов'язані канали), contentads (чи контент підтримує рекламу), evidence (чи мають рішення підґрунтя), generic (загальні фрази без ЩО/ЯК/ЧОМУ).\nБЕЗ абстрактних оцінок. Для кожної знайденої проблеми: status warn|conflict, target (id модуля), problem (конкретно, з цитатою), fix (що зробити). Якщо категорія в порядку — один запис status ok з тим, що саме перевірено.\n# ФОРМАТ\n<<<SCHEMA\n{"findings":[{"category":"consistency|brand|funnel|contentads|evidence|generic","status":"ok|warn|conflict","target":"<id модуля або порожньо>","problem":"<текст>","fix":"<текст>"}]}\nSCHEMA>>>\n# СТРАТЕГІЯ\n${body}\n\n# БРИФ\n${JSON.stringify(briefObj(p))}`;
+    const res = await runJob('ai', { system: CFG.GLOBAL_RULES + '\n\nРОЛЬ: Рецензент стратегії. ' + CFG.AGENTS.reviewer.prompt + ((S.prompts || {}).reviewer ? '\n' + S.prompts.reviewer : ''), prompt, web: false, maxTokens: 8000 });
     const j = parseJSON(res.text); const ai = (j.findings || []).map(x => ({ cat: ['consistency', 'brand', 'funnel', 'contentads', 'evidence', 'generic'].includes(x.category) ? x.category : 'consistency', status: ['ok', 'warn', 'conflict'].includes(x.status) ? x.status : 'warn', target: String(x.target || ''), problem: str(x.problem), fix: str(x.fix), src: 'ai' }));
     const keep = ((p.qa && p.qa.ai) || []).filter(f => f.target && !scope.includes(f.target) && p.modules[f.target]);
     const all = prog.concat(keep, ai);
@@ -900,7 +918,7 @@ async function runQA() {
   finally { S.ui.qaRunning = false; render(); }
 }
 
-/* ---------- Final Strategy ---------- */
+/* ---------- Фінальна стратегія ---------- */
 function finalModules(p) {
   const ok = [], excl = [];
   includedList(p).forEach(x => {
@@ -932,7 +950,7 @@ function finalBlocks(p) {
   return b;
 }
 const blocksToMd = bl => bl.map(b => ({ h1: `# ${b.x}\n`, h2: `\n## ${b.x}\n`, h3: `\n### ${b.x}\n`, h4: `\n#### ${b.x}\n`, h5: `\n**${b.x}**\n`, p: b.x + '\n', meta: `_${b.x}_\n`, quote: `> ${String(b.x).replace(/\n/g, '\n> ')}\n`, kv: `- **${b.k}:** ${String(b.v || '').replace(/\n/g, ' ')}` }[b.t])).join('\n');
-const blocksToHtml = bl => bl.map(b => ({ h1: `<h1>${esc(b.x)}</h1>`, h2: `<h2>${esc(b.x)}</h2>`, h3: `<h3>${esc(b.x)}</h3>`, h4: `<h4>${esc(b.x)}</h4>`, h5: `<p><b>${esc(b.x)}</b></p>`, p: `<p>${esc(b.x).replace(/\n/g, '<br>')}</p>`, meta: `<p class="muted sm">${esc(b.x)}</p>`, quote: `<blockquote style="border-left:3px solid #c7d0ff;margin:8px 0;padding:4px 12px;background:#eef0ff">${esc(b.x)}</blockquote>`, kv: `<p style="margin:3px 0"><b>${esc(b.k)}:</b> ${esc(b.v).replace(/\n/g, '<br>')}</p>` }[b.t])).join('\n');
+const blocksToHtml = bl => bl.map(b => ({ h1: `<h1>${esc(b.x)}</h1>`, h2: `<h2>${esc(b.x)}</h2>`, h3: `<h3>${esc(b.x)}</h3>`, h4: `<h4>${esc(b.x)}</h4>`, h5: `<p><b>${esc(b.x)}</b></p>`, p: `<p>${esc(b.x).replace(/\n/g, '<br>')}</p>`, meta: `<p class="muted sm">${esc(b.x)}</p>`, quote: `<blockquote style="border-left:3px solid #cbff2e;margin:8px 0;padding:4px 12px;background:rgba(203,255,46,.10)">${esc(b.x)}</blockquote>`, kv: `<p style="margin:3px 0"><b>${esc(b.k)}:</b> ${esc(b.v).replace(/\n/g, '<br>')}</p>` }[b.t])).join('\n');
 function snapshotOf(p) {
   const { ok } = finalModules(p);
   return { schema: 'agency-strategy-os/1', exportedAt: nowIso(), project: { id: p.id, name: p.name, client: p.client, services: p.services, brief: p.brief }, modules: ok.map(x => x.custom ? { id: x.id, title: x.title, custom: true, body: p.custom.find(y => y.id === x.id).body } : ({ id: x.id, title: x.title, group: x.def.group, level: x.level, sections: Object.fromEntries(Object.entries(p.modules[x.id].sections).map(([k, s]) => [k, { data: s.data, implication: s.implication, claims: s.claims }])) })), sources: p.sources, qa: p.qa && { runAt: p.qa.runAt, summary: p.qa.summary, findings: p.qa.prog.concat(p.qa.ai) } };
@@ -941,7 +959,7 @@ const EXPORT_IMPL = {
   json: p => ({ mime: 'application/json', text: JSON.stringify(snapshotOf(p), null, 2) }),
   md: p => ({ mime: 'text/markdown', text: blocksToMd(finalBlocks(p)) }),
   notion: p => ({ mime: 'text/markdown', text: blocksToMd(finalBlocks(p)) }),
-  html: p => ({ mime: 'text/html', text: `<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>${esc(p.name)}</title><style>body{font-family:Arial,sans-serif;max-width:860px;margin:30px auto;line-height:1.5}h2{border-bottom:1px solid #ddd;padding-bottom:4px}</style></head><body>${blocksToHtml(finalBlocks(p))}</body></html>` }),
+  html: p => ({ mime: 'text/html', text: `<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>${esc(p.name)}</title><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet"><style>body{font-family:Manrope,Arial,sans-serif;max-width:860px;margin:30px auto;line-height:1.55;color:#0b0b0c}h1,h2,h3{font-family:Unbounded,Manrope,sans-serif;font-weight:600}h2{border-bottom:2px solid #cbff2e;padding-bottom:4px}blockquote{background:#f6ffd6}</style></head><body>${blocksToHtml(finalBlocks(p))}</body></html>` }),
   figma: p => { const bl = finalBlocks(p); const slides = []; let cur = null; bl.forEach(b => { if (b.t === 'h1') slides.push({ layout: 'cover', title: b.x }); else if (b.t === 'h3') { cur = { layout: 'content', title: b.x, bullets: [] }; slides.push(cur); } else if (cur && b.t === 'kv' && cur.bullets.length < 8) cur.bullets.push(b.k + ': ' + String(b.v || '').slice(0, 160)); else if (b.t === 'h2') cur = null; }); return { mime: 'application/json', text: JSON.stringify({ schema: 'agency-strategy-os/figma-slides/1', slides }, null, 2) }; },
 };
 function doExport(fmt) {
@@ -953,7 +971,7 @@ function doExport(fmt) {
 function generateFinal() {
   const p = S.project; const qa = p.qa; if (!qa || qaStale(p)) return toast('Спершу виконайте актуальну QA-перевірку', true);
   if (qa.summary.conflict && !confirm('У QA є конфлікти (' + qa.summary.conflict + '). Сформувати фінальну стратегію все одно?')) return;
-  p.final = { generatedAt: nowIso(), by: S.user, rev: ((p.final && p.final.rev) || 0) + 1 }; logEv(p, 'Сформовано Final Strategy v' + p.final.rev); touch('Final Strategy v' + p.final.rev); render();
+  p.final = { generatedAt: nowIso(), by: S.user, rev: ((p.final && p.final.rev) || 0) + 1 }; logEv(p, 'Сформовано Фінальна стратегія v' + p.final.rev); touch('Фінальна стратегія v' + p.final.rev); render();
 }
 
 /* ---------- Toast / UI утиліти ---------- */
@@ -985,14 +1003,14 @@ function updSave() { const el = $('#savei'); if (!el) return; el.textContent = S
 
 /* ---------- Sidebar ---------- */
 function renderSide() {
-  const g = [['projects', 'Проєкти'], ['builder', 'Strategy Builder'], ['hub', 'Research Hub'], ['agents', 'AI Agents'], ['library', 'Бібліотека'], ['settings', 'Налаштування']];
-  let h = `<div class="brand"><i></i>Agency Strategy OS</div><div class="nav">` + g.map(([k, l]) => `<a class="${S.view === k ? 'on' : ''}" data-act="nav" data-v="${k}">${l}</a>`).join('');
+  const g = [['projects', 'Проєкти'], ['builder', 'Методологія'], ['hub', 'Центр досліджень'], ['agents', 'AI-агенти'], ['library', 'Бібліотека'], ['settings', 'Налаштування']];
+  let h = `<div class="brand"><i></i>Конструктор стратегій</div><div class="nav">` + g.map(([k, l]) => `<a class="${S.view === k ? 'on' : ''}" data-act="nav" data-v="${k}">${l}</a>`).join('');
   const p = S.project;
   if (p && S.view === 'project') {
     const inc = includedList(p); const cnt = grp => { const l = inc.filter(x => x.def && x.def.group === grp); return l.length ? `${l.filter(x => isLocked(p, x.id)).length}/${l.length}` : ''; };
-    const items = [['overview', 'Огляд'], ['brief', 'Бриф'], ['services', 'Послуги'], ['structure', 'Структура'], ['research', 'Research', cnt('research')], ['brand', 'Brand', cnt('brand')], ['smm', 'SMM', cnt('smm')]];
-    [['meta', 'Meta Ads'], ['tiktok', 'TikTok'], ['ttads', 'TikTok Ads'], ['google', 'Google Ads'], ['cross', 'Cross-channel']].forEach(([k, l]) => { if (inc.some(x => x.def && x.def.group === k)) items.push([k, l, cnt(k)]); });
-    items.push(['map', 'Strategy Map'], ['qa', 'QA', p.qa ? (qaStale(p) ? '↻' : '✓') : ''], ['final', 'Final Strategy', p.final ? '✓' : ''], ['history', 'Історія']);
+    const items = [['overview', 'Огляд'], ['brief', 'Бриф'], ['services', 'Послуги'], ['structure', 'Структура'], ['research', 'Дослідження', cnt('research')], ['brand', 'Бренд', cnt('brand')], ['smm', 'SMM', cnt('smm')]];
+    [['meta', 'Meta Ads'], ['tiktok', 'TikTok'], ['ttads', 'TikTok Ads'], ['google', 'Google Ads'], ['cross', 'Кросканальність']].forEach(([k, l]) => { if (inc.some(x => x.def && x.def.group === k)) items.push([k, l, cnt(k)]); });
+    items.push(['map', 'Карта стратегії'], ['qa', 'Перевірка якості', p.qa ? (qaStale(p) ? '↻' : '✓') : ''], ['final', 'Фінальна стратегія', p.final ? '✓' : ''], ['history', 'Історія']);
     h += `<h6>Проєкт</h6><div style="padding:0 8px 6px;font-weight:600;font-size:13px">${esc(p.name)}</div>` + items.map(([k, l, d]) => `<a class="${S.page === k ? 'on' : ''}" data-act="page" data-v="${k}">${l}<span class="dot">${d || ''}</span></a>`).join('');
   }
   h += `</div><div class="side-foot">👤 ${esc(S.user || '—')}<br><span id="savei"></span></div>`;
@@ -1031,7 +1049,7 @@ function viewHtml() {
 function projectsView() {
   const rows = S.projects.map(r => { const m = r.meta || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><div class="muted sm">${esc(m.client || '')}</div></td><td>${(m.services || []).map(s => chip(svcLabel(s))).join(' ')}</td><td>${chip(m.status || '—', 'ac')}</td><td style="min-width:140px">${m.progress || 0}%${bar(m.progress || 0)}</td><td>${m.briefPct != null ? m.briefPct + '%' : '—'}</td><td class="sm t2">${fmtDate(r.updated_at)}<br>${esc(r.updated_by || '')}</td><td><button class="btn sm danger" data-act="delProj" data-id="${esc(r.id)}" title="Видалити проєкт">🗑</button></td></tr>`; }).join('');
   return `<div class="top"><h1>Проєкти</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">` +
-    (S.projects.length ? `<div class="card" style="padding:0;overflow:auto"><table><tr><th>Проєкт</th><th>Послуги</th><th>Статус</th><th>Strategy Progress</th><th>Бриф</th><th>Оновлено</th><th></th></tr>${rows}</table></div>` : `<div class="card"><h3>Ще немає проєктів</h3><p class="t2">Створіть перший проєкт. Стратегічний етап додається автоматично і не вимикається.</p><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div>`) + `</div>`;
+    (S.projects.length ? `<div class="card" style="padding:0;overflow:auto"><table><tr><th>Проєкт</th><th>Послуги</th><th>Статус</th><th>Прогрес стратегії</th><th>Бриф</th><th>Оновлено</th><th></th></tr>${rows}</table></div>` : `<div class="card"><h3>Ще немає проєктів</h3><p class="t2">Створіть перший проєкт. Стратегічний етап додається автоматично і не вимикається.</p><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div>`) + `</div>`;
 }
 A.delProj = el => { const id = el.dataset.id; const r = S.projects.find(x => x.id === id) || (S.project && S.project.id === id ? S.project : null); if (!r) return;
   modal(`<h3>Видалити проєкт?</h3><p class="t2">Проєкт <b>${esc(r.name)}</b> буде видалено разом з усіма модулями, джерелами та історією версій для всієї команди. Дію не можна скасувати.</p><label class="f"><span>Щоб підтвердити, введіть назву проєкту</span><input type="text" id="dp_name" autocomplete="off"></label><div class="row"><button class="btn danger" data-act="delProjOk" data-id="${esc(id)}" data-name="${esc(r.name)}">Видалити назавжди</button><button class="btn" data-act="closeModal">Скасувати</button></div>`); };
@@ -1049,37 +1067,37 @@ A.newProjOk = async () => {
   try { await api('/projects', { method: 'POST', body: { id: p.id, name: p.name, data: p, meta: metaOf(p) } }); closeModal(); await openProject(p.id, 'brief'); S.projects = await api('/projects'); render(); } catch (e) { toast(e.message, true); }
 };
 
-/* ---------- Strategy Builder (методологія) ---------- */
+/* ---------- Конструктор стратегій (методологія) ---------- */
 function builderView() {
-  const cols = [['base', 'Стратегічний етап', []], ['ig', '+ Instagram / Facebook', ['instagram']], ['meta', '+ Meta Ads', ['meta_ads']], ['tt', '+ TikTok Organic', ['tiktok_org']], ['tta', '+ TikTok Ads', ['tiktok_ads']], ['ttboth', '+ TikTok Org + Ads', ['tiktok_org', 'tiktok_ads']], ['g', '+ Google Ads', ['google_ads']]];
+  const cols = [['base', 'Стратегічний етап', []], ['ig', '+ Instagram / Facebook', ['instagram']], ['meta', '+ Meta Ads', ['meta_ads']], ['tt', '+ TikTok органіка', ['tiktok_org']], ['tta', '+ TikTok Ads', ['tiktok_ads']], ['ttboth', '+ TikTok Org + Ads', ['tiktok_org', 'tiktok_ads']], ['g', '+ Google Ads', ['google_ads']]];
   const lv = svcs => resolveRules({ id: 'matrix-' + svcs.join(), services: svcs, brief: {} }).levels;
   const bl = lv([]);
   const head = cols.map(c => `<th>${c[1]}</th>`).join('');
   const rows = CFG.MODULES.map(m => `<tr><td>${esc(m.title)}<div class="muted sm">${CFG.GROUPS[m.group].label}</div></td>` + cols.map(([k, , s]) => { const l = lv(s)[m.id]; const isBase = bl[m.id]; if (k === 'base') return `<td>${l ? CFG.LEVEL[l].icon : ''}</td>`; return `<td>${l && !isBase ? CFG.LEVEL[l].icon : ''}</td>`; }).join('') + `</tr>`).join('');
   const multi = resolveRules({ id: 'matrix-multi', services: ['instagram', 'meta_ads'], brief: {} }).levels;
-  return `<div class="top"><h1>Strategy Builder</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">
-  <div class="card"><h3>Як працює система</h3><p class="t2">Один проєкт → одна стратегічна база → одна логіка бренду → багато каналів. Стратегічний етап 🔒 обовʼязковий для кожного клієнта; склад модулів формує <b>Rule Engine</b> за послугами клієнта (правила в конфігу методології, а не в UI).</p><div class="stepper" style="flex-wrap:wrap">${CFG.STEPS.map(s => `<div class="step"><b>${s.n}</b>${s.label}</div>`).join('')}</div></div>
-  <div class="card"><h3>Матриця: послуга → модулі стратегії</h3><p class="muted sm">Показано, які модулі додає кожна послуга поверх обовʼязкового стратегічного етапу; послуги обираються повністю вільно. Cross-channel Funnel зʼявляється автоматично при більш ніж одному каналі (${multi.cross_funnel ? 'напр. Instagram + Meta Ads' : ''}). 🔒 обовʼязковий · ★ рекомендований · ○ опціональний.</p><div style="overflow:auto"><table><tr><th>Модуль</th>${head}</tr>${rows}<tr><td>Cross-channel Funnel<div class="muted sm">Cross-channel</div></td><td></td><td colspan="6" class="t2">🔒 при &gt; 1 каналу (будь-яка комбінація)</td></tr></table></div></div></div>`;
+  return `<div class="top"><h1>Методологія</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">
+  <div class="card"><h3>Як працює система</h3><p class="t2">Один проєкт → одна стратегічна база → одна логіка бренду → багато каналів. Стратегічний етап 🔒 обовʼязковий для кожного клієнта; склад модулів формує <b>Рушій правил</b> за послугами клієнта (правила в конфігу методології, а не в UI).</p><div class="stepper" style="flex-wrap:wrap">${CFG.STEPS.map(s => `<div class="step"><b>${s.n}</b>${s.label}</div>`).join('')}</div></div>
+  <div class="card"><h3>Матриця: послуга → модулі стратегії</h3><p class="muted sm">Показано, які модулі додає кожна послуга поверх обовʼязкового стратегічного етапу; послуги обираються повністю вільно. Кросканальна воронка зʼявляється автоматично при більш ніж одному каналі (${multi.cross_funnel ? 'напр. Instagram + Meta Ads' : ''}). 🔒 обовʼязковий · ★ рекомендований · ○ опціональний.</p><div style="overflow:auto"><table><tr><th>Модуль</th>${head}</tr>${rows}<tr><td>Кросканальна воронка<div class="muted sm">Кросканальність</div></td><td></td><td colspan="6" class="t2">🔒 при &gt; 1 каналу (будь-яка комбінація)</td></tr></table></div></div></div>`;
 }
 
-/* ---------- Research Hub (глобально) ---------- */
+/* ---------- Центр досліджень (глобально) ---------- */
 function hubView() {
   const rows = S.projects.map(r => { const m = r.meta || {}; const rs = m.research || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}" data-page="research"><td><b>${esc(r.name)}</b></td><td>${rs.locked != null ? rs.locked + ' / ' + rs.total + ' зафіксовано' : '—'}</td><td>${rs.running ? chip('◐ ' + rs.running + ' виконується', 'info') : ''}</td><td class="sm t2">${fmtDate(r.updated_at)}</td></tr>`; }).join('');
-  return `<div class="top"><h1>Research Hub</h1></div><div class="wrap"><div class="card"><h3>Єдине дослідження на проєкт</h3><p class="t2">Market, Audience та Competitor Intelligence виконуються один раз і використовуються всіма агентами й каналами. Оберіть проєкт, щоб відкрити його Research Hub.</p></div><div class="card" style="padding:0"><table><tr><th>Проєкт</th><th>Research</th><th></th><th>Оновлено</th></tr>${rows}</table></div></div>`;
+  return `<div class="top"><h1>Центр досліджень</h1></div><div class="wrap"><div class="card"><h3>Єдине дослідження на проєкт</h3><p class="t2">Аналіз ринку, аудиторії та конкурентів виконуються один раз і використовуються всіма агентами й каналами. Оберіть проєкт, щоб відкрити його Центр досліджень.</p></div><div class="card" style="padding:0"><table><tr><th>Проєкт</th><th>Research</th><th></th><th>Оновлено</th></tr>${rows}</table></div></div>`;
 }
 
-/* ---------- AI Agents ---------- */
+/* ---------- AI-агенти ---------- */
 function agentsView() {
   const items = Object.entries(CFG.AGENTS).map(([id, a]) => { const mods = CFG.MODULES.filter(m => m.agent === id).map(m => m.title); return `<div class="card"><div class="row"><h3 style="margin:0">${esc(a.name)}</h3>${chip(id)}</div><p class="t2 sm">${esc(a.prompt)}</p><div class="sm muted">Модулі: ${mods.length ? esc(mods.join(' · ')) : 'Перевірка / QA'}</div><label class="f" style="margin-top:8px"><span>Додаткові інструкції агенції для цього агента (додаються до системного промпта)</span><textarea data-prm="${id}" placeholder="Напр.: завжди пропонуй мінімум 2 гіпотези для тесту…">${esc((S.prompts || {})[id] || '')}</textarea></label></div>`; }).join('');
-  return `<div class="top"><h1>AI Agents</h1><span class="sp"></span><button class="btn pri" data-act="savePrompts">Зберегти інструкції</button></div><div class="wrap"><div class="card"><h3>Архітектура агентів</h3><p class="t2">Кожен агент отримує <b>тільки зафіксовані</b> результати залежностей (Project Context) і не має права змінювати їх. Спільні правила (без вигаданої статистики, типи тверджень, Research → Insight → Decision → Action) застосовуються до всіх агентів:</p><pre class="json" style="white-space:pre-wrap">${esc(CFG.GLOBAL_RULES)}</pre></div>${items}</div>`;
+  return `<div class="top"><h1>AI-агенти</h1><span class="sp"></span><button class="btn pri" data-act="savePrompts">Зберегти інструкції</button></div><div class="wrap"><div class="card"><h3>Архітектура агентів</h3><p class="t2">Кожен агент отримує <b>тільки зафіксовані</b> результати залежностей (Контекст проєкту) і не має права змінювати їх. Спільні правила (без вигаданої статистики, типи тверджень, Дослідження → Висновок → Рішення → Дія) застосовуються до всіх агентів:</p><pre class="json" style="white-space:pre-wrap">${esc(CFG.GLOBAL_RULES)}</pre></div>${items}</div>`;
 }
 A.savePrompts = async () => { const o = {}; document.querySelectorAll('[data-prm]').forEach(t => { if (t.value.trim()) o[t.dataset.prm] = t.value.trim(); }); try { await api('/kv/prompts', { method: 'PUT', body: { value: o } }); S.prompts = o; toast('Інструкції збережено для всієї команди'); } catch (e) { toast(e.message, true); } };
 
 /* ---------- Бібліотека ---------- */
-const LIB_KINDS = ['Правила агенції', 'Методологія', 'Шаблон', 'Tone of Voice framework', 'Приклад стратегії', 'Успішний кейс', 'Шаблон рубрикатора', 'Advertising framework', 'Prompt', 'Benchmark'];
+const LIB_KINDS = ['Правила агенції', 'Методологія', 'Шаблон', 'Тон комунікації (ToV) framework', 'Приклад стратегії', 'Успішний кейс', 'Шаблон рубрикатора', 'Advertising framework', 'Prompt', 'Benchmark'];
 function libraryView() {
   const items = (S.lib || []).map((x, i) => `<div class="card"><div class="row"><b>${esc(x.title)}</b>${chip(x.kind)}${(x.tags || []).map(t => chip('#' + esc(t))).join('')}<span class="sp" style="flex:1"></span><label class="sm"><input type="checkbox" data-act="libTog" data-i="${i}" ${x.enabled !== false ? 'checked' : ''}> у контексті AI</label><button class="btn sm danger" data-act="libDel" data-i="${i}">Видалити</button></div><div class="t2 sm" style="white-space:pre-wrap;margin-top:6px">${esc(x.text)}</div></div>`).join('');
-  return `<div class="top"><h1>Бібліотека агенції</h1><span class="sp"></span><button class="btn pri" data-act="libAdd">+ Додати</button></div><div class="wrap"><div class="infobox">Agency Knowledge Base: увімкнені записи автоматично додаються AI як додатковий контекст (за тегами: <code>all</code>, назва групи модулів — <code>brand</code>, <code>smm</code>, <code>meta</code>… — або id модуля). Ліміт — ~6000 символів на запит.</div>${items || '<div class="card muted">Поки порожньо. Додайте правила агенції, методологію, шаблони, кейси, бенчмарки.</div>'}</div>`;
+  return `<div class="top"><h1>Бібліотека агенції</h1><span class="sp"></span><button class="btn pri" data-act="libAdd">+ Додати</button></div><div class="wrap"><div class="infobox">База знань агенції: увімкнені записи автоматично додаються AI як додатковий контекст (за тегами: <code>all</code>, назва групи модулів — <code>brand</code>, <code>smm</code>, <code>meta</code>… — або id модуля). Ліміт — ~6000 символів на запит.</div>${items || '<div class="card muted">Поки порожньо. Додайте правила агенції, методологію, шаблони, кейси, бенчмарки.</div>'}</div>`;
 }
 A.libAdd = () => modal(`<h3>Новий запис бази знань</h3><label class="f"><span>Тип</span><select id="lb_kind">${LIB_KINDS.map(k => `<option>${k}</option>`).join('')}</select></label><label class="f"><span>Назва</span><input type="text" id="lb_title"></label><label class="f"><span>Текст (правило, шаблон, фреймворк…)</span><textarea id="lb_text" style="min-height:140px"></textarea></label><label class="f"><span>Теги через кому (all, brand, smm, meta, tiktok, google, id модуля)</span><input type="text" id="lb_tags" value="all"></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="libSave">Зберегти</button></div>`);
 async function saveLib() { try { await api('/kv/library', { method: 'PUT', body: { value: S.lib } }); } catch (e) { toast(e.message, true); } }
@@ -1103,9 +1121,9 @@ function overviewView(p) {
   return pTop(p, 'Огляд', `<button class="btn sm danger" data-act="delProj" data-id="${esc(p.id)}" style="margin-left:14px">🗑 Видалити проєкт</button>`) + `<div class="wrap"><div class="grid g4" style="margin-bottom:14px">
   ${cell('Проєкт', `<b>${esc(p.name)}</b>`)}${cell('Клієнт', esc(p.client || '—'))}${cell('Статус', chip(projectStatusText(p), 'ac'))}${cell('Останнє оновлення', fmtDate(p.updatedAt))}
   ${cell('Послуги', `<div class="tags">${chip('🔒 Створення стратегії', 'ac')}${p.services.map(s => chip(svcLabel(s))).join('')}</div>`)}
-  ${cell('Strategy Progress', `<b>Стратегія готова на ${pr}%</b>${bar(pr)}`)}
+  ${cell('Прогрес стратегії', `<b>Стратегія готова на ${pr}%</b>${bar(pr)}`)}
   ${cell('Brief Completeness', `<b>Заповненість: ${c.pct}%</b>${bar(c.pct, c.pct >= 70 ? 'ok' : 'warn')}`)}
-  ${cell('Research Status', `<b>${rs.locked} / ${rs.total}</b> зафіксовано ${rs.running ? chip('◐ ' + rs.running, 'info') : ''}${bar(rs.locked / rs.total * 100, rs.locked === rs.total ? 'ok' : '')}`)}
+  ${cell('Статус досліджень', `<b>${rs.locked} / ${rs.total}</b> зафіксовано ${rs.running ? chip('◐ ' + rs.running, 'info') : ''}${bar(rs.locked / rs.total * 100, rs.locked === rs.total ? 'ok' : '')}`)}
   </div>
   <div class="grid g2"><div class="card"><h3>Наступні дії</h3>${acts.length ? acts.map(a => `<div class="row" style="padding:5px 0;border-bottom:1px dashed var(--line)"><span style="flex:1">${esc(a.t)}</span><button class="btn sm" data-act="page" data-v="${a.page}" data-mod="${a.mod || ''}">Відкрити →</button></div>`).join('') : '<div class="okbox">Усе виконано.</div>'}</div>
   <div class="card"><h3>Хто працює над проєктом</h3>${Object.entries(p.team || {}).sort((a, b) => b[1].localeCompare(a[1])).map(([n, t]) => `<div class="row" style="padding:3px 0">👤 ${esc(n)} <span class="muted sm">остання активність ${fmtDate(t)}</span></div>`).join('') || '<span class="muted">—</span>'}<label class="f" style="margin-top:10px"><span>Відповідальний PM</span><input type="text" data-b="__owner" value="${esc(p.owner || '')}"></label></div></div>
@@ -1113,7 +1131,7 @@ function overviewView(p) {
   <div class="card"><h3>Стратегічний етап</h3><div class="lock-banner" style="margin:0">🔒 <div><b>Створення стратегії</b><div class="sm" style="opacity:.8">Обовʼязково для кожного проєкту · ${summaryText(p)}</div></div></div></div>
   <div class="card"><h3>Активність</h3>${p.log.slice(0, 12).map(l => `<div class="sm" style="padding:2px 0"><span class="muted">${fmtDate(l.at)} · ${esc(l.by)}</span> — ${esc(l.text)}</div>`).join('') || '<span class="muted">—</span>'}</div></div>`;
 }
-function summaryText(p) { const c = levelCounts(p); const n = c.mandatory + c.recommended + c.optional; const sv = p.services.map(svcLabel); return `${sv.length ? 'Ви обрали: ' + sv.join(' + ') + '.' : 'Послуги ще не обрано — доступний лише стратегічний етап 🔒 (Research, Brand, Communication).'} Для цього проєкту сформовано <b>${n}</b> стратегічних модулів: <b>${c.mandatory}</b> — обовʼязкові, <b>${c.recommended}</b> — рекомендовані, <b>${c.optional}</b> — опціональні.`; }
+function summaryText(p) { const c = levelCounts(p); const n = c.mandatory + c.recommended + c.optional; const sv = p.services.map(svcLabel); return `${sv.length ? 'Ви обрали: ' + sv.join(' + ') + '.' : 'Послуги ще не обрано — доступний лише стратегічний етап 🔒 (дослідження, бренд, комунікація).'} Для цього проєкту сформовано <b>${n}</b> стратегічних модулів: <b>${c.mandatory}</b> — обовʼязкові, <b>${c.recommended}</b> — рекомендовані, <b>${c.optional}</b> — опціональні.`; }
 
 /* ---------- Бриф ---------- */
 function fieldHtml(f, val, attr) {
@@ -1146,27 +1164,27 @@ function servicesView(p) {
   <div class="lock-banner">🔒 <div><b>Стратегічний етап</b><div class="sm" style="opacity:.85">Статус: Обовʼязково для кожного проєкту</div></div></div>
   ${groups.map(g => `<h4 class="muted" style="margin:16px 0 8px">${g}</h4><div class="grid g3">${CFG.SERVICES.filter(s => s.group === g).map(s => { const on = p.services.includes(s.id); return `<div class="svc ${on ? 'on' : ''}" data-act="svc" data-id="${s.id}"><input type="checkbox" ${on ? 'checked' : ''} tabindex="-1"><div><b>${s.label}</b><div class="muted sm">${s.desc}</div></div></div>`; }).join('')}</div>`).join('')}
   <div class="card" style="margin-top:18px"><h3>Структура стратегії перебудовується автоматично</h3><p>${summaryText(p)}</p>
-  ${d ? `<div class="infobox"><b>Що змінилось:</b> існуюча стратегія <b>не видаляється</b>. ${d.added.length ? `<br>Додано модулів: ${d.added.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.removed.length ? `<br>Не входять у поточний пакет (дані збережено): ${d.removed.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.stale.length ? `<br>Бажано оновити: ${d.stale.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}<br>Використовуються наявні Research Hub і Brand Platform; QA перепровіряє лише змінені залежності.</div>` : ''}
+  ${d ? `<div class="infobox"><b>Що змінилось:</b> існуюча стратегія <b>не видаляється</b>. ${d.added.length ? `<br>Додано модулів: ${d.added.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.removed.length ? `<br>Не входять у поточний пакет (дані збережено): ${d.removed.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.stale.length ? `<br>Бажано оновити: ${d.stale.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}<br>Використовуються наявні Центр досліджень і Платформа бренду; QA перепровіряє лише змінені залежності.</div>` : ''}
   <div class="row"><button class="btn pri" data-act="svcOk">Підтвердити послуги → структура</button></div></div></div>`;
 }
 A.svc = el => { const p = S.project; const id = el.dataset.id; S.ui.svcDiff = setService(p, id, !p.services.includes(id)); touch('Послуги: ' + svcLabel(id)); render(); };
 A.svcOk = () => { const p = S.project; p.flags.servicesConfirmed = true; touch(); go('project', 'structure'); };
 
-/* ---------- Strategy Module Builder ---------- */
+/* ---------- Конструктор модулів стратегії ---------- */
 function structureView(p) {
   const act = activeList(p); const inact = inactiveList(p);
-  const rows = act.map(x => { const st = x.def ? statusOf(p, x.id) : { icon: x.custom ? '✎' : '', label: 'Custom', cls: '' }; const lock = x.level === 'mandatory';
-    return `<div class="dnd ${x.hidden ? 'hid' : ''}" draggable="true" data-dnd="${x.id}"><span class="h">⠿</span><div class="ttl"><input class="rn" data-rn="${x.id}" value="${esc(x.title)}" title="Перейменувати"><div class="muted sm">${x.custom ? 'Custom section' : CFG.GROUPS[x.def.group].label + ' · ' + esc(x.def.desc)}</div></div>${lvlChip(x.level)}${chip(`${st.icon} ${st.label}`, st.cls)}${x.custom ? `<button class="btn sm" data-act="editCustom" data-id="${x.id}">Текст</button><button class="btn sm danger" data-act="delCustom" data-id="${x.id}">Видалити</button>` : `<button class="btn sm" data-act="hide" data-id="${x.id}" ${lock ? 'disabled title="Обовʼязковий блок не можна приховати"' : ''}>${x.hidden ? 'Показати' : lock ? '🔒' : 'Приховати'}</button>`}</div>`; }).join('');
-  return pTop(p, 'Структура стратегії') + `<div class="wrap"><div class="card"><h3>${summaryText(p)}</h3><p class="t2 sm">Порядок блоків = порядок у фінальній стратегії. Перетягуйте, перейменовуйте, приховуйте рекомендовані й опціональні блоки, додавайте власні секції. Обовʼязкові блоки не видаляються.</p><div class="row"><button class="btn" data-act="addCustom">+ Custom section</button><button class="btn pri" data-act="structOk">Підтвердити структуру → Research</button></div></div>
+  const rows = act.map(x => { const st = x.def ? statusOf(p, x.id) : { icon: x.custom ? '✎' : '', label: 'Власний', cls: '' }; const lock = x.level === 'mandatory';
+    return `<div class="dnd ${x.hidden ? 'hid' : ''}" draggable="true" data-dnd="${x.id}"><span class="h">⠿</span><div class="ttl"><input class="rn" data-rn="${x.id}" value="${esc(x.title)}" title="Перейменувати"><div class="muted sm">${x.custom ? 'Власний розділ' : CFG.GROUPS[x.def.group].label + ' · ' + esc(x.def.desc)}</div></div>${lvlChip(x.level)}${chip(`${st.icon} ${st.label}`, st.cls)}${x.custom ? `<button class="btn sm" data-act="editCustom" data-id="${x.id}">Текст</button><button class="btn sm danger" data-act="delCustom" data-id="${x.id}">Видалити</button>` : `<button class="btn sm" data-act="hide" data-id="${x.id}" ${lock ? 'disabled title="Обовʼязковий блок не можна приховати"' : ''}>${x.hidden ? 'Показати' : lock ? '🔒' : 'Приховати'}</button>`}</div>`; }).join('');
+  return pTop(p, 'Структура стратегії') + `<div class="wrap"><div class="card"><h3>${summaryText(p)}</h3><p class="t2 sm">Порядок блоків = порядок у фінальній стратегії. Перетягуйте, перейменовуйте, приховуйте рекомендовані й опціональні блоки, додавайте власні секції. Обовʼязкові блоки не видаляються.</p><div class="row"><button class="btn" data-act="addCustom">+ Власний розділ</button><button class="btn pri" data-act="structOk">Підтвердити структуру → Дослідження</button></div></div>
   <div id="dndl">${rows}</div>${inact.length ? `<div class="card" style="margin-top:14px"><h3>Не входять у поточний пакет послуг</h3><p class="muted sm">Модулі й дані збережено — зʼявляться знову, якщо послугу буде підключено.</p>${inact.map(x => chip(esc(x.title) + (x.had ? ' · є дані' : ''))).join(' ')}</div>` : ''}</div>`;
 }
 A.hide = el => { const p = S.project; const s = p.structure.find(x => x.id === el.dataset.id); s.hidden = !s.hidden; touch(); render(); };
 A.structOk = () => { const p = S.project; p.flags.structureConfirmed = true; touch('Структуру підтверджено'); go('project', 'research'); };
-A.addCustom = () => modal(`<h3>Custom section</h3><label class="f"><span>Назва</span><input type="text" id="cs_t"></label><label class="f"><span>Текст</span><textarea id="cs_b" style="min-height:120px"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="addCustomOk">Додати</button></div>`);
-A.addCustomOk = () => { const p = S.project; const t = $('#cs_t').value.trim(); if (!t) return toast('Вкажіть назву', true); const id = uid('c'); p.custom.push({ id, title: t, body: $('#cs_b').value }); p.structure.push({ id, custom: true, hidden: false, title: '' }); touch('Додано custom section'); closeModal(); render(); };
+A.addCustom = () => modal(`<h3>Власний розділ</h3><label class="f"><span>Назва</span><input type="text" id="cs_t"></label><label class="f"><span>Текст</span><textarea id="cs_b" style="min-height:120px"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="addCustomOk">Додати</button></div>`);
+A.addCustomOk = () => { const p = S.project; const t = $('#cs_t').value.trim(); if (!t) return toast('Вкажіть назву', true); const id = uid('c'); p.custom.push({ id, title: t, body: $('#cs_b').value }); p.structure.push({ id, custom: true, hidden: false, title: '' }); touch('Додано власний розділ'); closeModal(); render(); };
 A.editCustom = el => { const c = S.project.custom.find(x => x.id === el.dataset.id); modal(`<h3>${esc(c.title)}</h3><textarea id="cs_b" style="min-height:220px">${esc(c.body)}</textarea><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="saveCustom" data-id="${c.id}">Зберегти</button></div>`); };
 A.saveCustom = el => { S.project.custom.find(x => x.id === el.dataset.id).body = $('#cs_b').value; touch(); closeModal(); render(); };
-A.delCustom = el => { const p = S.project; if (!confirm('Видалити custom section?')) return; p.custom = p.custom.filter(x => x.id !== el.dataset.id); p.structure = p.structure.filter(x => x.id !== el.dataset.id); touch(); render(); };
+A.delCustom = el => { const p = S.project; if (!confirm('Видалити власний розділ?')) return; p.custom = p.custom.filter(x => x.id !== el.dataset.id); p.structure = p.structure.filter(x => x.id !== el.dataset.id); touch(); render(); };
 document.addEventListener('dragstart', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (r) { S.ui.drag = r.dataset.dnd; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.ui.drag); } });
 document.addEventListener('dragover', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (r && S.ui.drag) { e.preventDefault(); document.querySelectorAll('.dnd.over').forEach(x => x.classList.remove('over')); r.classList.add('over'); } });
 document.addEventListener('drop', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (!r || !S.ui.drag) return; e.preventDefault(); const p = S.project; const from = p.structure.findIndex(x => x.id === S.ui.drag); const to = p.structure.findIndex(x => x.id === r.dataset.dnd); S.ui.drag = null; if (from < 0 || to < 0 || from === to) return render(); const [it] = p.structure.splice(from, 1); p.structure.splice(to, 0, it); touch('Змінено порядок блоків'); render(); });
@@ -1211,7 +1229,7 @@ function modCard(p, id, forceOpen) {
   if (has && miss.length) h += `<button class="btn pri" data-act="runPart" data-id="${id}" ${bl.length || running ? 'disabled' : ''}>+ Догенерувати: ${esc(miss.map(x => x.title).join(', '))}</button>`;
   if (has) h += `<button class="btn" data-act="accept" data-id="${id}" ${m.state !== 'draft' ? 'disabled' : ''}>Прийняти</button><button class="btn ${locked ? '' : 'ok'}" data-act="${locked ? 'unlock' : 'lock'}" data-id="${id}">${locked ? '🔓 Розфіксувати' : '🔒 Зафіксувати'}</button><button class="btn" data-act="edit" data-id="${id}" ${locked ? 'disabled title="Спершу розфіксуйте"' : ''}>${edit ? '✓ Готово' : '✎ Редагувати'}</button>`;
   h += `<button class="btn" data-act="cm" data-id="${id}">💬 Коментар${m && m.comments.length ? ' (' + m.comments.length + ')' : ''}</button></div>`;
-  if (S.ui.cm[id]) h += `<div class="card" style="background:#fafbfc">${(m ? m.comments : []).map(c => `<div class="cm ${c.resolved ? 'res' : ''}"><div class="muted sm">${esc(c.by)} · ${fmtDate(c.at)}${c.forAi !== false ? ' · враховується при перегенерації' : ''}</div>${esc(c.text)} <button class="btn sm" data-act="resCm" data-id="${id}" data-c="${c.id}">${c.resolved ? 'Відновити' : 'Закрити'}</button></div>`).join('') || '<div class="muted sm">Коментарів немає</div>'}<div class="row" style="margin-top:8px"><input type="text" id="cm_t_${id}" placeholder="Коментар для команди / AI" style="flex:1"><label class="sm"><input type="checkbox" id="cm_a_${id}" checked> для AI</label><button class="btn sm" data-act="addCm" data-id="${id}">Додати</button></div></div>`;
+  if (S.ui.cm[id]) h += `<div class="card" style="background:var(--panel2)">${(m ? m.comments : []).map(c => `<div class="cm ${c.resolved ? 'res' : ''}"><div class="muted sm">${esc(c.by)} · ${fmtDate(c.at)}${c.forAi !== false ? ' · враховується при перегенерації' : ''}</div>${esc(c.text)} <button class="btn sm" data-act="resCm" data-id="${id}" data-c="${c.id}">${c.resolved ? 'Відновити' : 'Закрити'}</button></div>`).join('') || '<div class="muted sm">Коментарів немає</div>'}<div class="row" style="margin-top:8px"><input type="text" id="cm_t_${id}" placeholder="Коментар для команди / AI" style="flex:1"><label class="sm"><input type="checkbox" id="cm_a_${id}" checked> для AI</label><button class="btn sm" data-act="addCm" data-id="${id}">Додати</button></div></div>`;
   if (has || sectionsFor(p, id).some(s => s.kind === 'refs')) {
     if (has) h += `<div class="muted sm">rev ${m.rev} · ${fmtDate(m.generatedAt)} · ${esc(m.by || '')}${m.usage && m.usage.out ? ` · токени: ${m.usage.in}→${m.usage.out}` : ''}</div>`;
     h += sectionsFor(p, id).map(s => secHtml(p, id, s, edit)).join('');
@@ -1237,26 +1255,26 @@ function groupView(p, g) {
   const list = includedList(p).filter(x => x.def && x.def.group === g);
   const label = CFG.GROUPS[g].label;
   const todo = list.filter(x => statusOf(p, x.id).k === 'idle' && !blockers(p, x.id).length && !requirementMsg(p, x.id)).map(x => x.id);
-  return pTop(p, label, `<button class="btn" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити доступні (${todo.length})</button>`) + `<div class="wrap">${g === 'brand' ? `<div class="infobox">Brand Platform, УТП і Communication Platform — спільна стратегічна база для всіх каналів. Канали <b>не створюють власних версій</b> бренду, УТП чи Tone of Voice — вони отримують ці зафіксовані результати.</div>` : ''}${g === 'tiktok' ? '<div class="infobox">TikTok-стратегія адаптує Audience Intelligence і не копіює Instagram-стратегію.</div>' : ''}${list.map(x => modCard(p, x.id)).join('')}</div>`;
+  return pTop(p, label, `<button class="btn" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити доступні (${todo.length})</button>`) + `<div class="wrap">${g === 'brand' ? `<div class="infobox">Платформа бренду, УТП і Комунікаційна платформа — спільна стратегічна база для всіх каналів. Канали <b>не створюють власних версій</b> бренду, УТП чи Тон комунікації (ToV) — вони отримують ці зафіксовані результати.</div>` : ''}${g === 'tiktok' ? '<div class="infobox">TikTok-стратегія адаптує аналіз аудиторії і не копіює Instagram-стратегію.</div>' : ''}${list.map(x => modCard(p, x.id)).join('')}</div>`;
 }
 A.runAll = el => { const ids = el.dataset.ids.split(',').filter(Boolean); runMany(ids); };
 
-/* ---------- Research Hub (проєкт) ---------- */
+/* ---------- Центр досліджень (проєкт) ---------- */
 function researchView(p) {
   const tab = S.ui.tab.research || 'overview';
-  const tabs = [['overview', 'Огляд'], ['market', 'Market'], ['audience', 'Audience'], ['competitors', 'Competitors'], ['avatars', 'Avatars'], ['insights', 'Висновки'], ['sources', 'Джерела'], ['parse', 'Парсинг']];
+  const tabs = [['overview', 'Огляд'], ['market', 'Ринок'], ['audience', 'Аудиторія'], ['competitors', 'Конкуренти'], ['avatars', 'Аватари'], ['insights', 'Висновки'], ['sources', 'Джерела'], ['parse', 'Парсинг']];
   let body = '';
   const three = ['market', 'audience', 'competitors'];
   if (tab === 'overview') {
     const todo = three.filter(x => statusOf(p, x).k === 'idle' && !requirementMsg(p, x));
-    body = `<div class="infobox">Research Hub — єдине джерело дослідження для всіх каналів. Результати цих модулів <b>не дублюються</b> по каналах: їх використовують усі AI-агенти після фіксації.</div><div class="grid g3">${three.map(x => `<div class="card" style="margin:0"><h3>${esc(titleOf(p, x))}</h3>${statusChip(statusOf(p, x))}<p class="muted sm">${esc(CFG.M[x].desc)}</p><div class="sm t2">Використовують: ${dependents(p, x).slice(0, 5).map(d => esc(titleOf(p, d))).join(', ') || '—'}…</div><div class="row" style="margin-top:8px"><button class="btn sm" data-act="tab" data-t="${x}">Відкрити</button></div></div>`).join('')}</div>
-    <div class="row" style="margin:14px 0"><button class="btn pri" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити всі три (паралельно)</button><span class="muted sm">Порядок: Market · Audience · Competitors → Avatars → Strategic Insights</span></div>
-    ${competitorsOf(p).length ? '' : '<div class="warnbox">Competitor Intelligence потребує конкурентів у Брифі — AI не вигадує конкурентів.</div>'}`;
+    body = `<div class="infobox">Центр досліджень — єдине джерело дослідження для всіх каналів. Результати цих модулів <b>не дублюються</b> по каналах: їх використовують усі AI-агенти після фіксації.</div><div class="grid g3">${three.map(x => `<div class="card" style="margin:0"><h3>${esc(titleOf(p, x))}</h3>${statusChip(statusOf(p, x))}<p class="muted sm">${esc(CFG.M[x].desc)}</p><div class="sm t2">Використовують: ${dependents(p, x).slice(0, 5).map(d => esc(titleOf(p, d))).join(', ') || '—'}…</div><div class="row" style="margin-top:8px"><button class="btn sm" data-act="tab" data-t="${x}">Відкрити</button></div></div>`).join('')}</div>
+    <div class="row" style="margin:14px 0"><button class="btn pri" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити всі три (паралельно)</button><span class="muted sm">Порядок: ринок · аудиторія · конкуренти → аватари → стратегічні висновки</span></div>
+    ${competitorsOf(p).length ? '' : '<div class="warnbox">Аналіз конкурентів потребує конкурентів у Брифі — AI не вигадує конкурентів.</div>'}`;
   } else if (tab === 'insights') body = modCard(p, 'insightsA', true);
   else if (tab === 'sources') body = sourcesHtml(p);
   else if (tab === 'parse') body = parseHtml(p);
   else body = modCard(p, tab, true);
-  return pTop(p, 'Research Hub') + `<div class="wrap"><div class="tabs">${tabs.map(([k, l]) => `<a class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l} ${['market', 'audience', 'competitors', 'avatars'].includes(k) ? statusOf(p, k).icon : k === 'insights' ? statusOf(p, 'insightsA').icon : ''}</a>`).join('')}</div>${body}</div>`;
+  return pTop(p, 'Центр досліджень') + `<div class="wrap"><div class="tabs">${tabs.map(([k, l]) => `<a class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l} ${['market', 'audience', 'competitors', 'avatars'].includes(k) ? statusOf(p, k).icon : k === 'insights' ? statusOf(p, 'insightsA').icon : ''}</a>`).join('')}</div>${body}</div>`;
 }
 A.tab = el => { S.ui.tab.research = el.dataset.t; S.page = 'research'; render(); };
 function sourcesHtml(p) {
@@ -1282,52 +1300,52 @@ function parseHtml(p) {
   const meta = p.services.includes('meta_ads'); const cty = S.ui.adCountry || 'UA';
   let h = `<div class="infobox">Парсинг збирає <b>публічні</b> дані (пости, метрики, реклама) через зовнішній парсер на сервері. Результати стають зовнішніми джерелами й потрапляють у контекст AI як факти. Метрики, яких парсер не повернув, AI не вигадує.</div>${S.status.parser ? '' : '<div class="warnbox">На сервері не налаштовано APIFY_TOKEN — парсинг недоступний (див. README).</div>'}`;
   h += `<div class="card"><h3>Власні акаунти клієнта (для аудиту контенту)</h3>${parseRow('Instagram', 'instagram', p.brief.instagram, 'own', p.parsed.own.instagram)}${parseRow('TikTok', 'tiktok', p.brief.tiktok, 'own', p.parsed.own.tiktok)}${parseRow('Facebook', 'facebook', p.brief.facebook, 'own', p.parsed.own.facebook)}</div>`;
-  h += `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${meta ? `<label class="sm">Країна для Ads Library: <input type="text" data-adc="1" value="${esc(cty)}" style="width:60px;display:inline-block"></label>` : ''}</div>` + (competitorsOf(p).map(c => { const o = p.parsed.comp[c.id] || {}; return `<h4>${esc(c.name)}</h4>${parseRow('Instagram', 'instagram', c.instagram, c.id, o.instagram)}${parseRow('TikTok', 'tiktok', c.tiktok, c.id, o.tiktok)}${parseRow('Facebook', 'facebook', c.facebook, c.id, o.facebook)}${meta ? parseRow('Meta Ads', 'meta_ads', c.name, c.id, o.meta_ads, cty) : ''}`; }).join('') || '<div class="muted">Додайте конкурентів у Брифі</div>') + `</div>`;
+  h += `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${meta ? `<label class="sm">Країна для Бібліотека реклами: <input type="text" data-adc="1" value="${esc(cty)}" style="width:60px;display:inline-block"></label>` : ''}</div>` + (competitorsOf(p).map(c => { const o = p.parsed.comp[c.id] || {}; return `<h4>${esc(c.name)}</h4>${parseRow('Instagram', 'instagram', c.instagram, c.id, o.instagram)}${parseRow('TikTok', 'tiktok', c.tiktok, c.id, o.tiktok)}${parseRow('Facebook', 'facebook', c.facebook, c.id, o.facebook)}${meta ? parseRow('Meta Ads', 'meta_ads', c.name, c.id, o.meta_ads, cty) : ''}`; }).join('') || '<div class="muted">Додайте конкурентів у Брифі</div>') + `</div>`;
   return h;
 }
 A.parse = el => parseTarget(el.dataset.pl, el.dataset.h, el.dataset.key, el.dataset.cty);
 
-/* ---------- Strategy Map ---------- */
+/* ---------- Карта стратегії ---------- */
 function mapView(p) {
   const inc = includedList(p).filter(x => x.def); const ids = new Set(inc.map(x => x.id)); const depth = {};
   const dp = id => { if (depth[id] != null) return depth[id]; depth[id] = 0; const d = depsOf(p, id); depth[id] = Math.max(-1, ...d.hard.concat(d.soft).map(dp)) + 1; return depth[id]; };
   inc.forEach(x => dp(x.id));
-  const maxD = Math.max(0, ...Object.values(depth)); const nodes = inc.map(x => ({ id: x.id, t: x.title, d: depth[x.id], g: x.def.group })); nodes.push({ id: 'qa', t: 'QA-перевірка', d: maxD + 1, g: 'qa' }, { id: 'final', t: 'Final Strategy', d: maxD + 2, g: 'final' });
+  const maxD = Math.max(0, ...Object.values(depth)); const nodes = inc.map(x => ({ id: x.id, t: x.title, d: depth[x.id], g: x.def.group })); nodes.push({ id: 'qa', t: 'QA-перевірка', d: maxD + 1, g: 'qa' }, { id: 'final', t: 'Фінальна стратегія', d: maxD + 2, g: 'final' });
   const cols = {}; nodes.forEach(n => (cols[n.d] = cols[n.d] || []).push(n));
   const W = 200, H = 46, GX = 70, GY = 14; const pos = {};
   Object.keys(cols).forEach(d => cols[d].forEach((n, i) => { pos[n.id] = { x: 20 + d * (W + GX), y: 20 + i * (H + GY) }; }));
   const edges = []; inc.forEach(x => { const d = depsOf(p, x.id); d.hard.forEach(a => edges.push([a, x.id, 1])); d.soft.forEach(a => edges.push([a, x.id, 0])); });
   const lastCore = inc.map(x => x.id); nodes.filter(n => n.d === maxD).forEach(n => edges.push([n.id, 'qa', 0])); edges.push(['qa', 'final', 1]);
   const total = Math.max(...Object.values(cols).map(c => c.length)); const svgW = 40 + (maxD + 3) * (W + GX), svgH = 40 + total * (H + GY);
-  const col = st => ({ done: '#ecfdf3', idle: '#fff', stale: '#fffaeb', review: '#fffaeb', running: '#eff8ff' }[st] || '#fff');
+  const col = st => ({ done: '#16241a', idle: '#141416', stale: '#2a2213', review: '#2a2213', running: '#131f2e' }[st] || '#141416');
   const foc = S.ui.mapFocus; const rel = new Set(); if (foc) { rel.add(foc); const up = id => edges.filter(e => e[1] === id).forEach(e => { if (!rel.has(e[0])) { rel.add(e[0]); up(e[0]); } }); const dn = id => edges.filter(e => e[0] === id).forEach(e => { if (!rel.has(e[1])) { rel.add(e[1]); dn(e[1]); } }); up(foc); dn(foc); }
-  const svg = `<svg width="${svgW}" height="${svgH}" style="background:#fff;border:1px solid var(--line);border-radius:10px"><defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#98a2b3"/></marker></defs>` +
-    edges.filter(e => pos[e[0]] && pos[e[1]]).map(e => { const a = pos[e[0]], b = pos[e[1]]; const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2; const hi = foc && rel.has(e[0]) && rel.has(e[1]) && (e[0] === foc || e[1] === foc || (rel.has(e[0]) && rel.has(e[1]))); const dim = foc && !hi; return `<path d="M${x1},${y1} C${x1 + 40},${y1} ${x2 - 40},${y2} ${x2},${y2}" fill="none" stroke="${hi ? '#3538cd' : dim ? '#f2f4f7' : e[2] ? '#c3c9d6' : '#e4e7ec'}" stroke-width="${hi ? 1.8 : 1}" ${e[2] ? '' : 'stroke-dasharray="4 3"'} marker-end="url(#ar)"/>`; }).join('') +
-    nodes.map(n => { const q = pos[n.id]; const st = CFG.M[n.id] ? statusOf(p, n.id) : { k: n.id === 'qa' ? (p.qa && !qaStale(p) ? 'done' : 'idle') : (p.final ? 'done' : 'idle'), icon: '' }; const dim = foc && !rel.has(n.id); const lk = isLocked(p, n.id); return `<g class="node" data-act="mapNode" data-id="${n.id}" opacity="${dim ? .3 : 1}"><rect x="${q.x}" y="${q.y}" width="${W}" height="${H}" rx="8" fill="${col(st.k)}" stroke="${foc === n.id ? '#3538cd' : '#d0d5dd'}" stroke-width="${foc === n.id ? 2 : 1}"/><text x="${q.x + 10}" y="${q.y + 19}" font-weight="600">${esc((n.t.length > 27 ? n.t.slice(0, 26) + '…' : n.t))}</text><text x="${q.x + 10}" y="${q.y + 36}" fill="#667085">${n.g === 'qa' || n.g === 'final' ? '' : (CFG.GROUPS[n.g].label + ' · ')}${st.icon || ''} ${lk ? '🔒' : ''}</text></g>`; }).join('') + `</svg>`;
-  return pTop(p, 'Strategy Map') + `<div class="wrap"><div class="infobox">Суцільна лінія — жорстка залежність (потрібна зафіксована), пунктир — бажана. Клікніть модуль, щоб підсвітити, від чого він залежить і що від нього залежить. Подвійний клік — перейти до модуля.</div><div style="overflow:auto">${svg}</div></div>`;
+  const svg = `<svg width="${svgW}" height="${svgH}" style="background:#0e0e10;border:1px solid var(--line);border-radius:18px"><defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6c6b66"/></marker></defs>` +
+    edges.filter(e => pos[e[0]] && pos[e[1]]).map(e => { const a = pos[e[0]], b = pos[e[1]]; const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2; const hi = foc && rel.has(e[0]) && rel.has(e[1]) && (e[0] === foc || e[1] === foc || (rel.has(e[0]) && rel.has(e[1]))); const dim = foc && !hi; return `<path d="M${x1},${y1} C${x1 + 40},${y1} ${x2 - 40},${y2} ${x2},${y2}" fill="none" stroke="${hi ? '#cbff2e' : dim ? '#1c1c1f' : e[2] ? '#5a5a58' : '#2c2c2f'}" stroke-width="${hi ? 1.8 : 1}" ${e[2] ? '' : 'stroke-dasharray="4 3"'} marker-end="url(#ar)"/>`; }).join('') +
+    nodes.map(n => { const q = pos[n.id]; const st = CFG.M[n.id] ? statusOf(p, n.id) : { k: n.id === 'qa' ? (p.qa && !qaStale(p) ? 'done' : 'idle') : (p.final ? 'done' : 'idle'), icon: '' }; const dim = foc && !rel.has(n.id); const lk = isLocked(p, n.id); return `<g class="node" data-act="mapNode" data-id="${n.id}" opacity="${dim ? .3 : 1}"><rect x="${q.x}" y="${q.y}" width="${W}" height="${H}" rx="12" fill="${col(st.k)}" stroke="${foc === n.id ? '#cbff2e' : '#3a3a3d'}" stroke-width="${foc === n.id ? 2 : 1}"/><text x="${q.x + 10}" y="${q.y + 19}" font-weight="600">${esc((n.t.length > 27 ? n.t.slice(0, 26) + '…' : n.t))}</text><text x="${q.x + 10}" y="${q.y + 36}" fill="#a5a49d">${n.g === 'qa' || n.g === 'final' ? '' : (CFG.GROUPS[n.g].label + ' · ')}${st.icon || ''} ${lk ? '🔒' : ''}</text></g>`; }).join('') + `</svg>`;
+  return pTop(p, 'Карта стратегії') + `<div class="wrap"><div class="infobox">Суцільна лінія — жорстка залежність (потрібна зафіксована), пунктир — бажана. Клікніть модуль, щоб підсвітити, від чого він залежить і що від нього залежить. Подвійний клік — перейти до модуля.</div><div style="overflow:auto">${svg}</div></div>`;
 }
 A.mapNode = (el, ev) => { const id = el.dataset.id; if (ev.detail > 1 && CFG.M[id]) { A.jump({ dataset: { id } }); return; } S.ui.mapFocus = S.ui.mapFocus === id ? null : id; render(); };
 
 /* ---------- QA ---------- */
-const QA_CATS = { consistency: 'Consistency — чи однакова аудиторія в різних каналах', brand: 'Brand Consistency — відповідність Brand Platform', funnel: 'Funnel Consistency — логіка звʼязку каналів', contentads: 'Content × Ads — чи контент підтримує рекламу', evidence: 'Evidence — підґрунтя рішень', generic: 'Generic AI Content — загальні фрази' };
+const QA_CATS = { consistency: 'Узгодженість — чи однакова аудиторія в різних каналах', brand: 'Узгодженість бренду — відповідність платформі бренду', funnel: 'Узгодженість воронки — логіка звʼязку каналів', contentads: 'Контент і реклама — чи контент підтримує рекламу', evidence: 'Докази — підґрунтя рішень', generic: 'Загальні фрази — шаблонний AI-текст' };
 function qaView(p) {
   const q = p.qa; const stale = q && qaStale(p); const sc = qaScope(p);
   const all = q ? q.prog.concat(q.ai) : [];
   const ic = s => s === 'ok' ? '<span style="color:var(--ok)">✓ Узгоджено</span>' : s === 'warn' ? '<span style="color:var(--warn)">⚠ Потребує доопрацювання</span>' : '<span style="color:var(--bad)">✕ Конфлікт</span>';
-  const body = q ? Object.keys(QA_CATS).map(c => { const fs = all.filter(f => f.cat === c); if (!fs.length) return ''; return `<div class="card"><h3>${QA_CATS[c]}</h3>${fs.sort((a, b) => ({ conflict: 0, warn: 1, ok: 2 }[a.status] - { conflict: 0, warn: 1, ok: 2 }[b.status])).map(f => `<div style="padding:7px 0;border-bottom:1px dashed var(--line)"><div class="row">${ic(f.status)} ${f.target && CFG.M[f.target] ? `<a data-act="jump" data-id="${f.target}" style="cursor:pointer" class="sm">${esc(titleOf(p, f.target))}</a>` : ''} ${f.src === 'ai' ? chip('AI Reviewer') : chip('авто')}</div><div>${esc(f.problem)}</div>${f.fix ? `<div class="sm t2">→ ${esc(f.fix)}</div>` : ''}</div>`).join('')}</div>`; }).join('') : '';
-  return pTop(p, 'QA-перевірка', `<button class="btn pri" data-act="qa" ${S.ui.qaRunning ? 'disabled' : ''}>${S.ui.qaRunning ? '<span class="spinner"></span> Перевіряється…' : q ? '↻ Запустити повторно' : '▶ Запустити QA'}</button>`) + `<div class="wrap"><div class="infobox">Strategy Reviewer <b>не генерує нову стратегію</b> — він перевіряє готову. Замість оцінки «8/10» — чекліст із поясненням проблем. ${q ? `Наступний запуск перевірить лише змінені модулі та залежні від них${sc.length ? ': <b>' + sc.map(x => esc(titleOf(p, x))).join(', ') + '</b>' : ' (змін немає)'}.` : 'Перший запуск перевіряє весь проєкт.'}</div>${S.ui.qaErr ? `<div class="errbox">${esc(S.ui.qaErr)}</div>` : ''}${stale ? '<div class="warnbox">Після останньої QA-перевірки модулі змінились — результат неактуальний.</div>' : ''}
+  const body = q ? Object.keys(QA_CATS).map(c => { const fs = all.filter(f => f.cat === c); if (!fs.length) return ''; return `<div class="card"><h3>${QA_CATS[c]}</h3>${fs.sort((a, b) => ({ conflict: 0, warn: 1, ok: 2 }[a.status] - { conflict: 0, warn: 1, ok: 2 }[b.status])).map(f => `<div style="padding:7px 0;border-bottom:1px dashed var(--line)"><div class="row">${ic(f.status)} ${f.target && CFG.M[f.target] ? `<a data-act="jump" data-id="${f.target}" style="cursor:pointer" class="sm">${esc(titleOf(p, f.target))}</a>` : ''} ${f.src === 'ai' ? chip('AI-рецензент') : chip('авто')}</div><div>${esc(f.problem)}</div>${f.fix ? `<div class="sm t2">→ ${esc(f.fix)}</div>` : ''}</div>`).join('')}</div>`; }).join('') : '';
+  return pTop(p, 'QA-перевірка', `<button class="btn pri" data-act="qa" ${S.ui.qaRunning ? 'disabled' : ''}>${S.ui.qaRunning ? '<span class="spinner"></span> Перевіряється…' : q ? '↻ Запустити повторно' : '▶ Запустити QA'}</button>`) + `<div class="wrap"><div class="infobox">Рецензент стратегії <b>не генерує нову стратегію</b> — він перевіряє готову. Замість оцінки «8/10» — чекліст із поясненням проблем. ${q ? `Наступний запуск перевірить лише змінені модулі та залежні від них${sc.length ? ': <b>' + sc.map(x => esc(titleOf(p, x))).join(', ') + '</b>' : ' (змін немає)'}.` : 'Перший запуск перевіряє весь проєкт.'}</div>${S.ui.qaErr ? `<div class="errbox">${esc(S.ui.qaErr)}</div>` : ''}${stale ? '<div class="warnbox">Після останньої QA-перевірки модулі змінились — результат неактуальний.</div>' : ''}
   ${q ? `<div class="row" style="margin-bottom:12px">${chip('✓ ' + q.summary.ok, 'ok')}${chip('⚠ ' + q.summary.warn, 'warn')}${chip('✕ ' + q.summary.conflict, 'bad')}<span class="muted sm">${fmtDate(q.runAt)} · ${esc(q.by)}</span><span style="flex:1"></span><button class="btn pri" data-act="page" data-v="final">До фінальної стратегії →</button></div>` : ''}${body}</div>`;
 }
 A.qa = () => runQA();
 
-/* ---------- Final Strategy ---------- */
+/* ---------- Фінальна стратегія ---------- */
 function finalView(p) {
   const fm = finalModules(p); const f = p.final;
   const gate = !p.qa ? 'Спершу виконайте QA-перевірку.' : qaStale(p) ? 'QA неактуальна — повторіть перевірку.' : '';
   let body;
-  if (!f) body = `<div class="card"><h3>Фінальна стратегія збирає лише підтверджені, актуальні й активні модулі</h3><div class="grid g2"><div><h4>Увійдуть (${fm.ok.length})</h4>${fm.ok.map(x => `<div class="sm">✓ ${esc(x.title)}</div>`).join('') || '<span class="muted">—</span>'}</div><div><h4>Не увійдуть (${fm.excl.length})</h4>${fm.excl.map(x => `<div class="sm">✕ ${esc(x.title)} — ${x.why}</div>`).join('') || '<span class="muted">—</span>'}</div></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}<button class="btn pri" data-act="genFinal" ${gate ? 'disabled' : ''}>Сформувати Final Strategy</button></div>`;
+  if (!f) body = `<div class="card"><h3>Фінальна стратегія збирає лише підтверджені, актуальні й активні модулі</h3><div class="grid g2"><div><h4>Увійдуть (${fm.ok.length})</h4>${fm.ok.map(x => `<div class="sm">✓ ${esc(x.title)}</div>`).join('') || '<span class="muted">—</span>'}</div><div><h4>Не увійдуть (${fm.excl.length})</h4>${fm.excl.map(x => `<div class="sm">✕ ${esc(x.title)} — ${x.why}</div>`).join('') || '<span class="muted">—</span>'}</div></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}<button class="btn pri" data-act="genFinal" ${gate ? 'disabled' : ''}>Сформувати Фінальна стратегія</button></div>`;
   else body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div><div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
-  return pTop(p, 'Final Strategy') + `<div class="wrap">${body}</div>`;
+  return pTop(p, 'Фінальна стратегія') + `<div class="wrap">${body}</div>`;
 }
 A.genFinal = () => generateFinal();
 A.export = el => doExport(el.dataset.f);
@@ -1359,7 +1377,7 @@ document.addEventListener('change', ev => {
 /* ---------- Boot ---------- */
 function askIdentity(needKey) {
   return new Promise(res => {
-    modal(`<h3>Вхід у Agency Strategy OS</h3><label class="f"><span>Ваше імʼя (для історії змін і команди проєкту)</span><input type="text" id="id_name" value="${esc(S.user)}" autofocus></label>${needKey ? `<label class="f"><span>Командний ключ</span><input type="text" id="id_key" value="${esc(ls.get('aso_key') || '')}"></label>` : ''}<div class="row" style="justify-content:flex-end"><button class="btn pri" id="id_ok">Продовжити</button></div>`);
+    modal(`<h3>Вхід у Конструктор стратегій</h3><label class="f"><span>Ваше імʼя (для історії змін і команди проєкту)</span><input type="text" id="id_name" value="${esc(S.user)}" autofocus></label>${needKey ? `<label class="f"><span>Командний ключ</span><input type="text" id="id_key" value="${esc(ls.get('aso_key') || '')}"></label>` : ''}<div class="row" style="justify-content:flex-end"><button class="btn pri" id="id_ok">Продовжити</button></div>`);
     $('#id_ok').onclick = () => { const n = $('#id_name').value.trim(); if (!n) return toast('Вкажіть імʼя', true); S.user = n; ls.set('aso_user', n); if (needKey) ls.set('aso_key', $('#id_key').value.trim()); closeModal(); res(); };
   });
 }
