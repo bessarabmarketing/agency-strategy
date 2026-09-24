@@ -4,6 +4,14 @@
   "private": true,
   "type": "module",
   "description": "Внутрішній конструктор маркетингових і SMM-стратегій для агенції",
-  "engines": { "node": ">=22.13" },
-  "scripts": { "start": "node server.js", "dev:mock": "node dev/mock.js" }
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev:mock": "node dev/mock.js"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
 }
