@@ -1,0 +1,9 @@
+{
+  "name": "agency-strategy-os",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Внутрішній конструктор маркетингових і SMM-стратегій для агенції",
+  "engines": { "node": ">=22.13" },
+  "scripts": { "start": "node server.js", "dev:mock": "node dev/mock.js" }
+}
