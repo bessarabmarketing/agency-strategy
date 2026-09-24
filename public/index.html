@@ -1,0 +1,1364 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agency Strategy OS</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--line:#e4e7ec;--line2:#d0d5dd;--tx:#101828;--tx2:#475467;--tx3:#98a2b3;--ac:#3538cd;--ac2:#eef0ff;--ok:#067647;--ok2:#ecfdf3;--warn:#b54708;--warn2:#fffaeb;--bad:#b42318;--bad2:#fef3f2;--info:#175cd3;--info2:#eff8ff;--r:8px}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+button{font:inherit;cursor:pointer}
+a{color:var(--ac)}
+#app{display:grid;grid-template-columns:232px 1fr;height:100vh}
+#side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto}
+#main{overflow-y:auto;min-width:0}
+.brand{padding:16px 16px 10px;font-weight:700;letter-spacing:-.01em;display:flex;gap:8px;align-items:center}
+.brand i{width:22px;height:22px;border-radius:6px;background:var(--ac);display:inline-block}
+.nav{padding:4px 8px}
+.nav h6{margin:14px 8px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);font-weight:600}
+.nav a{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:var(--tx2);text-decoration:none;cursor:pointer;font-size:13.5px}
+.nav a:hover{background:var(--bg)}
+.nav a.on{background:var(--ac2);color:var(--ac);font-weight:600}
+.nav .dot{margin-left:auto;font-size:11px;color:var(--tx3)}
+.side-foot{margin-top:auto;padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--tx3)}
+.top{position:sticky;top:0;z-index:5;background:rgba(246,247,249,.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:17px;margin:0;font-weight:650}
+.top .sp{flex:1}
+.wrap{padding:20px 24px 60px;max-width:1240px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 8px;font-size:15px}
+.card h4{margin:14px 0 6px;font-size:13px;color:var(--tx2);text-transform:uppercase;letter-spacing:.04em}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1000px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){#app{grid-template-columns:1fr}#side{display:none}.g2,.g3,.g4{grid-template-columns:1fr}}
+.btn{border:1px solid var(--line2);background:var(--panel);border-radius:6px;padding:6px 12px;color:var(--tx);white-space:nowrap}
+.btn:hover{background:var(--bg)}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}.btn.pri:hover{background:#2b2eb0}
+.btn.sm{padding:3px 9px;font-size:12.5px}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.danger{color:var(--bad);border-color:#fda29b}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid var(--line2);color:var(--tx2);background:#fff;white-space:nowrap}
+.chip.ok{background:var(--ok2);border-color:#abefc6;color:var(--ok)}.chip.warn{background:var(--warn2);border-color:#fedf89;color:var(--warn)}.chip.bad{background:var(--bad2);border-color:#fecdca;color:var(--bad)}.chip.info{background:var(--info2);border-color:#b2ddff;color:var(--info)}.chip.ac{background:var(--ac2);border-color:#c7d0ff;color:var(--ac)}
+.muted{color:var(--tx3)}.sm{font-size:12.5px}.t2{color:var(--tx2)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar{height:8px;border-radius:99px;background:#eaecf0;overflow:hidden}.bar>i{display:block;height:100%;background:var(--ac);border-radius:99px;transition:width .3s}
+.bar.ok>i{background:#12b76a}.bar.warn>i{background:#f79009}
+label.f{display:block;margin-bottom:10px}
+label.f>span{display:block;font-size:12.5px;color:var(--tx2);margin-bottom:3px;font-weight:550}
+input[type=text],input[type=url],input[type=number],select,textarea{width:100%;font:inherit;padding:7px 10px;border:1px solid var(--line2);border-radius:6px;background:#fff;color:var(--tx)}
+textarea{min-height:64px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #c7d0ff;border-color:var(--ac)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:4px 10px;border:1px solid var(--line2);border-radius:99px;cursor:pointer;background:#fff;font-size:13px;user-select:none}
+.tag.on{background:var(--ac2);border-color:var(--ac);color:var(--ac);font-weight:600}
+.stepper{display:flex;gap:4px;overflow-x:auto;padding:2px 0}
+.step{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:12.5px;cursor:pointer;white-space:nowrap;color:var(--tx2)}
+.step b{width:18px;height:18px;border-radius:50%;background:var(--line);display:inline-grid;place-items:center;font-size:11px;color:var(--tx2)}
+.step.done{border-color:#abefc6}.step.done b{background:#12b76a;color:#fff}
+.step.cur{border-color:var(--ac);color:var(--ac);font-weight:600}.step.cur b{background:var(--ac);color:#fff}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+tr.click:hover{background:#fafbfc;cursor:pointer}
+.mod{border:1px solid var(--line);border-radius:var(--r);background:#fff;margin-bottom:12px}
+.mod>.mh{display:flex;gap:10px;align-items:center;padding:12px 14px;cursor:pointer;flex-wrap:wrap}
+.mod>.mh .ttl{font-weight:600;font-size:15px}
+.mod>.mb{padding:0 14px 14px;border-top:1px solid var(--line)}
+.mod.blocked>.mh{opacity:.85}
+.sec{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sec>.sh{padding:8px 12px;background:#fafbfc;font-weight:600;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
+.sec>.sb{padding:10px 12px}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:4px 12px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--tx3);font-size:12.5px}.kv .v{white-space:pre-wrap;word-break:break-word}
+@media(max-width:760px){.kv{grid-template-columns:1fr}}
+.item{border:1px solid var(--line);border-radius:8px;margin:8px 0;background:#fff}
+.item>.ih{padding:7px 12px;background:#f9fafb;border-bottom:1px solid var(--line);font-weight:600;display:flex;gap:8px;align-items:center}
+.item>.ib{padding:6px 12px}
+.impl{margin-top:10px;background:var(--ac2);border:1px solid #c7d0ff;border-radius:8px;padding:10px 12px}
+.impl b.t{color:var(--ac);display:block;margin-bottom:4px}
+.impl .kv{border-color:#d5dbff}
+.claims{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.claim{font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--line2);max-width:100%}
+.claim.client_data{background:var(--info2);border-color:#b2ddff}.claim.external_research{background:var(--ok2);border-color:#abefc6}.claim.ai_inference{background:#f2f4f7}.claim.ai_hypothesis{background:var(--warn2);border-color:#fedf89}
+.warnbox{background:var(--warn2);border:1px solid #fedf89;border-radius:8px;padding:8px 12px;margin:10px 0;color:#7a2e0e}
+.errbox{background:var(--bad2);border:1px solid #fecdca;border-radius:8px;padding:8px 12px;margin:10px 0;color:var(--bad)}
+.okbox{background:var(--ok2);border:1px solid #abefc6;border-radius:8px;padding:8px 12px;margin:10px 0;color:var(--ok)}
+.infobox{background:var(--info2);border:1px solid #b2ddff;border-radius:8px;padding:8px 12px;margin:10px 0;color:#0b4a8f}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tabs a{padding:8px 14px;cursor:pointer;color:var(--tx2);border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--ac);border-color:var(--ac);font-weight:600}
+.dnd{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-bottom:6px}
+.dnd.over{border-color:var(--ac);background:var(--ac2)}
+.dnd.hid{opacity:.55}
+.dnd .h{cursor:grab;color:var(--tx3);font-size:16px;user-select:none}
+.dnd .ttl{flex:1;min-width:0}
+.dnd input.rn{border:1px solid transparent;background:transparent;padding:2px 6px;font-weight:600}
+.dnd input.rn:hover,.dnd input.rn:focus{border-color:var(--line2);background:#fff}
+.svc{border:1px solid var(--line2);border-radius:10px;padding:12px;background:#fff;cursor:pointer;display:flex;gap:10px}
+.svc.on{border-color:var(--ac);background:var(--ac2)}
+.svc.base{cursor:default}
+.svc input{margin-top:3px}
+.lock-banner{display:flex;gap:12px;align-items:center;background:#101828;color:#fff;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid #c7d0ff;border-top-color:var(--ac);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;padding:10px 14px;border-radius:8px;z-index:50;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.err{background:var(--bad)}
+.modal-bg{position:fixed;inset:0;background:rgba(16,24,40,.45);display:grid;place-items:center;z-index:40}
+.modal{background:#fff;border-radius:12px;padding:20px;width:min(560px,92vw);max-height:88vh;overflow:auto}
+.modal h3{margin:0 0 12px}
+.cm{border-left:3px solid var(--line2);padding:4px 10px;margin:6px 0;background:#fafbfc}
+.cm.res{opacity:.55}
+pre.json{background:#f2f4f7;border-radius:8px;padding:10px;overflow:auto;max-height:420px;font-size:12px}
+svg text{font:12px -apple-system,Segoe UI,sans-serif}
+.node{cursor:pointer}
+.doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px 34px}
+.doc h1{font-size:26px;margin:0 0 4px}.doc h2{font-size:20px;margin:28px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}.doc h3{font-size:16px;margin:18px 0 6px}.doc h4{font-size:13px;margin:12px 0 4px;color:var(--tx2)}
+@media print{#side,.top,.no-print{display:none!important}#app{display:block}#main{overflow:visible}.doc{border:0;padding:0}body{background:#fff}}
+</style>
+</head>
+<body>
+<div id="app"><aside id="side"></aside><main id="main"></main></div>
+<div id="overlay"></div>
+<script>
+/* =====================================================================
+   МЕТОДОЛОГІЯ АГЕНЦІЇ (CFG) — декларативна конфігурація.
+   Тут описано: послуги, правила Service→Module, модулі та їхні секції,
+   залежності, агенти. Змінення методології = зміна цього блоку (або
+   перевизначення промптів у розділі «AI Agents»), а не UI-коду.
+   ===================================================================== */
+const F = s => s.split('|').map(x => { const i = x.indexOf(':'); return { k: x.slice(0, i), l: x.slice(i + 1) }; });
+const CFG = {};
+CFG.VERSION = '1.0';
+
+/* ---------- Послуги ---------- */
+CFG.SERVICES = [
+  { id: 'instagram', group: 'CONTENT', label: 'Instagram', base: true, channel: 'smm', desc: 'Базовий контент-супровід' },
+  { id: 'facebook', group: 'CONTENT', label: 'Facebook Cross-posting', base: true, channel: 'smm', desc: 'Кросспостинг з Instagram' },
+  { id: 'meta_ads', group: 'PAID MEDIA', label: 'Meta Ads', channel: 'meta', desc: 'Реклама у Facebook / Instagram' },
+  { id: 'google_ads', group: 'PAID MEDIA', label: 'Google Ads', channel: 'google', desc: 'Search, PMax, Shopping — за потреби' },
+  { id: 'tiktok_org', group: 'TIKTOK', label: 'TikTok Organic', channel: 'tiktok', desc: 'Органічний контент у TikTok' },
+  { id: 'tiktok_ads', group: 'TIKTOK', label: 'TikTok Ads', channel: 'tta', desc: 'Реклама у TikTok' },
+];
+CFG.CHANNEL_LABELS = { smm: 'Instagram / Facebook (контент)', meta: 'Meta Ads', google: 'Google Ads', tiktok: 'TikTok Organic', tta: 'TikTok Ads' };
+
+/* ---------- Групи модулів = розділи sidebar ---------- */
+CFG.GROUPS = {
+  research: { label: 'Research', page: 'research' },
+  brand: { label: 'Brand', page: 'brand' },
+  smm: { label: 'SMM', page: 'smm' },
+  meta: { label: 'Meta Ads', page: 'meta', svc: 'meta_ads' },
+  tiktok: { label: 'TikTok', page: 'tiktok', svc: 'tiktok_org' },
+  ttads: { label: 'TikTok Ads', page: 'ttads', svc: 'tiktok_ads' },
+  google: { label: 'Google Ads', page: 'google', svc: 'google_ads' },
+  cross: { label: 'Cross-channel', page: 'cross' },
+};
+CFG.LEVEL = { mandatory: { icon: '🔒', label: 'Обов\'язковий', w: 3 }, recommended: { icon: '★', label: 'Рекомендований', w: 2 }, optional: { icon: '○', label: 'Опціональний', w: 1 } };
+
+/* ---------- Правила Service → Module (єдине місце!) ----------
+   when: предикат над послугами / брифом; enable: {module: рівень}; sections: {module: [ext-секції]} */
+CFG.RULES = [
+  { id: 'core', when: { always: true }, enable: {
+    market: 'mandatory', audience: 'mandatory', avatars: 'mandatory', competitors: 'mandatory', insightsA: 'mandatory',
+    brand: 'mandatory', valueprop: 'mandatory', communication: 'mandatory', architectB: 'mandatory',
+    smm_audit: 'mandatory', smm_visual: 'mandatory', smm_rubrics: 'mandatory', smm_sound: 'recommended', smm_examples: 'recommended', smm_contests: 'optional' } },
+  { id: 'meta', when: { has: 'meta_ads' }, enable: { meta_audit: 'mandatory', meta_audience: 'mandatory', meta_strategy: 'mandatory', meta_launch: 'mandatory', meta_creative: 'mandatory' }, sections: { competitors: ['ext_meta'] } },
+  { id: 'tiktok_org', when: { has: 'tiktok_org' }, enable: { tt_org: 'mandatory' }, sections: { competitors: ['ext_tiktok'] } },
+  { id: 'tiktok_ads', when: { has: 'tiktok_ads' }, enable: { tta_strategy: 'mandatory', tta_creative: 'mandatory' }, sections: { competitors: ['ext_tiktok'] } },
+  { id: 'tiktok_syn', when: { all: [{ has: 'tiktok_org' }, { has: 'tiktok_ads' }] }, enable: { tt_synergy: 'mandatory' } },
+  { id: 'google', when: { has: 'google_ads' }, enable: { g_audit: 'mandatory', g_intent: 'mandatory', g_structure: 'mandatory' }, sections: { competitors: ['ext_google'] } },
+  { id: 'google_shop', when: { all: [{ has: 'google_ads' }, { brief: { bizModel: 'ecommerce' } }] }, sections: { g_structure: ['shopping'] } },
+  { id: 'cross', when: { channelsGt: 1 }, enable: { cross_funnel: 'mandatory' } },
+  { id: 'paid_syn', when: { anyHas: ['meta_ads', 'tiktok_ads', 'google_ads'] }, enable: { synergy_paid: 'mandatory' } },
+];
+CFG.evalWhen = function (w, c) {
+  if (!w || w.always) return true;
+  if (w.has) return c.svc.has(w.has);
+  if (w.anyHas) return w.anyHas.some(x => c.svc.has(x));
+  if (w.allHas) return w.allHas.every(x => c.svc.has(x));
+  if (w.channelsGt != null) return c.channels.size > w.channelsGt;
+  if (w.brief) return Object.entries(w.brief).every(([k, v]) => c.brief[k] === v);
+  if (w.all) return w.all.every(x => CFG.evalWhen(x, c));
+  if (w.any) return w.any.some(x => CFG.evalWhen(x, c));
+  if (w.not) return !CFG.evalWhen(w.not, c);
+  return true;
+};
+
+/* ---------- Агенти ---------- */
+CFG.GLOBAL_RULES = `Ти — старший стратег digital-агенції. Працюєш ТІЛЬКИ в межах Project Context, який надано у запиті.
+ЖОРСТКІ ПРАВИЛА:
+1. Відповідай виключно українською. Виводь ТІЛЬКИ валідний JSON за заданою схемою — без markdown-огорож, коментарів і пояснень поза JSON.
+2. НЕ вигадуй статистику, результати досліджень, назви конкурентів, рекламні показники конкурентів, бюджети. Якщо даних бракує — пиши «Немає даних: <що саме потрібно уточнити>» замість припущення.
+3. Кожне ключове твердження в "claims" має тип: client_data (з брифу), external_research (ТІЛЬКИ якщо є конкретний URL джерела зі web search або з наданих даних парсингу), ai_inference (логічний висновок із наданих даних), ai_hypothesis (припущення, яке треба перевірити). Гіпотезу ніколи не подавай як факт.
+4. НЕ змінюй і не переписуй те, що вже зафіксовано в Project Context (Brand Platform, УТП, Tone of Voice, сегменти, Big Idea, аватари). Використовуй як є та посилайся на нього. Не створюй власну версію.
+5. Логіка кожного аналітичного блоку: Research → Insight → Decision → Action. Уникай загальних фраз («створювати якісний контент», «підвищувати впізнаваність», «бути ближчими до аудиторії») — завжди поясни ЩО, ЯК і ЧОМУ саме для цього бізнесу.
+6. Пиши конкретно: формулювання, формати, кількість, приклади — у межах даних проєкту. Не дублюй аналіз, який уже є в контексті — посилайся на нього.`;
+
+CFG.AGENTS = {
+  market: { name: 'Market Intelligence', prompt: 'Ти досліджуєш категорію та ринок. Використовуй web search для перевірених зовнішніх фактів і завжди вказуй URL. Без джерела — тільки ai_inference або ai_hypothesis.' },
+  audience: { name: 'Audience Intelligence', prompt: 'Ти сегментуєш аудиторію насамперед за потребою, мотивацією, ситуацією, Job To Be Done, поведінкою, рівнем усвідомлення проблеми та причиною покупки — НЕ за демографією («жінки 25–45»). Сегменти не повинні перетинатися та суперечити один одному.' },
+  avatar: { name: 'Customer Avatar Builder', prompt: 'Ти створюєш аватари СТРОГО з наявних сегментів. Кожен аватар посилається на segmentId існуючого сегмента. Ланцюг: Segment → Avatar → Pain → Trigger → Message → Content → Offer.' },
+  competitor: { name: 'Competitor Intelligence', prompt: 'Ти аналізуєш ЛИШЕ конкурентів із брифу (не додавай інших). Використовуй дані парсингу та web search. Рекламні й контентні показники конкурентів — тільки з наданих даних; інакше «Немає даних». Єдина база: розширюй секції, не дублюй аналіз.' },
+  architect: { name: 'Strategy Architect', prompt: 'Ти формуєш стратегічні висновки. Кожен інсайт: Факт → Що це означає → Стратегічне рішення → Як реалізувати. Спирайся тільки на зафіксовані дослідження.' },
+  brand: { name: 'Brand Strategist', prompt: 'Ти будуєш Brand Platform на основі Market, Audience, Competitor Intelligence та Strategic Insights. Це єдина логіка бренду для всіх каналів.' },
+  valueprop: { name: 'Value Proposition Agent', prompt: 'Ти формуєш УТП як систему (продуктове, функціональне, емоційне), а не рекламний слоган. Спирайся на Brand Platform, аудиторію та конкурентів.' },
+  comm: { name: 'Communication Agent', prompt: 'Ти формуєш Big Idea, Key Message і Tone of Voice. Це єдина комунікаційна платформа, яку далі використовують усі канали без змін.' },
+  content: { name: 'Content Strategist', prompt: 'Ти формуєш SMM-стратегію та контентні системи (рубрикатори, візуал, звук). Tone of Voice, Big Idea, сегменти беруться з контексту без змін.' },
+  meta: { name: 'Meta Ads Strategist', prompt: 'Ти будуєш стратегію Meta Ads. Аудиторії — лише адаптація наявних сегментів (Segment → Meta Audience → Message → Offer → Creative Angle). Tone of Voice, УТП, бренд — з контексту без змін.' },
+  tiktok: { name: 'TikTok Strategist', prompt: 'Ти будуєш органічну стратегію TikTok. Вона НЕ повинна бути копією Instagram-стратегії: native-формати, hooks, серійність. Сегменти лише адаптуєш, не створюєш нові.' },
+  ttads: { name: 'TikTok Ads Strategist', prompt: 'Ти будуєш рекламну стратегію TikTok Ads: адаптація сегментів, creator-style і UGC-підходи, тестування креативів.' },
+  google: { name: 'Google Ads Strategist', prompt: 'Ти будуєш стратегію Google Ads на основі пошукового наміру. Використовуй наявну УТП. Shopping і Performance Max додавай ТІЛЬКИ якщо бізнес-модель цього потребує — і обґрунтуй.' },
+  cross: { name: 'Cross-channel Architect', prompt: 'Ти збираєш єдину міжканальну воронку строго з ролей каналів і зафіксованих стратегій. Не копіюй шаблонну воронку — будуй під цей бізнес.' },
+  synergy: { name: 'Synergy Checker', prompt: 'Ти ПЕРЕВІРЯЄШ узгодженість контенту та реклами. Не генеруй нову стратегію — виносиш вердикти та конкретні виправлення.' },
+  reviewer: { name: 'Strategy Reviewer', prompt: 'Ти НЕ генеруєш стратегію. Ти перевіряєш готову: узгодженість аудиторії, бренду, воронки, контенту й реклами, підґрунтя рішень, загальні фрази. Не став оцінку «8/10» — тільки чекліст із поясненням проблем.' },
+};
+
+/* ---------- Спільні схеми ---------- */
+const BK = { core: ['niche', 'geo', 'desc', 'products', 'priceSegment', 'avgCheck', 'segment', 'bizModel', 'goals', 'mainGoal'], comp: ['competitors'], mkt: ['channels', 'budget', 'results', 'works', 'notWorks'] };
+const LIST = (key, title, fields, o = {}) => Object.assign({ key, title, kind: 'list', fields: F(fields) }, o);
+const FLD = (key, title, fields, o = {}) => Object.assign({ key, title, kind: 'fields', fields: F(fields) }, o);
+const TXT = (key, title, o = {}) => Object.assign({ key, title, kind: 'text' }, o);
+
+/* ---------- Модулі ---------- */
+CFG.MODULES = [
+  /* ===== RESEARCH ===== */
+  { id: 'market', group: 'research', agent: 'market', title: 'Market Intelligence', web: true, impl: true, claims: true, brief: [...BK.core, 'channels'], deps: { hard: [], soft: [] },
+    desc: 'Категорія, ринок, тренди, бар\'єри, ризики — з висновками для стратегії',
+    role: 'Проаналізуй категорію та ринок клієнта. Для кожного блоку дай конкретику для цієї ніші та географії; зовнішні факти — тільки з URL. Наприкінці кожного блоку — «Що це означає для нашої стратегії?».',
+    sections: ['category:Категорія', 'market:Ринок', 'state:Стан ринку', 'behavior:Поведінка споживачів', 'trends:Тренди', 'demand:Зміни у попиті', 'choice:Фактори вибору', 'barriers:Бар\'єри покупки', 'niche:Особливості ніші', 'opps:Можливості', 'risks:Ризики', 'infoField:Інформаційне поле', 'patterns:Маркетингові патерни категорії'].map(x => TXT(x.split(':')[0], x.split(':')[1])) },
+  { id: 'audience', group: 'research', agent: 'audience', title: 'Audience Intelligence', impl: true, claims: true, web: true, brief: [...BK.core], deps: { hard: [], soft: ['market'] },
+    desc: 'Сегменти за потребою, мотивацією та JTBD — а не за демографією',
+    role: 'Сформуй 3–6 сегментів аудиторії, що не перетинаються. Сегментація: потреба, мотивація, ситуація, JTBD, поведінка, рівень усвідомлення проблеми, причина покупки. Кожне поле заповнюй конкретно (не «хоче якості»).',
+    sections: [
+      TXT('logic', 'Логіка сегментації'),
+      LIST('segments', 'Сегменти аудиторії', 'name:Назва сегмента|context:Контекст|jtbd:Job To Be Done|need:Потреба|pain:Pain|trigger:Trigger|barrier:Barrier|outcome:Desired Outcome|criteria:Критерії вибору|objections:Заперечення|behavior:Поведінка|awareness:Рівень усвідомлення проблеми|reason:Причина покупки|message:Message|offer:Offer|contentAngle:Content Angle|adAngle:Advertising Angle', { min: 3, max: 6, ids: 'S', titleField: 'name' })] },
+  { id: 'avatars', group: 'research', agent: 'avatar', title: 'Customer Avatars', impl: false, claims: false, brief: [], deps: { hard: ['audience'], soft: [] },
+    desc: 'Аватари клієнтів — суворо з сегментів: Segment → Avatar → Pain → Trigger → Message → Content → Offer',
+    role: 'Для КОЖНОГО сегмента з контексту створи рівно один аватар (можна два для великих сегментів). Обов\'язково вкажи segmentId існуючого сегмента. Pain/Trigger/Message/Offer мають бути узгоджені із сегментом, а не вигадані окремо.',
+    sections: [LIST('avatars', 'Аватари', 'segmentId:Сегмент (ID)|name:Імʼя аватара|portrait:Портрет і життєва ситуація|pain:Pain|trigger:Trigger|message:Message|content:Content (що показуємо)|offer:Offer', { min: 3, max: 8, titleField: 'name', ref: 'segmentId' })] },
+  { id: 'competitors', group: 'research', agent: 'competitor', title: 'Competitor Intelligence', web: true, impl: true, claims: true, requires: 'competitors', brief: [...BK.comp, 'niche', 'geo', 'products'], deps: { hard: [], soft: ['market'] },
+    desc: 'Єдина база конкурентного аналізу; розширюється залежно від підключених послуг',
+    role: 'Проаналізуй ТІЛЬКИ конкурентів із брифу (за назвою, як у контексті). Використовуй дані парсингу (якщо є) та web search. Показники, яких немає в наданих даних, не вигадуй: «Немає даних».',
+    sections: [
+      LIST('matrix', 'Матриця конкурентів', 'name:Назва (як у брифі)|positioning:Позиціонування|usp:УТП|product:Продукт|price:Ціна|valueProp:Ціннісна пропозиція|tov:Tone of Voice|visual:Візуальна комунікація|messages:Ключові повідомлення|content:Контент|rubrics:Рубрики|formats:Формати|cta:CTA|strengths:Сильні сторони|weaknesses:Слабкі сторони|differentiation:Можливості для диференціації', { titleField: 'name', core: true, competitorRows: true }),
+      FLD('conclusions', 'Висновки', 'use:Що ми можемо використати?|avoid:Чого варто уникати?|whitespace:Де є незайнята комунікаційна територія?|brandOpps:Які можливості має наш бренд?', { core: true }),
+      LIST('ext_meta', 'Розширення: Meta Ads', 'name:Конкурент|adOffers:Рекламні офери|adsLibrary:Ads Library / доступні матеріали|adMessages:Рекламні меседжі|cta:CTA|creativeFormats:Креативні формати|funnels:Воронки|landings:Посадкові сторінки|angles:Creative angles', { ext: true, titleField: 'name', competitorRows: true, svc: 'meta_ads' }),
+      LIST('ext_tiktok', 'Розширення: TikTok', 'name:Конкурент|content:TikTok-контент|hooks:Hooks|formats:Формати|recurring:Recurring formats|viral:Viral mechanics|engagement:Engagement|creator:Creator-style контент|frequency:Частота', { ext: true, titleField: 'name', competitorRows: true, svc: 'tiktok' }),
+      LIST('ext_google', 'Розширення: Google Ads', 'name:Конкурент|adOffers:Рекламні пропозиції|search:Search positioning|landings:Landing pages|offers:Офери|demand:Категорії попиту', { ext: true, titleField: 'name', competitorRows: true, svc: 'google_ads' })] },
+  { id: 'insightsA', group: 'research', agent: 'architect', title: 'Strategic Insights (Architect · A)', impl: false, claims: false, brief: [...BK.core], deps: { hard: ['market', 'audience', 'competitors'], soft: ['avatars'] },
+    desc: 'Інсайти, можливості, ризики, пріоритети та гіпотези — за результатами Research',
+    role: 'Сформуй стратегічні висновки з зафіксованого Research. Кожен інсайт: Факт/спостереження → Що це означає → Стратегічне рішення → Як реалізувати. Гіпотези — з планом перевірки.',
+    sections: [
+      LIST('insights', 'Strategic Insights', 'fact:Факт / спостереження|meaning:Що це означає|decision:Стратегічне рішення|how:Як реалізувати', { min: 5, max: 10, titleField: 'fact' }),
+      LIST('opportunities', 'Strategic Opportunities', 'title:Можливість|why:Чому саме вона|action:Що робимо', { titleField: 'title' }),
+      LIST('commOpps', 'Communication Opportunities', 'title:Можливість|angle:Кут комунікації|for:Для якого сегмента', { titleField: 'title' }),
+      LIST('risks', 'Ризики', 'risk:Ризик|impact:Наслідок|mitigation:Як знижуємо', { titleField: 'risk' }),
+      LIST('priorities', 'Strategic Priorities', 'priority:Пріоритет|reason:Чому|metric:Як вимірюємо', { titleField: 'priority' }),
+      LIST('hypotheses', 'Основні маркетингові гіпотези', 'hypothesis:Гіпотеза|test:Як перевіряємо|success:Критерій успіху', { titleField: 'hypothesis' })] },
+
+  /* ===== BRAND ===== */
+  { id: 'brand', group: 'brand', agent: 'brand', title: 'Brand Platform', impl: true, claims: true, brief: [...BK.core, 'likedBrands', 'dislikedBrands'], deps: { hard: ['insightsA', 'market', 'audience', 'competitors'], soft: ['avatars'] },
+    desc: 'Сутність, місія, цінності, характер, обіцянка, диференціація, територія бренду',
+    role: 'Сформуй Brand Platform на основі зафіксованих Market, Audience, Competitor Intelligence та Strategic Insights. Не загальні формулювання — саме для цього бренду.',
+    sections: [FLD('platform', 'Brand Platform', 'essence:Сутність бренду|mission:Місія|vision:Бачення|purpose:Brand Purpose|values:Цінності|beliefs:Переконання|principles:Принципи|character:Характер бренду|role:Роль бренду у житті клієнта|strengths:Сильні сторони|advantages:Конкурентні переваги|promise:Brand Promise|rtb:Reasons to Believe|brandEssence:Brand Essence (одна фраза)|differentiation:Диференціація|territory:Комунікаційна територія бренду')] },
+  { id: 'valueprop', group: 'brand', agent: 'valueprop', title: 'Value Proposition / УТП', impl: true, claims: true, brief: [...BK.core], deps: { hard: ['brand', 'audience', 'competitors'], soft: [] },
+    desc: 'Основна ціннісна пропозиція та система УТП — не слоган',
+    role: 'Сформуй систему УТП. УТП — це аргументована пропозиція для конкретних сегментів, а не рекламний слоган. Brand Promise і RTB бери з Brand Platform без змін.',
+    sections: [FLD('vp', 'Ціннісна пропозиція', 'main:Основна ціннісна пропозиція|productUsp:Product USP|functionalUsp:Functional USP|emotionalUsp:Emotional USP|promise:Brand Promise (з Brand Platform)|rtb:Reason to Believe'), LIST('messages', 'Основні Communication Messages', 'message:Повідомлення|segment:Для якого сегмента|proof:Чим підтверджуємо', { titleField: 'message' })] },
+  { id: 'communication', group: 'brand', agent: 'comm', title: 'Communication Platform (Big Idea · ToV)', impl: false, claims: false, brief: ['wishes', 'limits', 'lang', 'refs'], deps: { hard: ['brand', 'valueprop', 'audience'], soft: ['competitors'] },
+    desc: 'Big Idea → Key Message → Supporting Messages та Tone of Voice — єдині для всіх каналів',
+    role: 'Сформуй єдину комунікаційну платформу: Big Idea → Key Message → Supporting Messages та повний Tone of Voice (з прикладами «говоримо так / не говоримо так»). Це джерело для всіх каналів.',
+    sections: [FLD('bigidea', 'Big Idea', 'bigIdea:Big Idea|keyMessage:Key Message|supporting:Supporting Messages'), FLD('tov', 'Tone of Voice', 'voice:Характер голосу|style:Стиль|emotion:Емоційність|lexicon:Лексика|address:Звернення до аудиторії|humor:Гумор|allowed:Допустимі формулювання|forbidden:Недопустимі формулювання|sayThis:Приклади «говоримо так»|notThis:Приклади «не говоримо так»')] },
+  { id: 'architectB', group: 'brand', agent: 'architect', title: 'Ролі каналів і логіка воронки (Architect · B)', impl: false, claims: false, svcSig: true, brief: ['budget', 'channels'], deps: { hard: ['insightsA', 'brand', 'valueprop', 'communication'], soft: [] },
+    desc: 'Визначає роль кожного активного каналу та логіку воронки',
+    role: 'Визнач ролі ТІЛЬКИ активних каналів (список у контексті) і логіку воронки під цей бізнес. Не копіюй шаблон.',
+    sections: [LIST('roles', 'Канали та їхня роль', 'channel:Канал|role:Роль|stage:Етап воронки|audience:Головні сегменти|kpi:KPI|why:Чому саме так', { titleField: 'channel' }), TXT('funnelLogic', 'Логіка воронки')] },
+
+  /* ===== SMM ===== */
+  { id: 'smm_audit', group: 'smm', agent: 'content', title: 'Аудит поточного контенту та конкурентний аналіз контенту', impl: false, claims: false, web: false, brief: ['instagram', 'facebook', 'results', 'works', 'notWorks'], deps: { hard: ['competitors'], soft: [] },
+    desc: 'Аналіз поточних рубрик, форматів, engagement + порівняння з Competitor Intelligence',
+    role: 'Проаналізуй поточний контент клієнта на основі даних парсингу власних акаунтів та брифу. Якщо даних немає — «Немає даних: потрібен доступ/парсинг». Конкурентний аналіз контенту — ЛИШЕ на основі Competitor Intelligence з контексту (без нового аналізу).',
+    sections: [FLD('audit', 'Аудит поточного контенту', 'rubrics:Поточні рубрики|formats:Формати|reels:Reels|stories:Stories|static:Статичний контент|visual:Візуал|engagement:Engagement|cta:CTA|regularity:Регулярність|strengths:Сильні сторони|weaknesses:Слабкі сторони|growth:Точки росту'),
+      FLD('competitorContent', 'Конкурентний аналіз контенту', 'rubrics:Рубрики|reels:Reels|stories:Stories|hooks:Hooks|cta:CTA|visualSystem:Візуальна система|frequency:Частота|mechanics:Engagement mechanics|recurring:Recurring formats|takeaways:Що беремо / чого уникаємо')] },
+  { id: 'smm_sound', group: 'smm', agent: 'content', title: 'Sound Identity / Звукова айдентика', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: [] },
+    desc: 'Музичний характер бренду, Brand Sound Moodboard, правила трендових аудіо',
+    role: 'Сформуй звукову айдентику. НЕ вигадуй назви конкретних треків чи виконавців як «факти» — давай жанрові та настроєві референси і пошукові запити для підбору.',
+    sections: [FLD('sound', 'Sound Identity', 'musicChar:Музичний характер бренду|mood:Mood|genres:Жанри|tempo:Темп|emotion:Емоційність|vocal:Тип вокалу|atmosphere:Атмосфера|soundChar:Характер звуку|recurring:Recurring sounds|trendRule:Принцип використання трендових аудіо|useInReels:Яку музику використовувати в Reels|avoid:Яку музику не використовувати'),
+      LIST('moodboard', 'Brand Sound Moodboard', 'direction:Напрямок|description:Опис звучання|useCase:Де використовуємо|searchQueries:Пошукові запити для підбору', { titleField: 'direction', min: 4, max: 8 })] },
+  { id: 'smm_visual', group: 'smm', agent: 'content', title: 'Visual Moodboards', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['brand', 'communication', 'audience'], soft: ['competitors'] },
+    desc: 'Візуальна система: кольори, світло, композиція, відеостиль, типографіка',
+    role: 'Сформуй візуальну систему, узгоджену з Brand Platform і Tone of Voice. Референси — як напрямки й пошукові запити, не вигадані посилання.',
+    sections: [FLD('visual', 'Візуальна система', 'colors:Кольори|light:Світло|composition:Композиція|people:Люди|product:Предметна зйомка|video:Відеостиль|editing:Монтаж|typography:Typography|graphics:Graphic elements'), LIST('refs', 'Reference direction', 'direction:Напрямок|description:Опис|searchQueries:Пошукові запити', { titleField: 'direction', min: 3, max: 6 })] },
+  { id: 'smm_rubrics', group: 'smm', agent: 'content', title: 'Рубрикатор постів і Stories', impl: false, brief: [...BK.core], deps: { hard: ['brand', 'valueprop', 'communication', 'audience', 'avatars', 'competitors', 'smm_audit'], soft: [] },
+    desc: 'Рубрики для постів і окремо для Stories: задача, сегмент, етап воронки, формат, теми, CTA',
+    role: 'Сформуй рубрикатор постів і окремий рубрикатор Stories. Кожна рубрика привʼязана до сегмента (segmentId/назва з контексту) та етапу воронки. Tone of Voice, Big Idea — з контексту без змін.',
+    sections: [LIST('posts', 'Рубрикатор постів', 'name:Назва рубрики|goal:Задача|segment:Сегмент ЦА|stage:Етап воронки|format:Формат|topics:Теми|cta:CTA|examples:Приклади', { titleField: 'name', min: 5, max: 9 }), LIST('stories', 'Рубрикатор Stories', 'name:Назва рубрики|goal:Задача|segment:Сегмент ЦА|stage:Етап воронки|format:Формат (стікери, опитування…)|topics:Теми|cta:CTA|examples:Приклади', { titleField: 'name', min: 4, max: 8 }), FLD('cadence', 'Частота та ритм', 'posts:Пости на тиждень|reels:Reels на тиждень|stories:Stories на день|logic:Логіка розподілу')] },
+  { id: 'smm_examples', group: 'smm', agent: 'content', title: 'Приклади контенту', impl: false, brief: [], deps: { hard: ['smm_rubrics'], soft: [] },
+    desc: 'Конкретні приклади реалізації стратегії',
+    role: 'Створи 8–12 конкретних прикладів контенту по рубриках із рубрикатора: готовий hook, концепція, текст/сценарій, візуал, CTA.',
+    sections: [LIST('examples', 'Приклади контенту', 'rubric:Рубрика|format:Формат|hook:Hook|concept:Концепція|copy:Текст / сценарій|visual:Візуал|cta:CTA|segment:Сегмент', { titleField: 'hook', min: 8, max: 12 })] },
+  { id: 'smm_contests', group: 'smm', agent: 'content', title: 'Конкурси та активації', impl: false, brief: ['budget', 'goals'], deps: { hard: ['brand', 'audience'], soft: ['smm_rubrics'] },
+    desc: 'Механіки залучення: задача, умови, канал, CTA, очікувана дія',
+    role: 'Запропонуй 3–5 механік. Враховуй правила платформ (не вимагай заборонених дій) і бюджет із брифу.',
+    sections: [LIST('mechanics', 'Механіки', 'goal:Задача|mechanic:Механіка|conditions:Умови|channel:Канал|cta:CTA|action:Очікувана дія користувача', { titleField: 'mechanic', min: 3, max: 5 })] },
+
+  /* ===== META ADS ===== */
+  { id: 'meta_audit', group: 'meta', agent: 'meta', title: 'Meta · Первинний аудит', impl: false, brief: ['results', 'budget', 'works', 'notWorks', 'channels'], deps: { hard: [], soft: [] },
+    desc: 'Чекліст первинного аудиту (Business Manager, Pixel, CAPI, кампанії, аудиторії, креативи, tracking)',
+    role: 'AI не бачить рекламний кабінет. Для кожного пункту: що відомо з брифу (client_data), що НЕ відомо, і що конкретно перевірити в кабінеті. Не вигадуй стан Pixel/CAPI/кампаній.',
+    sections: [FLD('audit', 'Первинний аудит', 'bm:Business Manager|pixel:Pixel|capi:CAPI|account:Рекламний акаунт|campaigns:Кампанії|audiences:Аудиторії|creatives:Креативи|results:Результати|analytics:Аналітика|funnel:Воронка|tracking:Tracking')] },
+  { id: 'meta_audience', group: 'meta', agent: 'meta', title: 'Meta · Адаптація аудиторій', impl: false, brief: [], deps: { hard: ['audience', 'valueprop', 'communication'], soft: ['avatars'] },
+    desc: 'Marketing Segment → Meta Audience → Message → Offer → Creative Angle',
+    role: 'НЕ створюй сегменти заново. Для кожного сегмента з Audience Intelligence визнач, як його знайти в Meta (interest/behavior/lookalike/custom — як гіпотези для тестування), і привʼяжи Message/Offer/Creative Angle з контексту.',
+    sections: [LIST('adapt', 'Адаптація сегментів для Meta', 'segmentId:Сегмент (ID)|metaAudience:Meta Audience|targeting:Targeting-гіпотези|message:Message|offer:Offer|angle:Creative Angle', { titleField: 'segmentId', ref: 'segmentId' })] },
+  { id: 'meta_strategy', group: 'meta', agent: 'meta', title: 'Meta · Facebook / Instagram Ads Strategy', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'competitors', 'valueprop', 'communication', 'smm_rubrics', 'architectB', 'meta_audience'], soft: ['meta_audit'] },
+    desc: 'Роль Meta Ads, цілі, воронка: acquisition, warm, retargeting, conversion, retention',
+    role: 'Роль Meta Ads береш з ролей каналів (Architect B). Використай висновки Competitor Intelligence (розширення Meta). Бюджет — тільки з брифу, інакше «Немає даних».',
+    sections: [FLD('role', 'Роль і цілі', 'role:Роль Meta Ads|objectives:Рекламні цілі|budgetLogic:Логіка розподілу бюджету'), LIST('funnel', 'Funnel', 'stage:Етап (acquisition / warm / retargeting / conversion / retention)|goal:Ціль|audience:Аудиторії|structure:Структура кампаній|kpi:KPI', { titleField: 'stage' })] },
+  { id: 'meta_launch', group: 'meta', agent: 'meta', title: 'Meta · План запуску', impl: false, brief: ['budget'], deps: { hard: ['meta_strategy'], soft: [] },
+    desc: 'Поетапний launch plan',
+    role: 'Створи поетапний launch plan (3–5 етапів).',
+    sections: [LIST('stages', 'План запуску', 'stage:Етап|goal:Ціль|audience:Аудиторія|offer:Офер|message:Message|creative:Creative|landing:Landing|action:Expected Action|kpi:KPI', { titleField: 'stage' })] },
+  { id: 'meta_creative', group: 'meta', agent: 'meta', title: 'Meta · Communication & Creative Strategy', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['meta_strategy', 'communication'], soft: ['smm_visual'] },
+    desc: 'Формати креативів: Format → Hook → Message → Offer → CTA; референси',
+    role: 'Для кожного релевантного формату (Static, Carousel, Dynamic, Catalog, Reels Ads, Stories Ads, UGC, Video) дай Format → Hook → Message → Offer → CTA. Нерелевантні формати (наприклад Catalog без каталогу) познач у полі relevant як «Ні» з причиною.',
+    sections: [LIST('formats', 'Формати креативів', 'format:Формат|relevant:Релевантність (Так/Ні + чому)|hook:Hook|message:Message|offer:Offer|cta:CTA', { titleField: 'format' }), { key: 'refs', title: 'Creative References (зберігаються вручну)', kind: 'refs', manual: true }] },
+
+  /* ===== TIKTOK ORGANIC ===== */
+  { id: 'tt_org', group: 'tiktok', agent: 'tiktok', title: 'TikTok Organic Strategy', impl: false, brief: ['tiktok', 'budget', 'goals'], deps: { hard: ['audience', 'communication', 'valueprop', 'competitors', 'architectB'], soft: ['smm_rubrics'] },
+    desc: 'Native-контент, hooks, серійність, механіки росту — не копія Instagram',
+    role: 'Побудуй TikTok-стратегію як самостійну систему, що НЕ дублює SMM/Instagram-рубрикатор (він у контексті — уникай копіювання). Сегменти лише адаптуй.',
+    sections: [FLD('role', 'Роль і цілі', 'role:Роль TikTok|goals:Цілі|behavior:Поведінка аудиторії в TikTok'), LIST('adapt', 'Адаптація Audience Intelligence', 'segmentId:Сегмент (ID)|tiktokBehavior:Як цей сегмент поводиться в TikTok|angle:Кут', { titleField: 'segmentId', ref: 'segmentId' }), LIST('pillars', 'Content pillars', 'name:Pillar|purpose:Задача|native:Native-підхід|hooks:Hooks|formats:Формати', { titleField: 'name' }), FLD('formats', 'Формати та сторітелінг', 'storytelling:Storytelling|trends:Трендові механіки|recurring:Recurring formats|creator:Creator-style контент|series:Серійний контент'), FLD('growth', 'Зростання', 'frequency:Частота|growth:Механіки росту|community:Community|cta:CTA|kpi:KPI'), LIST('examples', 'Приклади контенту', 'pillar:Pillar|hook:Hook|concept:Сценарій / концепція|cta:CTA', { titleField: 'hook', min: 6, max: 10 })] },
+
+  /* ===== TIKTOK ADS ===== */
+  { id: 'tta_strategy', group: 'ttads', agent: 'ttads', title: 'TikTok Ads · Стратегія', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'valueprop', 'communication', 'competitors', 'architectB'], soft: ['tt_org'] },
+    desc: 'Аудит, роль, воронка, аудиторії, структура кампаній, тестування, KPI, бюджет',
+    role: 'Побудуй стратегію TikTok Ads. Бюджет тільки з брифу («Немає даних» — якщо не вказано).',
+    sections: [FLD('audit', 'Аудит', 'state:Поточний стан (з брифу)|toCheck:Що перевірити в кабінеті'), FLD('role', 'Роль та воронка', 'role:Роль TikTok Ads|funnel:Рекламна воронка'), LIST('audiences', 'Адаптація сегментів і аудиторії', 'segmentId:Сегмент (ID)|audience:Audience|offer:Offer', { titleField: 'segmentId', ref: 'segmentId' }), FLD('structure', 'Структура та тестування', 'campaigns:Структура кампаній|retargeting:Ретаргетинг|testing:Testing framework|kpi:KPI|budget:Бюджет')] },
+  { id: 'tta_creative', group: 'ttads', agent: 'ttads', title: 'TikTok Ads · Креатив', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['tta_strategy', 'communication'], soft: [] },
+    desc: 'Creative angles, hooks, UGC та creator-style ads, сценарії, референси',
+    role: 'Сформуй креативну систему: angles, hooks, UGC-концепції, creator-style ads і сценарії. Tone of Voice — з контексту.',
+    sections: [LIST('angles', 'Creative angles', 'angle:Angle|segment:Сегмент|hook:Hook|ugc:UGC-концепція|creatorStyle:Creator-style|offer:Offer', { titleField: 'angle', min: 5, max: 8 }), LIST('scripts', 'Сценарії', 'title:Назва|length:Тривалість|script:Сценарій по кадрах|cta:CTA', { titleField: 'title', min: 3, max: 6 }), { key: 'refs', title: 'Creative References (зберігаються вручну)', kind: 'refs', manual: true }] },
+  { id: 'tt_synergy', group: 'ttads', agent: 'ttads', title: 'Синергія TikTok Organic × TikTok Ads', impl: false, brief: [], deps: { hard: ['tt_org', 'tta_strategy'], soft: [] },
+    desc: 'Як органіка живить рекламу і навпаки',
+    role: 'Опиши синергію двох стратегій з контексту (не створюй нових): як органічний контент, що спрацював, стає рекламою; спільні креатори; цикл тестування; конфлікти.',
+    sections: [FLD('syn', 'Синергія', 'flow:Органіка → Реклама|reverse:Реклама → Органіка|creators:Спільні креатори / формати|testing:Цикл тестування|conflicts:Конфлікти й ризики|actions:Що робимо')] },
+
+  /* ===== GOOGLE ADS ===== */
+  { id: 'g_audit', group: 'google', agent: 'google', title: 'Google Ads · Аудит', impl: false, brief: ['site', 'results', 'budget', 'channels'], deps: { hard: [], soft: [] },
+    desc: 'Первинний аудит (з брифу) та що перевірити в акаунті',
+    role: 'AI не бачить акаунт. Що відомо з брифу, чого не відомо, що перевірити (конверсії, кампанії, пошукові запити, landing).',
+    sections: [FLD('audit', 'Аудит', 'state:Що відомо з брифу|unknown:Чого не відомо|toCheck:Що перевірити|tracking:Conversion tracking')] },
+  { id: 'g_intent', group: 'google', agent: 'google', title: 'Google Ads · Search Intent і попит', web: true, impl: false, brief: [...BK.core], deps: { hard: ['audience', 'valueprop', 'competitors'], soft: ['g_audit'] },
+    desc: 'Роль Google Ads, пошуковий намір, категорії попиту, brand / non-brand',
+    role: 'Побудуй карту пошукового наміру для цього бізнесу. Не вигадуй обсяги пошуку та CPC — можеш назвати ЛИШЕ якщо є джерело; інакше вказуй, що обсяги потрібно перевірити в Keyword Planner.',
+    sections: [FLD('role', 'Роль', 'role:Роль Google Ads|demand:Демандні категорії'), LIST('intents', 'Search Intent', 'intent:Намір|examples:Приклади запитів (гіпотези)|segment:Сегмент|stage:Етап|offer:Офер', { titleField: 'intent' }), FLD('brandSplit', 'Brand vs Non-brand', 'brand:Brand Search|nonBrand:Non-brand Search')] },
+  { id: 'g_structure', group: 'google', agent: 'google', title: 'Google Ads · Структура, KPI, бюджет', impl: false, brief: ['budget', 'bizModel', 'site', 'mainGoal', 'avgCheck'], deps: { hard: ['g_intent', 'valueprop', 'communication'], soft: [] },
+    desc: 'Структура кампаній, Search, PMax (за потреби), Shopping (для e-commerce), remarketing, tracking',
+    role: 'Shopping та Performance Max НЕ обовʼязкові: спочатку дай вердикт релевантності з обґрунтуванням за бізнес-моделлю; план — тільки якщо релевантно. Бюджет — тільки з брифу.',
+    sections: [FLD('structure', 'Структура кампаній', 'structure:Структура кампаній|search:Search|remarketing:Remarketing|landings:Landing pages|offers:Офери'), FLD('pmax', 'Performance Max (якщо релевантно)', 'relevance:Релевантність (Так/Ні + чому)|plan:План (якщо релевантно)'), FLD('shopping', 'Shopping (e-commerce)', 'plan:План Shopping|feed:Вимоги до фіду', { ext: true }), FLD('tracking', 'Tracking, KPI, бюджет', 'tracking:Conversion tracking|kpi:KPI|budget:Бюджет')] },
+
+  /* ===== CROSS-CHANNEL ===== */
+  { id: 'cross_funnel', group: 'cross', agent: 'cross', title: 'Cross-channel Funnel', impl: false, svcSig: true, brief: [], deps: { hard: ['architectB', 'smm_rubrics', 'meta_strategy', 'tt_org', 'tta_strategy', 'g_structure'], soft: [] },
+    desc: 'Єдина міжканальна воронка: роль кожного каналу',
+    role: 'Збери воронку з ролей каналів та зафіксованих стратегій. Кожен вузол — активний канал із контексту. Опиши передачу між етапами.',
+    sections: [LIST('nodes', 'Cross-channel Funnel', 'order:№|stage:Етап|channel:Канал|role:Роль|entry:Вхід (звідки приходить)|handoff:Передача далі|kpi:KPI', { titleField: 'stage' }), TXT('logic', 'Логіка воронки')] },
+  { id: 'synergy_paid', group: 'cross', agent: 'synergy', title: 'Синергія Content × Paid Media', impl: false, svcSig: true, brief: [], deps: { hard: ['smm_rubrics', 'communication', 'meta_strategy', 'tta_strategy', 'g_structure'], soft: ['tt_org'] },
+    desc: 'Перевірка: контент підтримує рекламні меседжі, офери, прогрів, social proof, retargeting',
+    role: 'Перевір, чи стратегія — єдина екосистема. Для КОЖНОЇ перевірки дай вердикт (ok/warn/conflict), проблему та виправлення. Не генеруй нову стратегію.',
+    sections: [LIST('checks', 'Перевірки', 'check:Перевірка|verdict:Вердикт (ok / warn / conflict)|problem:Що не так / чому ok|fix:Що виправити', { titleField: 'check', fixedChecks: ['Органічний контент підтримує рекламні меседжі', 'Сегменти визначені однаково в контенті та рекламі', 'Немає суперечностей між Tone of Voice і рекламою', 'Контент підтримує рекламні офери', 'Є контент для прогріву', 'Є контент для social proof', 'Є контент для retargeting'] })] },
+];
+CFG.M = Object.fromEntries(CFG.MODULES.map(m => [m.id, m]));
+
+/* ---------- Бриф ---------- */
+CFG.BRIEF = [
+  { id: 'about', title: 'Про проєкт', fields: [
+    { k: 'name', l: 'Назва проєкту', t: 'text', w: 3, miss: 'назви проєкту' }, { k: 'site', l: 'Сайт', t: 'url', w: 2, miss: 'сайту' },
+    { k: 'instagram', l: 'Instagram', t: 'url', w: 2, miss: 'Instagram' }, { k: 'facebook', l: 'Facebook', t: 'url', w: 1 }, { k: 'tiktok', l: 'TikTok', t: 'url', w: 1 },
+    { k: 'geo', l: 'Географія', t: 'text', w: 3, miss: 'географії' }, { k: 'lang', l: 'Мова комунікації', t: 'select', o: ['Українська', 'Російська', 'Двомовна (UA+RU)', 'Англійська', 'Польська', 'Інша'], w: 1 },
+    { k: 'niche', l: 'Ніша', t: 'text', w: 3, miss: 'ніші' }, { k: 'segment', l: 'B2B / B2C', t: 'select', o: ['B2C', 'B2B', 'B2B + B2C'], w: 3, miss: 'типу B2B/B2C' }] },
+  { id: 'business', title: 'Про бізнес', fields: [
+    { k: 'desc', l: 'Опис бізнесу', t: 'area', w: 3, miss: 'опису бізнесу' }, { k: 'products', l: 'Продукти / послуги', t: 'area', w: 3, miss: 'продуктів / послуг' },
+    { k: 'categories', l: 'Основні категорії', t: 'text', w: 1 }, { k: 'priceSegment', l: 'Ціновий сегмент', t: 'select', o: ['Економ', 'Середній', 'Вище середнього', 'Преміум', 'Люкс'], w: 3, miss: 'цінового сегмента' },
+    { k: 'avgCheck', l: 'Середній чек', t: 'text', w: 3, miss: 'середнього чека' }, { k: 'salesGeo', l: 'Географія продажів', t: 'text', w: 1 },
+    { k: 'bizModel', l: 'Бізнес-модель', t: 'select', o: [['ecommerce', 'E-commerce (інтернет-магазин)'], ['services', 'Послуги'], ['infoproduct', 'Курси / інфопродукт'], ['saas', 'SaaS / застосунок'], ['local', 'Локальний / офлайн-бізнес'], ['b2bsales', 'B2B-продажі / виробництво'], ['marketplace', 'Маркетплейс'], ['other', 'Інше']], w: 3, miss: 'бізнес-моделі' },
+    { k: 'salesSources', l: 'Основні джерела продажів', t: 'area', w: 1 }] },
+  { id: 'marketing', title: 'Поточний маркетинг', fields: [
+    { k: 'channels', l: 'Які канали вже використовуються', t: 'tags', o: ['Instagram', 'Facebook', 'TikTok', 'Meta Ads', 'Google Ads', 'TikTok Ads', 'SEO', 'Email / SMS', 'Інфлюенсери', 'Маркетплейси', 'Офлайн'], w: 1 },
+    { k: 'works', l: 'Що працює', t: 'area', w: 1 }, { k: 'notWorks', l: 'Що не працює', t: 'area', w: 1 },
+    { k: 'budget', l: 'Поточний рекламний бюджет', t: 'text', w: 3, miss: 'рекламного бюджету' }, { k: 'results', l: 'Поточні результати', t: 'area', w: 2, miss: 'поточних результатів' }, { k: 'history', l: 'Попередній досвід просування', t: 'area', w: 1 }] },
+  { id: 'goals', title: 'Цілі', fields: [
+    { k: 'goals', l: 'Цілі (можна обрати кілька)', t: 'tags', o: ['Впізнаваність', 'Охоплення', 'Підписники', 'Engagement', 'Трафік', 'Ліди', 'Продажі', 'Повторні продажі', 'Вихід на новий ринок', 'Запуск нового продукту', 'Формування бренду'], w: 3, miss: 'цілей' },
+    { k: 'mainGoal', l: 'Головна бізнес-ціль', t: 'text', w: 3, miss: 'головної бізнес-цілі' }] },
+  { id: 'extra', title: 'Додатково', fields: [
+    { k: 'refs', l: 'Референси', t: 'area', w: 1 }, { k: 'likedBrands', l: 'Бренди, які подобаються', t: 'area', w: 1 }, { k: 'dislikedBrands', l: 'Бренди, які не подобаються', t: 'area', w: 1 },
+    { k: 'limits', l: 'Обмеження', t: 'area', w: 1 }, { k: 'wishes', l: 'Побажання клієнта', t: 'area', w: 1 }, { k: 'materials', l: 'Додаткові матеріали (посилання, опис)', t: 'area', w: 1 }] },
+];
+CFG.MAX_COMPETITORS = 6;
+CFG.RECOMMENDED_COMPETITORS = 4;
+
+/* ---------- Кроки flow ---------- */
+CFG.STEPS = [
+  { n: 1, id: 'overview', label: 'Проєкт' }, { n: 2, id: 'brief', label: 'Бриф' }, { n: 3, id: 'services', label: 'Послуги' },
+  { n: 4, id: 'structure', label: 'Структура стратегії' }, { n: 5, id: 'research', label: 'AI Research' }, { n: 6, id: 'insights', label: 'Стратегічні висновки' },
+  { n: 7, id: 'generate', label: 'Генерація стратегії' }, { n: 8, id: 'qa', label: 'QA-перевірка' }, { n: 9, id: 'final', label: 'Фінальна стратегія' },
+];
+
+/* ---------- Експортери (архітектура; реалізація — в core) ---------- */
+CFG.EXPORTERS = [
+  { id: 'json', label: 'JSON', ext: 'json', ready: true }, { id: 'md', label: 'Markdown', ext: 'md', ready: true },
+  { id: 'html', label: 'HTML (для імпорту в Google Docs / Word)', ext: 'html', ready: true }, { id: 'pdf', label: 'PDF (друк → зберегти як PDF)', ready: true },
+  { id: 'notion', label: 'Notion (Markdown-імпорт)', ext: 'md', ready: true }, { id: 'figma', label: 'Figma-презентація (структура слайдів, JSON)', ext: 'json', ready: true },
+  { id: 'gdocs_api', label: 'Google Docs (пряма інтеграція)', ready: false }, { id: 'notion_api', label: 'Notion (пряма інтеграція)', ready: false },
+];
+
+/* ---------- Фрази-маркери «generic AI» для Strategy Reviewer ---------- */
+CFG.GENERIC = [/створюва(ти|ємо) якісн\S* контент/i, /підвищ(увати|ити|ення) впізнаваність/i, /бути ближч\S* до аудиторії/i, /ефективн\S* комунікаці/i, /унікальн\S* контент/i, /залучати цільову аудиторію/i, /побудува(ти|ння) довіри/i, /індивідуальн\S* підхід/i, /цікав\S* та корисн\S* контент/i, /лояльн\S* спільнот/i, /комплексн\S* підхід/i];
+/* =====================================================================
+   CORE: стан, Rule Engine, залежності, Project Context, AI-агенти, QA, Final, Export
+   ===================================================================== */
+const S = { view: 'projects', pid: null, page: 'overview', project: null, rev: 0, projects: [], status: {}, user: '', dirty: false, saving: false, conflict: null, lib: [], prompts: {}, ui: { open: {}, edit: {}, tab: {}, instr: {}, cm: {} } };
+const ls = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch { } } };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = (p = 'id') => p + '_' + Math.random().toString(36).slice(2, 9);
+const nowIso = () => new Date().toISOString();
+const fmtDate = iso => iso ? new Date(iso).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—';
+const hash = s => { let h = 5381; s = String(s); for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+const isUrl = u => /^https?:\/\/\S+/i.test(u || '');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const slug = s => String(s || 'strategy').trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'strategy';
+
+async function api(path, opt = {}) {
+  const h = { 'content-type': 'application/json', 'x-user': encodeURIComponent(S.user || '') };
+  const k = ls.get('aso_key'); if (k) h['x-team-key'] = k;
+  const r = await fetch('/api' + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || ('HTTP ' + r.status)); e.status = r.status; e.data = j; throw e; }
+  return j;
+}
+
+/* ---------- Проєкт: створення ---------- */
+function newProject(name, client) {
+  const p = { id: uid('p'), name, client: client || '', owner: S.user || '', createdAt: nowIso(), updatedAt: nowIso(), brief: { name, competitors: [] },
+    services: CFG.SERVICES.filter(s => s.base).map(s => s.id), structure: [], custom: [], modules: {}, sources: [], parsed: { own: {}, comp: {} }, log: [], team: {}, qa: null, final: null, exports: [], flags: {} };
+  reconcile(p); logEv(p, 'Проєкт створено. Стратегічний етап додано автоматично.');
+  return p;
+}
+function logEv(p, text) { p.log.unshift({ at: nowIso(), by: S.user || '—', text }); if (p.log.length > 200) p.log.length = 200; }
+
+/* ---------- Rule Engine ---------- */
+let _rc = { k: '', v: null };
+function ctxOf(p) { const svc = new Set(p.services); const channels = new Set(CFG.SERVICES.filter(s => svc.has(s.id)).map(s => s.channel)); return { svc, channels, brief: p.brief || {} }; }
+function resolveRules(p) {
+  const k = p.id + '|' + p.services.join(',') + '|' + (p.brief.bizModel || '');
+  if (_rc.k === k) return _rc.v;
+  const c = ctxOf(p); const rank = { mandatory: 3, recommended: 2, optional: 1 }; const levels = {}, ext = {};
+  for (const r of CFG.RULES) {
+    if (!CFG.evalWhen(r.when, c)) continue;
+    for (const [m, l] of Object.entries(r.enable || {})) if (!levels[m] || rank[l] > rank[levels[m]]) levels[m] = l;
+    for (const [m, secs] of Object.entries(r.sections || {})) { ext[m] = ext[m] || new Set(); secs.forEach(s => ext[m].add(s)); }
+  }
+  _rc = { k, v: { levels, ext } }; return _rc.v;
+}
+const sectionsFor = (p, id) => { const R = resolveRules(p); return CFG.M[id].sections.filter(s => !s.ext || (R.ext[id] && R.ext[id].has(s.key))); };
+const groupOrder = Object.keys(CFG.GROUPS);
+function reconcile(p) {
+  const R = resolveRules(p); const have = new Set(p.structure.map(s => s.id));
+  CFG.MODULES.forEach(m => {
+    if (!R.levels[m.id] || have.has(m.id)) return;
+    const go = groupOrder.indexOf(m.group); let at = 0;
+    p.structure.forEach((s, i) => { const d = CFG.M[s.id]; if (d && groupOrder.indexOf(d.group) <= go) at = i + 1; });
+    p.structure.splice(p.structure.length ? at : 0, 0, { id: m.id, hidden: false, title: '' }); have.add(m.id);
+  });
+  p.structure.forEach(s => { if (!s.custom && R.levels[s.id] === 'mandatory') s.hidden = false; });
+}
+function activeList(p) {
+  const R = resolveRules(p);
+  return p.structure.filter(s => s.custom || R.levels[s.id]).map(s => ({ id: s.id, def: CFG.M[s.id] || null, level: s.custom ? 'optional' : R.levels[s.id], hidden: !!s.hidden, custom: !!s.custom, title: titleOf(p, s.id) }));
+}
+const includedList = p => activeList(p).filter(x => !x.hidden);
+const inactiveList = p => { const R = resolveRules(p); return p.structure.filter(s => !s.custom && !R.levels[s.id]).map(s => ({ id: s.id, title: titleOf(p, s.id), had: hasOutput(p.modules[s.id]) })); };
+function titleOf(p, id) { const s = p.structure.find(x => x.id === id); if (s && s.title) return s.title; const c = p.custom.find(x => x.id === id); if (c) return c.title; return CFG.M[id] ? CFG.M[id].title : id; }
+function isIncluded(p, id) { const a = activeList(p).find(x => x.id === id); return !!a && !a.hidden; }
+const levelCounts = p => { const c = { mandatory: 0, recommended: 0, optional: 0 }; includedList(p).forEach(x => c[x.level]++); return c; };
+const svcLabel = id => (CFG.SERVICES.find(s => s.id === id) || {}).label || id;
+const svcSig = p => hash(p.services.slice().sort().join(','));
+function setService(p, id, on) {
+  const before = new Set(activeList(p).map(x => x.id));
+  const set = new Set(p.services); on ? set.add(id) : set.delete(id);
+  CFG.SERVICES.filter(s => s.base).forEach(s => set.add(s.id));
+  p.services = CFG.SERVICES.map(s => s.id).filter(x => set.has(x));
+  reconcile(p);
+  const after = activeList(p).map(x => x.id);
+  const added = after.filter(x => !before.has(x)); const removed = [...before].filter(x => !after.includes(x));
+  logEv(p, (on ? 'Додано послугу: ' : 'Вимкнено послугу: ') + svcLabel(id));
+  const stale = includedList(p).filter(x => x.def && staleReasons(p, x.id).length).map(x => x.id);
+  return { added, removed, stale };
+}
+
+/* ---------- Модулі: доступ ---------- */
+const hasOutput = m => !!(m && m.sections && Object.keys(m.sections).length);
+function ensureMod(p, id) { return p.modules[id] || (p.modules[id] = { rev: 0, ver: 0, state: 'draft', sections: {}, depVers: {}, briefHashes: {}, comments: [], hist: [], usage: { in: 0, out: 0 } }); }
+const isLocked = (p, id) => { const c = p.custom.find(x => x.id === id); if (c) return !!c.body; return !!(p.modules[id] && p.modules[id].state === 'locked'); };
+function depsOf(p, id) {
+  const def = CFG.M[id]; if (!def) return { hard: [], soft: [] };
+  const ok = x => isIncluded(p, x);
+  return { hard: def.deps.hard.filter(ok), soft: def.deps.soft.filter(ok) };
+}
+function dependents(p, id) {
+  const out = new Set(); const walk = x => includedList(p).forEach(a => { if (a.def && !out.has(a.id)) { const d = depsOf(p, a.id); if (d.hard.includes(x) || d.soft.includes(x)) { out.add(a.id); walk(a.id); } } }); walk(id); return [...out];
+}
+function competitorsOf(p) { return (p.brief.competitors || []).filter(c => (c.name || '').trim()); }
+function blockers(p, id) {
+  const def = CFG.M[id]; const b = [];
+  depsOf(p, id).hard.forEach(d => { if (!isLocked(p, d)) b.push({ id: d, why: hasOutput(p.modules[d]) ? 'потрібно зафіксувати' : 'ще не запущено' }); });
+  return b;
+}
+function requirementMsg(p, id) {
+  const def = CFG.M[id];
+  if (def.requires === 'competitors' && !competitorsOf(p).length) return 'Додайте у Брифі хоча б одного конкурента — AI не вигадує конкурентів.';
+  return null;
+}
+
+/* ---------- Бриф: completeness, хеші ---------- */
+const briefFlat = () => CFG.BRIEF.flatMap(s => s.fields);
+function briefLabel(k) { if (k === 'competitors') return 'Конкуренти'; if (k === '@parsed') return 'Дані парсингу'; const f = briefFlat().find(x => x.k === k); return f ? f.l : k; }
+function briefVal(p, k) {
+  if (k === 'competitors') return competitorsOf(p).map(c => [c.name, c.site, c.instagram, c.facebook, c.tiktok]);
+  if (k === '@parsed') { const a = []; Object.entries(p.parsed.own).forEach(([k, v]) => a.push('o' + k + v.fetchedAt)); Object.entries(p.parsed.comp).forEach(([c, o]) => Object.entries(o).forEach(([k, v]) => a.push(c + k + v.fetchedAt))); return a.sort(); }
+  return p.brief[k] == null ? '' : p.brief[k];
+}
+const PARSED_USE = { competitors: 'both', smm_audit: 'own', tt_org: 'both', tta_strategy: 'comp', meta_strategy: 'comp' };
+const briefKeysOf = def => (def.brief || []).concat(PARSED_USE[def.id] ? ['@parsed'] : []);
+const bh = (p, k) => hash(JSON.stringify(briefVal(p, k)));
+function completeness(p) {
+  let tot = 0, got = 0; const miss = [];
+  briefFlat().forEach(f => {
+    tot += f.w; const v = p.brief[f.k]; const filled = f.t === 'tags' ? (Array.isArray(v) && v.length) : String(v || '').trim().length > 0;
+    if (filled) got += f.w; else if (f.w >= 3) miss.push(f.miss || f.l.toLowerCase());
+  });
+  const n = competitorsOf(p).length; tot += 3; got += 3 * Math.min(n / CFG.RECOMMENDED_COMPETITORS, 1);
+  if (n < CFG.RECOMMENDED_COMPETITORS) miss.push(n === 0 ? 'конкурентів' : 'ще ' + (CFG.RECOMMENDED_COMPETITORS - n) + ' конкурент(ів)');
+  return { pct: Math.round(got / tot * 100), miss };
+}
+
+/* ---------- Статуси, застарівання ---------- */
+function staleReasons(p, id) {
+  const m = p.modules[id]; const def = CFG.M[id]; if (!m || !hasOutput(m) || !def) return [];
+  const r = [];
+  const ch = briefKeysOf(def).filter(k => m.briefHashes[k] !== undefined && m.briefHashes[k] !== bh(p, k));
+  if (ch.length) r.push('Змінено в брифі: ' + ch.map(briefLabel).join(', '));
+  const d = depsOf(p, id);
+  d.hard.concat(d.soft).forEach(x => { const dm = p.modules[x]; if (dm && hasOutput(dm) && m.depVers[x] !== undefined && dm.ver !== m.depVers[x]) r.push('Оновлено залежність: ' + titleOf(p, x)); });
+  if (def.svcSig && m.svcSig && m.svcSig !== svcSig(p)) r.push('Змінився склад каналів / послуг');
+  const miss = missingSections(p, id); if (miss.length) r.push('Додано секції (потрібно догенерувати): ' + miss.map(s => s.title).join(', '));
+  return r;
+}
+const missingSections = (p, id) => { const m = p.modules[id]; return sectionsFor(p, id).filter(s => !s.manual && !(m && m.sections[s.key])); };
+function isRunning(m) { return !!(m && m.running && (Date.now() - Date.parse(m.startedAt || 0) < 15 * 60e3)); }
+function statusOf(p, id) {
+  const m = p.modules[id];
+  if (isRunning(m)) return { k: 'running', icon: '◐', label: 'Аналізується', cls: 'info' };
+  if (!m || !hasOutput(m)) return { k: 'idle', icon: '○', label: 'Не запущено', cls: '' };
+  const st = staleReasons(p, id); if (st.length) return { k: 'stale', icon: '↻', label: 'Потрібно оновити', cls: 'warn', reasons: st };
+  if (warningsOf(m).length && m.state === 'draft') return { k: 'review', icon: '⚠', label: 'Потребує перевірки', cls: 'warn' };
+  return { k: 'done', icon: '✓', label: 'Готово', cls: 'ok' };
+}
+const warningsOf = m => m ? Object.values(m.sections || {}).flatMap(s => s.warnings || []).concat(m.warnings || []) : [];
+const STATE_LABEL = { draft: 'Чернетка', accepted: 'Прийнято', locked: 'Зафіксовано' };
+function progress(p) {
+  const inc = includedList(p).filter(x => !x.custom); let W = 0, sc = 0;
+  inc.forEach(x => { const w = CFG.LEVEL[x.level].w; W += w; const m = p.modules[x.id]; const st = statusOf(p, x.id);
+    let s = 0; if (hasOutput(m)) s = st.k === 'stale' ? .25 : (m.state === 'locked' ? 1 : m.state === 'accepted' ? .75 : .5); sc += w * s; });
+  const qaOk = p.qa && !qaStale(p) ? .05 : 0; const fin = p.final && p.final.generatedAt ? .05 : 0;
+  return Math.min(100, Math.round(((W ? sc / W : 0) * .9 + qaOk + fin) * 100));
+}
+function researchStatus(p) { const ids = ['market', 'audience', 'competitors', 'avatars', 'insightsA']; const l = ids.filter(i => isLocked(p, i) && !staleReasons(p, i).length).length; const r = ids.filter(i => isRunning(p.modules[i])).length; return { locked: l, total: ids.length, running: r }; }
+function currentStep(p) {
+  const c = completeness(p); const inc = includedList(p).filter(x => x.def);
+  const allLocked = inc.every(x => isLocked(p, x.id) && !staleReasons(p, x.id).length);
+  const rs = researchStatus(p);
+  const done = { 1: true, 2: c.pct >= 70, 3: !!p.flags.servicesConfirmed, 4: !!p.flags.structureConfirmed, 5: rs.locked >= 4 && ['market', 'audience', 'competitors', 'avatars'].every(i => isLocked(p, i)), 6: isLocked(p, 'insightsA'), 7: allLocked, 8: !!p.qa && !qaStale(p) && !(p.qa.summary && p.qa.summary.conflict), 9: !!(p.final && p.final.generatedAt) };
+  const cur = CFG.STEPS.find(s => !done[s.n]); return { done, cur: cur ? cur.n : 9 };
+}
+function projectStatusText(p) { const { cur, done } = currentStep(p); if (done[9]) return 'Готово'; return ({ 1: 'Створено', 2: 'Бриф', 3: 'Послуги', 4: 'Структура', 5: 'Research', 6: 'Висновки', 7: 'Генерація', 8: 'QA', 9: 'Фінал' })[cur]; }
+function nextActions(p) {
+  const a = []; const c = completeness(p);
+  const briefPage = { page: 'brief' };
+  if (c.miss.length) a.push({ t: 'Заповніть бриф: ' + c.miss.slice(0, 3).join(', '), ...briefPage, pr: 1 });
+  const nc = competitorsOf(p).length; if (nc && nc < CFG.RECOMMENDED_COMPETITORS) a.push({ t: `Додайте ${CFG.RECOMMENDED_COMPETITORS - nc} конкурент(ів)`, ...briefPage, pr: 1 });
+  const inc = includedList(p).filter(x => x.def);
+  inc.forEach(x => {
+    const st = statusOf(p, x.id); const m = p.modules[x.id]; const pg = CFG.GROUPS[x.def.group].page;
+    if (st.k === 'stale') a.push({ t: `Оновіть «${x.title}»: ${st.reasons[0]}`, page: pg, mod: x.id, pr: 2 });
+    else if (st.k === 'review') a.push({ t: `«${x.title}» потребує перевірки`, page: pg, mod: x.id, pr: 2 });
+    else if (st.k === 'done' && m.state !== 'locked') a.push({ t: `«${x.title}» готовий до перевірки — підтвердіть`, page: pg, mod: x.id, pr: 3 });
+    else if (st.k === 'idle') { const b = blockers(p, x.id); if (b.length) a.push({ t: `«${x.title}» очікує затвердження: ${b.map(y => titleOf(p, y.id)).join(', ')}`, page: pg, mod: x.id, pr: 5 }); else if (!requirementMsg(p, x.id)) a.push({ t: `Запустіть «${x.title}»`, page: pg, mod: x.id, pr: 4 }); }
+  });
+  const cs = currentStep(p);
+  if (cs.done[7] && !cs.done[8]) a.push({ t: 'Запустіть QA-перевірку', page: 'qa', pr: 1 });
+  if (cs.done[8] && !cs.done[9]) a.push({ t: 'Сформуйте фінальну стратегію', page: 'final', pr: 1 });
+  return a.sort((x, y) => x.pr - y.pr).slice(0, 8);
+}
+
+/* ---------- Project Context ---------- */
+function briefObj(p) {
+  const o = {}; CFG.BRIEF.forEach(s => s.fields.forEach(f => { const v = p.brief[f.k]; if (Array.isArray(v) ? v.length : String(v || '').trim()) o[f.l] = Array.isArray(v) ? v.join(', ') : v; }));
+  if (p.brief.bizModel) { const f = briefFlat().find(x => x.k === 'bizModel'); const hit = f.o.find(x => x[0] === p.brief.bizModel); if (hit) o['Бізнес-модель'] = hit[1]; }
+  return o;
+}
+function compactSec(sec) { return sec.data; }
+function lockedContext(p, id) {
+  const d = depsOf(p, id); const ids = [...new Set(d.hard.concat(d.soft))].filter(x => isLocked(p, x) && hasOutput(p.modules[x]));
+  return ids.map(x => { const m = p.modules[x]; const o = {}; Object.entries(m.sections).forEach(([k, s]) => { o[k] = compactSec(s); }); return `### ${titleOf(p, x)} [${x}]\n` + JSON.stringify(o); }).join('\n\n');
+}
+function parsedCompact(pr) {
+  if (!pr) return null; const st = pr.stats || {};
+  const o = { платформа: pr.platform, акаунт: pr.handle, зібрано: pr.fetchedAt && pr.fetchedAt.slice(0, 10), профіль: pr.profile || undefined, статистика: { ...st, top: undefined } };
+  if (pr.posts) o.топ_публікацій = (st.top || []).slice(0, 5).map(x => ({ url: x.url, тип: x.type, лайки: x.likes, коментарі: x.comments, перегляди: x.views, текст: (x.caption || '').slice(0, 140) }));
+  if (pr.ads) o.реклама = pr.ads.slice(0, 8).map(a => ({ текст: (a.text || '').slice(0, 200), cta: a.cta, формат: a.format, старт: a.start, активна: a.active, link: a.link }));
+  return o;
+}
+function parsedContext(p, id) {
+  const u = PARSED_USE[id]; if (!u) return ''; const out = [];
+  if (u === 'own' || u === 'both') Object.entries(p.parsed.own).forEach(([k, v]) => out.push({ власний_акаунт: parsedCompact(v) }));
+  if (u === 'comp' || u === 'both') competitorsOf(p).forEach(c => { const o = p.parsed.comp[c.id] || {}; Object.entries(o).forEach(([k, v]) => out.push({ конкурент: c.name, дані: parsedCompact(v) })); });
+  return out.length ? '## ДАНІ ПАРСИНГУ (реальні, зібрані через парсер — це факти зовнішнього дослідження)\n' + JSON.stringify(out) : '';
+}
+function libraryContext(p, id) {
+  const def = CFG.M[id]; const items = (S.lib || []).filter(x => x.enabled !== false && (!x.tags || !x.tags.length || x.tags.some(t => t === 'all' || t === def.group || t === id)));
+  let s = ''; for (const it of items) { const chunk = `- [${it.kind}] ${it.title}: ${it.text}\n`; if (s.length + chunk.length > 6000) break; s += chunk; }
+  return s ? '## БАЗА ЗНАНЬ АГЕНЦІЇ (правила та методологія — дотримуйся)\n' + s : '';
+}
+function buildContext(p, id) {
+  const parts = [];
+  parts.push('## БРИФ КЛІЄНТА (client_data)\n' + JSON.stringify(briefObj(p)));
+  const svc = p.services.map(svcLabel); const ch = [...ctxOf(p).channels].map(c => CFG.CHANNEL_LABELS[c]);
+  parts.push('## АКТИВНІ ПОСЛУГИ ТА КАНАЛИ\nПослуги: ' + svc.join(', ') + '\nКанали (тільки ці): ' + ch.join('; '));
+  const comps = competitorsOf(p); if (comps.length) parts.push('## КОНКУРЕНТИ З БРИФУ (аналізуй ТІЛЬКИ їх)\n' + JSON.stringify(comps.map(c => ({ name: c.name, site: c.site, instagram: c.instagram, facebook: c.facebook, tiktok: c.tiktok, comment: c.comment }))));
+  const pc = parsedContext(p, id); if (pc) parts.push(pc);
+  const lc = lockedContext(p, id); parts.push('## ЗАФІКСОВАНІ РЕЗУЛЬТАТИ ПОПЕРЕДНІХ МОДУЛІВ (Project Context — використовуй як є, не змінюй)\n' + (lc || '(поки немає)'));
+  const srcs = p.sources.slice(0, 40).map(s => `- ${s.url} — ${s.title || ''} (${s.date || ''})`).join('\n'); if (srcs) parts.push('## ВІДОМІ ДЖЕРЕЛА\n' + srcs);
+  const lib = libraryContext(p, id); if (lib) parts.push(lib);
+  const m = p.modules[id]; const cm = (m ? m.comments : []).filter(c => !c.resolved && c.forAi !== false).map(c => '- ' + c.text); if (cm.length) parts.push('## КОМЕНТАРІ PM ДО ЦЬОГО МОДУЛЯ (обовʼязково врахуй)\n' + cm.join('\n'));
+  return parts.join('\n\n');
+}
+function schemaExample(p, id, only) {
+  const def = CFG.M[id]; const secs = sectionsFor(p, id).filter(s => !s.manual && (!only || only.includes(s.key)));
+  const sch = { sections: {} }; const hints = [];
+  secs.forEach(s => {
+    let data;
+    if (s.kind === 'text') data = '<текст>';
+    else if (s.kind === 'fields') { data = {}; s.fields.forEach(f => data[f.k] = '<' + f.l + '>'); }
+    else { const it = {}; s.fields.forEach(f => it[f.k] = '<' + f.l + '>'); data = [it]; hints.push(`- "${s.key}" («${s.title}»): масив об'єктів${s.min ? `, ${s.min}–${s.max} елементів` : ''}.` + (s.competitorRows ? ' По одному запису на КОЖНОГО конкурента з брифу: ' + competitorsOf(p).map(c => c.name).join('; ') + '. Поле name — точно як у брифі.' : '') + (s.ref ? ` Поле ${s.ref} — ID існуючого сегмента з Audience Intelligence (S1, S2…).` : '') + (s.fixedChecks ? ' Рівно ці перевірки: ' + s.fixedChecks.map(x => '«' + x + '»').join('; ') + '.' : '')); }
+    const o = { data }; if (def.impl) o.implication = { learned: '<Що ми дізналися>', why: '<Чому це важливо>', impact: '<Як це впливає на стратегію>', action: '<Що конкретно ми робимо>' };
+    if (def.claims) o.claims = [{ text: '<ключове твердження>', type: 'client_data|external_research|ai_inference|ai_hypothesis', source: '<URL або null>' }];
+    sch.sections[s.key] = o;
+  });
+  return { json: JSON.stringify(sch, null, 1), hints, secs };
+}
+function agentSystem(id) { const def = CFG.M[id]; const a = CFG.AGENTS[def.agent]; const extra = (S.prompts || {})[def.agent]; return CFG.GLOBAL_RULES + '\n\nРОЛЬ: ' + a.name + '. ' + a.prompt + (extra ? '\n\nДОДАТКОВІ ІНСТРУКЦІЇ АГЕНЦІЇ:\n' + extra : ''); }
+function buildPrompt(p, id, only, instruction) {
+  const def = CFG.M[id]; const sc = schemaExample(p, id, only);
+  return `# ЗАВДАННЯ\nМодуль: ${titleOf(p, id)}\n${def.role}\n${instruction ? '\nДОДАТКОВА ІНСТРУКЦІЯ PM: ' + instruction + '\n' : ''}\n# ФОРМАТ ВІДПОВІДІ\nПоверни ТІЛЬКИ JSON цієї форми (значення у <> — підказки, замінюй їх змістом):\n<<<SCHEMA\n${sc.json}\nSCHEMA>>>\n` +
+    (sc.hints.length ? 'Особливості секцій:\n' + sc.hints.join('\n') + '\n' : '') +
+    `Правила: "data" — змістовна відповідь українською; жодних порожніх полів (якщо даних немає — «Немає даних: що уточнити»).${def.impl ? ' "implication" обовʼязковий для кожної секції — це відповідь на «Що це означає для нашої стратегії?» (learned → why → impact → action), конкретно.' : ''}${def.claims ? ' "claims" — 2–4 ключових твердження секції з типом і джерелом; external_research лише з реальним URL.' : ''}\n\n# PROJECT CONTEXT\n${buildContext(p, id)}`;
+}
+
+/* ---------- Виклики AI / задач ---------- */
+async function pollJob(id) {
+  await sleep(500);
+  for (; ;) {
+    let j; try { j = await api('/jobs/' + id); } catch (e) { if (e.status === 404) throw new Error('Задачу втрачено (сервер перезапускався). Запустіть ще раз.'); await sleep(3000); continue; }
+    if (j.status === 'done') return j.result; if (j.status === 'error') throw new Error(j.error);
+    await sleep(1800);
+  }
+}
+async function runJob(type, payload, onJob) { const { id } = await api('/jobs', { method: 'POST', body: { type, payload } }); if (onJob) onJob(id); return pollJob(id); }
+function parseJSON(text) {
+  let t = String(text || '').trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+  const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a < 0 || b < 0) throw new Error('Модель не повернула JSON');
+  t = t.slice(a, b + 1);
+  try { return JSON.parse(t); } catch (e) { try { return JSON.parse(t.replace(/,\s*([}\]])/g, '$1')); } catch (e2) { throw new Error('Не вдалося розібрати JSON відповіді (можливо, відповідь обрізана — спробуйте ще раз)'); } }
+}
+
+/* ---------- Нормалізація й перевірка AI-виводу ---------- */
+const CLAIM_TYPES = { client_data: 'Дані клієнта', external_research: 'Зовнішнє дослідження', ai_inference: 'AI-висновок', ai_hypothesis: 'AI-гіпотеза' };
+const str = v => v == null ? '' : Array.isArray(v) ? v.map(x => typeof x === 'object' ? JSON.stringify(x) : String(x)).join('; ') : typeof v === 'object' ? Object.entries(v).map(([k, x]) => k + ': ' + x).join('; ') : String(v);
+function allStrings(d, out = []) { if (d == null) return out; if (typeof d === 'string') out.push(d); else if (Array.isArray(d)) d.forEach(x => allStrings(x, out)); else if (typeof d === 'object') Object.values(d).forEach(x => allStrings(x, out)); return out; }
+function addSource(p, s) {
+  const ex = p.sources.find(x => x.url === s.url && (x.sectionKey || '') === (s.sectionKey || '') && (x.moduleId || '') === (s.moduleId || '')); if (ex) return ex;
+  const o = { id: uid('src'), url: s.url, title: s.title || '', date: s.date || new Date().toISOString().slice(0, 10), evidence: s.evidence || '', type: s.type || 'external_research', moduleId: s.moduleId || '', sectionKey: s.sectionKey || '', by: s.by || S.user }; p.sources.push(o); return o;
+}
+function segmentIds(p) { const m = p.modules.audience; const s = m && m.sections.segments; return s ? s.data.map(x => x.id) : []; }
+function normSection(p, def, s, raw, cites) {
+  const warn = []; const sec = { data: null, implication: null, claims: [], warnings: warn, generatedAt: nowIso() };
+  let d = raw && typeof raw === 'object' && 'data' in raw ? raw.data : raw;
+  if (s.kind === 'text') sec.data = str(d);
+  else if (s.kind === 'fields') { const o = {}; s.fields.forEach(f => o[f.k] = str(d && d[f.k])); sec.data = o; s.fields.forEach(f => { if (!o[f.k].trim()) warn.push(`Порожнє поле: ${f.l}`); }); }
+  else {
+    let arr = Array.isArray(d) ? d : (d && typeof d === 'object' ? Object.values(d) : []);
+    arr = arr.filter(x => x && typeof x === 'object').map(it => { const o = {}; s.fields.forEach(f => o[f.k] = str(it[f.k])); return o; });
+    if (s.competitorRows) {
+      const names = competitorsOf(p).map(c => c.name.trim().toLowerCase()); const kept = [];
+      arr.forEach(it => { const n = (it.name || '').trim().toLowerCase(); if (names.some(x => x === n || (n && (x.includes(n) || n.includes(x))))) kept.push(it); else warn.push(`Відкинуто «${it.name}» — конкурента немає в брифі (AI не вигадує конкурентів)`); });
+      arr = kept;
+      const got = arr.map(i => i.name.toLowerCase()); const lack = competitorsOf(p).filter(c => !got.some(g => g.includes(c.name.trim().toLowerCase()) || c.name.trim().toLowerCase().includes(g))); if (lack.length) warn.push('Немає аналізу для: ' + lack.map(c => c.name).join(', '));
+    }
+    if (s.ids) arr.forEach((it, i) => { it.id = s.ids + (i + 1); });
+    if (s.ref) { const ids = segmentIds(p); arr.forEach(it => { it[s.ref] = (it[s.ref] || '').trim().toUpperCase(); if (!ids.includes(it[s.ref])) { warn.push(`Невалідний зв'язок із сегментом «${it[s.ref] || '—'}» у «${it[s.titleField] || it.name || ''}» (немає такого сегмента)`); it._invalid = true; } }); }
+    if (s.min && arr.length < s.min) warn.push(`Замало елементів: ${arr.length} (очікувалось ≥ ${s.min})`);
+    if (s.fixedChecks) arr.forEach(it => { it.verdict = String(it.verdict || '').toLowerCase().includes('conflict') ? 'conflict' : String(it.verdict || '').toLowerCase().includes('warn') ? 'warn' : 'ok'; });
+    sec.data = arr;
+  }
+  if (def.impl) { const im = raw && raw.implication; sec.implication = { learned: str(im && im.learned), why: str(im && im.why), impact: str(im && im.impact), action: str(im && im.action) }; if (Object.values(sec.implication).some(v => !v.trim())) warn.push('Немає повного висновку «Що це означає для нашої стратегії?»'); }
+  if (def.claims) {
+    const cl = Array.isArray(raw && raw.claims) ? raw.claims : []; let down = 0;
+    sec.claims = cl.filter(c => c && c.text).map(c => {
+      let type = CLAIM_TYPES[c.type] ? c.type : 'ai_inference'; let src = (c.source && c.source !== 'null') ? String(c.source).trim() : '';
+      if (type === 'external_research' && !isUrl(src)) { type = 'ai_hypothesis'; down++; src = ''; }
+      if (isUrl(src)) { const ct = (cites || []).find(x => x.url === src); addSource(p, { url: src, title: ct && ct.title, evidence: (ct && ct.cited_text) || String(c.text), moduleId: def.id, sectionKey: s.key }); }
+      else if (type === 'external_research') type = 'ai_hypothesis';
+      return { text: String(c.text), type, source: isUrl(src) ? src : '' };
+    });
+    if (down) warn.push(`${down} тверджень «зовнішнього дослідження» без URL понижено до гіпотез`);
+    const hasSrc = sec.claims.some(c => c.source);
+    const txt = allStrings(sec.data).join(' ');
+    if (!hasSrc && /\d+\s?%|\d[\d\s.,]*\s?(млн|млрд|тис\.?|mln|bn|billion|million)/i.test(txt)) warn.push('Є цифри без підтвердженого джерела — перевірте перед фіксацією');
+  }
+  const gen = []; allStrings(sec.data).concat(allStrings(sec.implication)).forEach(t => CFG.GENERIC.forEach(re => { const m = t.match(re); if (m && !gen.includes(m[0])) gen.push(m[0]); }));
+  if (gen.length) warn.push('Загальні фрази без конкретики: «' + gen.slice(0, 3).join('», «') + '»');
+  return sec;
+}
+function applyOutput(p, id, parsed, res, only) {
+  const def = CFG.M[id]; const m = ensureMod(p, id); const out = (parsed && parsed.sections) || parsed || {};
+  let core = false; const secs = sectionsFor(p, id).filter(s => !s.manual && (!only || only.includes(s.key)));
+  const gone = [];
+  secs.forEach(s => {
+    const raw = out[s.key]; if (!raw) { gone.push(s.title); return; }
+    const prev = m.sections[s.key]; const sec = normSection(p, def, s, raw, res.citations); if (prev && prev.refs) sec.refs = prev.refs; m.sections[s.key] = sec;
+    if (!s.ext) core = true;
+  });
+  m.warnings = gone.length ? ['Модель не повернула секції: ' + gone.join(', ')] : [];
+  (res.citations || []).forEach(c => addSource(p, { url: c.url, title: c.title, evidence: c.cited_text || 'Знайдено під час web search', moduleId: id }));
+  m.rev++; if (core || !only) m.ver++;
+  if (!only) { const d = depsOf(p, id); m.depVers = {}; d.hard.concat(d.soft).forEach(x => { if (p.modules[x] && hasOutput(p.modules[x])) m.depVers[x] = p.modules[x].ver; }); m.briefHashes = {}; briefKeysOf(def).forEach(k => m.briefHashes[k] = bh(p, k)); m.svcSig = svcSig(p); }
+  else if (!m.svcSig) m.svcSig = svcSig(p);
+  m.state = (m.state === 'locked' && only) ? 'accepted' : 'draft';
+  m.generatedAt = nowIso(); m.by = S.user; m.model = res.model; m.usage.in += (res.usage && res.usage.input_tokens) || 0; m.usage.out += (res.usage && res.usage.output_tokens) || 0;
+  m.hist.unshift({ at: nowIso(), by: S.user, text: only ? 'Догенеровано секції: ' + only.join(', ') : 'Згенеровано AI (rev ' + m.rev + ')' });
+}
+async function runModule(id, opts = {}) {
+  const p = S.project; const def = CFG.M[id];
+  const bl = blockers(p, id); if (bl.length) return toast('Спершу зафіксуйте: ' + bl.map(b => titleOf(p, b.id)).join(', '), true);
+  const rq = requirementMsg(p, id); if (rq) return toast(rq, true);
+  const m = ensureMod(p, id); if (isRunning(m)) return;
+  const only = opts.only || null;
+  m.running = true; m.error = null; m.startedAt = nowIso(); m.runBy = S.user; m.runOnly = only; touch(); render();
+  try {
+    const prompt = buildPrompt(p, id, only, opts.instruction || (S.ui.instr[id] || ''));
+    const res = await runJob('ai', { system: agentSystem(id), prompt, web: !!def.web, maxTokens: def.id === 'market' || def.id === 'audience' || def.id === 'competitors' ? 12000 : 9000 }, jid => { m.jobId = jid; touch(); });
+    const parsed = parseJSON(res.text); applyOutput(p, id, parsed, res, only);
+    logEv(p, `AI: «${titleOf(p, id)}» ${only ? 'догенеровано' : 'згенеровано'}`); touch('AI: ' + titleOf(p, id));
+  } catch (e) { m.error = e.message; touch(); }
+  finally { m.running = false; m.jobId = null; touch(); render(); }
+}
+async function runMany(ids) { await Promise.all(ids.map(id => runModule(id))); }
+function resumeJobs() {
+  const p = S.project; if (!p) return;
+  Object.entries(p.modules).forEach(([id, m]) => { if (m.running && m.jobId && m.runBy === S.user && isRunning(m) && !S._resumed?.[id]) {
+    (S._resumed = S._resumed || {})[id] = 1;
+    pollJob(m.jobId).then(res => { applyOutput(p, id, parseJSON(res.text), res, m.runOnly); touch('AI: ' + titleOf(p, id)); }).catch(e => { m.error = e.message; }).finally(() => { m.running = false; m.jobId = null; touch(); render(); delete S._resumed[id]; });
+  } else if (m.running && !isRunning(m)) { m.running = false; m.error = 'Запуск завис або втрачено — запустіть ще раз'; }
+  });
+}
+
+/* ---------- Редагування / стани ---------- */
+function setState(id, st) {
+  const p = S.project; const m = ensureMod(p, id);
+  if (st === 'locked') { const w = warningsOf(m).length; if (w && !confirm('У модулі є попередження (' + w + '). Зафіксувати все одно?')) return; }
+  m.state = st; m.hist.unshift({ at: nowIso(), by: S.user, text: { accepted: 'Прийнято', locked: 'Зафіксовано — тепер частина Project Context', draft: 'Повернуто в чернетку' }[st] });
+  logEv(p, `«${titleOf(p, id)}»: ${STATE_LABEL[st].toLowerCase()}`); touch(STATE_LABEL[st] + ': ' + titleOf(p, id)); render();
+}
+function editField(id, secKey, idx, field, val) {
+  const p = S.project; const m = ensureMod(p, id); const sec = m.sections[secKey]; if (!sec) return;
+  if (idx === '' || idx == null) { if (field) sec.data[field] = val; else sec.data = val; } else sec.data[+idx][field] = val;
+  sec.edited = true; m.rev++; const s = CFG.M[id] && CFG.M[id].sections.find(x => x.key === secKey); if (!s || !s.ext) m.ver++;
+  if (m.state === 'locked') m.state = 'accepted';
+  m.hist.unshift({ at: nowIso(), by: S.user, text: 'Відредаговано: ' + secKey }); touch();
+}
+function addComment(id, text, forAi) { const m = ensureMod(S.project, id); m.comments.push({ id: uid('c'), by: S.user, at: nowIso(), text, resolved: false, forAi }); touch(); }
+
+/* ---------- Збереження / синхронізація ---------- */
+function metaOf(p) { const cs = currentStep(p); return { client: p.client, services: p.services, progress: progress(p), briefPct: completeness(p).pct, status: projectStatusText(p), owner: p.owner, team: Object.keys(p.team || {}), research: researchStatus(p), step: cs.cur }; }
+let _saveT = null;
+function touch(reason) { const p = S.project; if (!p) return; p.updatedAt = nowIso(); if (S.user) p.team[S.user] = nowIso(); S.dirty = true; if (reason) S.snapReason = reason; clearTimeout(_saveT); _saveT = setTimeout(flush, 600); if (window.updSave) updSave(); }
+async function flush() {
+  const p = S.project; if (!p || !S.dirty) return; if (S.saving) { S.again = true; return; }
+  if (S.conflict) return;
+  S.saving = true; const snap = S.snapReason; S.snapReason = null; S.dirty = false; if (window.updSave) updSave();
+  try { const r = await api('/projects/' + p.id, { method: 'PUT', body: { rev: S.rev, data: p, name: p.name, meta: metaOf(p), snap } }); S.rev = r.rev; }
+  catch (e) { S.dirty = true; if (e.status === 409) { S.conflict = { by: e.data.updated_by, at: e.data.updated_at, rev: e.data.rev }; render(); } else toast('Не вдалося зберегти: ' + e.message, true); }
+  finally { S.saving = false; if (S.again) { S.again = false; flush(); } else if (window.updSave) updSave(); }
+}
+async function resolveConflict(mine) {
+  const p = S.project;
+  if (mine) { const r = await api('/projects/' + p.id, { method: 'PUT', body: { rev: S.conflict.rev, force: true, data: p, name: p.name, meta: metaOf(p), snap: 'Перезаписано (конфлікт версій)' } }); S.rev = r.rev; S.conflict = null; S.dirty = false; toast('Збережено вашу версію'); }
+  else { S.conflict = null; S.dirty = false; await openProject(p.id, S.page); toast('Завантажено версію колеги'); }
+  render();
+}
+async function openProject(id, page) {
+  const r = await api('/projects/' + id); S.project = r.data; S.rev = r.rev; S.pid = id; S.view = 'project'; S.page = page || 'overview'; S.dirty = false; S.conflict = null;
+  const p = S.project; p.flags = p.flags || {}; p.custom = p.custom || []; p.exports = p.exports || []; reconcile(p); resumeJobs();
+}
+async function syncTick() {
+  try {
+    S.projects = await api('/projects');
+    const p = S.project;
+    if (p && S.view === 'project' && !S.saving) { const e = S.projects.find(x => x.id === p.id); if (e && e.rev > S.rev) {
+      if (!S.dirty && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) { const pg = S.page; await openProject(p.id, pg); toast('Проєкт оновив(ла) ' + e.updated_by); render(); }
+      else if (S.dirty && !S.conflict) { S.conflict = { by: e.updated_by, at: e.updated_at, rev: e.rev }; render(); } } }
+    else if (S.view === 'projects' || S.view === 'hub' || S.view === 'builder') render();
+  } catch (e) { /* мережа */ }
+}
+
+/* ---------- Парсинг ---------- */
+const igUrl = h => 'https://www.instagram.com/' + String(h).replace(/^.*instagram\.com\//, '').replace(/^@/, '').replace(/[/?#].*$/, '') + '/';
+async function parseTarget(platform, handle, key, country) {
+  const p = S.project; if (!handle || !handle.trim()) return toast('Порожній акаунт', true);
+  const tag = key + '|' + platform; S.ui.parsing = S.ui.parsing || {}; S.ui.parsing[tag] = true; render();
+  try {
+    const res = await runJob('parse', { platform, handle: handle.trim(), country: country || 'UA', limit: 20 });
+    if (key === 'own') p.parsed.own[platform] = res; else { p.parsed.comp[key] = p.parsed.comp[key] || {}; p.parsed.comp[key][platform] = res; }
+    const url = platform === 'meta_ads' ? 'https://www.facebook.com/ads/library/?q=' + encodeURIComponent(handle) : (/^https?:/.test(handle) ? handle : platform === 'instagram' ? igUrl(handle) : platform === 'tiktok' ? 'https://www.tiktok.com/@' + res.handle : 'https://www.facebook.com/' + handle);
+    const st = res.stats || {};
+    addSource(p, { url, title: 'Парсинг ' + platform + ': ' + (res.handle || handle), evidence: `Знято ${res.fetchedAt.slice(0, 10)}: ${st.count || 0} ${res.ads ? 'оголошень' : 'публікацій'}` + (st.avgLikes != null ? `, сер. лайків ${st.avgLikes}` : '') + (st.postsPerWeek ? `, ${st.postsPerWeek} публ./тиж.` : ''), moduleId: key === 'own' ? 'smm_audit' : 'competitors', sectionKey: key === 'own' ? 'audit' : 'matrix' });
+    logEv(p, `Парсинг ${platform}: ${res.handle || handle}`); touch('Парсинг: ' + platform + ' ' + (res.handle || handle)); toast('Дані зібрано: ' + (res.handle || handle));
+  } catch (e) { toast('Парсинг: ' + e.message, true); }
+  finally { delete S.ui.parsing[tag]; render(); }
+}
+
+/* ---------- QA ---------- */
+const qaVers = p => Object.fromEntries(includedList(p).filter(x => x.def).map(x => [x.id, (p.modules[x.id] || {}).ver || 0]));
+function qaStale(p) { if (!p.qa) return true; const v = qaVers(p); return Object.keys(v).some(k => p.qa.vers[k] !== v[k]); }
+function qaScope(p) {
+  const v = qaVers(p); const changed = Object.keys(v).filter(k => !p.qa || p.qa.vers[k] !== v[k]); const s = new Set(changed);
+  changed.forEach(k => dependents(p, k).forEach(d => s.add(d))); return [...s].filter(k => hasOutput(p.modules[k]));
+}
+function qaProgrammatic(p) {
+  const f = []; const add = (cat, status, target, problem, fix) => f.push({ cat, status, target, problem, fix, src: 'auto' });
+  includedList(p).filter(x => x.def).forEach(x => {
+    const st = statusOf(p, x.id);
+    if (!hasOutput(p.modules[x.id])) add('consistency', x.level === 'mandatory' ? 'conflict' : 'warn', x.id, `«${x.title}» не запущено`, 'Запустіть модуль або приховайте, якщо він не обовʼязковий');
+    else if (st.k === 'stale') add('consistency', 'conflict', x.id, `«${x.title}» застарів: ${st.reasons.join('; ')}`, 'Перегенеруйте або підтвердіть актуальність');
+    else if (p.modules[x.id].state !== 'locked') add('consistency', 'warn', x.id, `«${x.title}» не зафіксовано — не потрапить у Final Strategy`, 'Перевірте та зафіксуйте');
+  });
+  const seg = segmentIds(p);
+  const av = p.modules.avatars && p.modules.avatars.sections.avatars; if (av) { const used = new Set(av.data.map(a => a.segmentId));
+    av.data.filter(a => !seg.includes(a.segmentId)).forEach(a => add('consistency', 'conflict', 'avatars', `Аватар «${a.name}» посилається на неіснуючий сегмент «${a.segmentId}»`, 'Перегенеруйте аватари з актуальних сегментів'));
+    seg.filter(s => !used.has(s)).forEach(s => add('consistency', 'warn', 'avatars', `Сегмент ${s} не має аватара`, 'Додайте аватар для сегмента')); }
+  [['meta_audience', 'adapt', 'Meta'], ['tt_org', 'adapt', 'TikTok'], ['tta_strategy', 'audiences', 'TikTok Ads']].forEach(([mid, sk, nm]) => { const sc = p.modules[mid] && p.modules[mid].sections[sk]; if (sc && seg.length) { const used = sc.data.map(a => a.segmentId); const un = seg.filter(s => !used.includes(s)); if (un.length) add('consistency', 'warn', mid, `${nm}: не адаптовано сегменти ${un.join(', ')} — аудиторія в каналах не збігається з Audience Intelligence`, 'Додайте адаптацію або поясніть, чому сегмент не використовується'); else add('consistency', 'ok', mid, `${nm}: усі сегменти з Audience Intelligence адаптовано`, ''); } });
+  const roles = p.modules.architectB && p.modules.architectB.sections.roles; const cf = p.modules.cross_funnel && p.modules.cross_funnel.sections.nodes;
+  const rx = { smm: /instagram|facebook|smm|контент/i, meta: /meta/i, google: /google/i, tiktok: /tiktok|тікток|тік-ток/i, tta: /tiktok|тікток/i };
+  if (cf) [...ctxOf(p).channels].forEach(c => { const txt = JSON.stringify(cf.data); if (!rx[c].test(txt)) add('funnel', 'conflict', 'cross_funnel', `У Cross-channel Funnel немає каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Перегенеруйте воронку'); });
+  if (roles) [...ctxOf(p).channels].forEach(c => { if (!rx[c].test(JSON.stringify(roles.data))) add('funnel', 'warn', 'architectB', `Не визначено роль каналу «${CFG.CHANNEL_LABELS[c]}»`, 'Оновіть Architect B'); });
+  let hyp = 0, tot = 0; includedList(p).filter(x => x.def && p.modules[x.id]).forEach(x => { let h = 0, t = 0; Object.values(p.modules[x.id].sections).forEach(s => (s.claims || []).forEach(c => { t++; if (c.type === 'ai_hypothesis') h++; })); tot += t; hyp += h;
+    if (t >= 4 && h / t > .5) add('evidence', 'warn', x.id, `«${x.title}»: ${h} із ${t} тверджень — гіпотези без підтвердження`, 'Додайте джерела (Research Hub → Джерела) або позначте рішення як тест'); });
+  if (tot) add('evidence', hyp / tot > .4 ? 'warn' : 'ok', '', `Твердження в стратегії: ${tot - hyp} підкріплено / ${hyp} гіпотез (гіпотези не подаються як факти у Final)`, hyp / tot > .4 ? 'Збільште частку підкріплених тверджень' : '');
+  const gen = []; includedList(p).filter(x => x.def && p.modules[x.id]).forEach(x => Object.values(p.modules[x.id].sections).forEach(s => (s.warnings || []).forEach(w => { if (w.startsWith('Загальні фрази')) gen.push([x.id, x.title, w]); })));
+  gen.forEach(g => add('generic', 'warn', g[0], `«${g[1]}»: ${g[2]}`, 'Замініть на конкретику: ЩО, ЯК і ЧОМУ саме для цього бізнесу'));
+  if (!gen.length) add('generic', 'ok', '', 'Типових загальних фраз не знайдено (автоматична перевірка)', '');
+  return f;
+}
+async function runQA() {
+  const p = S.project; if (S.ui.qaRunning) return;
+  const scope = qaScope(p); S.ui.qaRunning = true; S.ui.qaErr = null; render();
+  try {
+    const prog = qaProgrammatic(p);
+    const inc = includedList(p).filter(x => x.def && hasOutput(p.modules[x.id]));
+    const body = inc.map(x => { const o = {}; Object.entries(p.modules[x.id].sections).forEach(([k, s]) => o[k] = s.data); let j = JSON.stringify(o); if (!scope.includes(x.id) && j.length > 2500) j = j.slice(0, 2500) + '…'; return `### ${x.title} [${x.id}]${scope.includes(x.id) ? ' (У ЗОНІ ПЕРЕВІРКИ)' : ''}\n${j}`; }).join('\n\n');
+    const prompt = `# ЗАВДАННЯ\nТи Strategy Reviewer. Перевір ГОТОВУ стратегію. НЕ генеруй нову стратегію і не пропонуй переписати її повністю.\nЗона перевірки (змінені модулі та залежні від них): ${scope.length ? scope.join(', ') : 'усе'}. Решта модулів — лише контекст.\nПеревір категорії: consistency (чи однакова аудиторія/сегменти в різних каналах), brand (чи контент і реклама відповідають Brand Platform і Tone of Voice), funnel (чи логічно пов'язані канали), contentads (чи контент підтримує рекламу), evidence (чи мають рішення підґрунтя), generic (загальні фрази без ЩО/ЯК/ЧОМУ).\nБЕЗ абстрактних оцінок. Для кожної знайденої проблеми: status warn|conflict, target (id модуля), problem (конкретно, з цитатою), fix (що зробити). Якщо категорія в порядку — один запис status ok з тим, що саме перевірено.\n# ФОРМАТ\n<<<SCHEMA\n{"findings":[{"category":"consistency|brand|funnel|contentads|evidence|generic","status":"ok|warn|conflict","target":"<id модуля або порожньо>","problem":"<текст>","fix":"<текст>"}]}\nSCHEMA>>>\n# СТРАТЕГІЯ\n${body}\n\n# БРИФ\n${JSON.stringify(briefObj(p))}`;
+    const res = await runJob('ai', { system: CFG.GLOBAL_RULES + '\n\nРОЛЬ: Strategy Reviewer. ' + CFG.AGENTS.reviewer.prompt + ((S.prompts || {}).reviewer ? '\n' + S.prompts.reviewer : ''), prompt, web: false, maxTokens: 8000 });
+    const j = parseJSON(res.text); const ai = (j.findings || []).map(x => ({ cat: ['consistency', 'brand', 'funnel', 'contentads', 'evidence', 'generic'].includes(x.category) ? x.category : 'consistency', status: ['ok', 'warn', 'conflict'].includes(x.status) ? x.status : 'warn', target: String(x.target || ''), problem: str(x.problem), fix: str(x.fix), src: 'ai' }));
+    const keep = ((p.qa && p.qa.ai) || []).filter(f => f.target && !scope.includes(f.target) && p.modules[f.target]);
+    const all = prog.concat(keep, ai);
+    p.qa = { runAt: nowIso(), by: S.user, scope, vers: qaVers(p), prog, ai: keep.concat(ai), summary: { ok: all.filter(x => x.status === 'ok').length, warn: all.filter(x => x.status === 'warn').length, conflict: all.filter(x => x.status === 'conflict').length } };
+    logEv(p, 'QA-перевірка виконана (зона: ' + (scope.length || 'усе') + ')'); touch('QA-перевірка');
+  } catch (e) { S.ui.qaErr = e.message; }
+  finally { S.ui.qaRunning = false; render(); }
+}
+
+/* ---------- Final Strategy ---------- */
+function finalModules(p) {
+  const ok = [], excl = [];
+  includedList(p).forEach(x => {
+    if (x.custom) { const c = p.custom.find(y => y.id === x.id); if (c && c.body) ok.push(x); else excl.push({ title: x.title, why: 'порожній кастомний блок' }); return; }
+    const m = p.modules[x.id]; const st = statusOf(p, x.id);
+    if (!hasOutput(m)) excl.push({ title: x.title, why: 'не запущено' }); else if (st.k === 'stale') excl.push({ title: x.title, why: 'застарів' }); else if (m.state !== 'locked') excl.push({ title: x.title, why: 'не зафіксовано' }); else ok.push(x);
+  });
+  return { ok, excl };
+}
+function secToBlocks(sdef, sec, out) {
+  out.push({ t: 'h4', x: sdef.title });
+  if (sdef.kind === 'text') out.push({ t: 'p', x: sec.data });
+  else if (sdef.kind === 'fields') sdef.fields.forEach(f => out.push({ t: 'kv', k: f.l, v: sec.data[f.k] }));
+  else if (sdef.kind === 'list') sec.data.forEach((it, i) => { out.push({ t: 'h5', x: `${it.id ? it.id + '. ' : (i + 1) + '. '}${it[sdef.titleField] || ''}` }); sdef.fields.filter(f => f.k !== sdef.titleField).forEach(f => out.push({ t: 'kv', k: f.l, v: it[f.k] })); });
+  else if (sdef.kind === 'refs') (sec.refs || []).forEach(r => out.push({ t: 'kv', k: r.title || r.url, v: (r.url || '') + (r.note ? ' — ' + r.note : '') }));
+  if (sec.implication) out.push({ t: 'quote', x: 'Що це означає для нашої стратегії? ' + [sec.implication.learned, sec.implication.why, sec.implication.impact, sec.implication.action].filter(Boolean).join(' → ') });
+  const hy = (sec.claims || []).filter(c => c.type === 'ai_hypothesis'); if (hy.length) out.push({ t: 'quote', x: 'Гіпотези (потребують перевірки): ' + hy.map(c => c.text).join(' | ') });
+}
+function finalBlocks(p) {
+  const { ok } = finalModules(p); const b = [];
+  b.push({ t: 'h1', x: 'Стратегія: ' + p.name }); b.push({ t: 'meta', x: `Клієнт: ${p.client || '—'} · Послуги: ${p.services.map(svcLabel).join(', ')} · Сформовано ${fmtDate(p.final && p.final.generatedAt)} · Автор: ${(p.final && p.final.by) || '—'}` });
+  let g = ''; ok.forEach(x => {
+    const gl = x.custom ? 'Додаткові розділи' : CFG.GROUPS[x.def.group].label; if (gl !== g) { b.push({ t: 'h2', x: gl }); g = gl; }
+    b.push({ t: 'h3', x: x.title });
+    if (x.custom) { b.push({ t: 'p', x: p.custom.find(y => y.id === x.id).body }); return; }
+    const m = p.modules[x.id]; sectionsFor(p, x.id).forEach(s => { const sec = m.sections[s.key]; if (sec || s.kind === 'refs' && m.sections[s.key]) secToBlocks(s, sec, b); });
+  });
+  const used = p.sources.filter(s => isUrl(s.url)); if (used.length) { b.push({ t: 'h2', x: 'Джерела' }); used.forEach(s => b.push({ t: 'kv', k: (s.title || s.url) + ' · ' + (s.date || ''), v: s.url + (s.evidence ? ' — ' + s.evidence : '') })); }
+  return b;
+}
+const blocksToMd = bl => bl.map(b => ({ h1: `# ${b.x}\n`, h2: `\n## ${b.x}\n`, h3: `\n### ${b.x}\n`, h4: `\n#### ${b.x}\n`, h5: `\n**${b.x}**\n`, p: b.x + '\n', meta: `_${b.x}_\n`, quote: `> ${String(b.x).replace(/\n/g, '\n> ')}\n`, kv: `- **${b.k}:** ${String(b.v || '').replace(/\n/g, ' ')}` }[b.t])).join('\n');
+const blocksToHtml = bl => bl.map(b => ({ h1: `<h1>${esc(b.x)}</h1>`, h2: `<h2>${esc(b.x)}</h2>`, h3: `<h3>${esc(b.x)}</h3>`, h4: `<h4>${esc(b.x)}</h4>`, h5: `<p><b>${esc(b.x)}</b></p>`, p: `<p>${esc(b.x).replace(/\n/g, '<br>')}</p>`, meta: `<p class="muted sm">${esc(b.x)}</p>`, quote: `<blockquote style="border-left:3px solid #c7d0ff;margin:8px 0;padding:4px 12px;background:#eef0ff">${esc(b.x)}</blockquote>`, kv: `<p style="margin:3px 0"><b>${esc(b.k)}:</b> ${esc(b.v).replace(/\n/g, '<br>')}</p>` }[b.t])).join('\n');
+function snapshotOf(p) {
+  const { ok } = finalModules(p);
+  return { schema: 'agency-strategy-os/1', exportedAt: nowIso(), project: { id: p.id, name: p.name, client: p.client, services: p.services, brief: p.brief }, modules: ok.map(x => x.custom ? { id: x.id, title: x.title, custom: true, body: p.custom.find(y => y.id === x.id).body } : ({ id: x.id, title: x.title, group: x.def.group, level: x.level, sections: Object.fromEntries(Object.entries(p.modules[x.id].sections).map(([k, s]) => [k, { data: s.data, implication: s.implication, claims: s.claims }])) })), sources: p.sources, qa: p.qa && { runAt: p.qa.runAt, summary: p.qa.summary, findings: p.qa.prog.concat(p.qa.ai) } };
+}
+const EXPORT_IMPL = {
+  json: p => ({ mime: 'application/json', text: JSON.stringify(snapshotOf(p), null, 2) }),
+  md: p => ({ mime: 'text/markdown', text: blocksToMd(finalBlocks(p)) }),
+  notion: p => ({ mime: 'text/markdown', text: blocksToMd(finalBlocks(p)) }),
+  html: p => ({ mime: 'text/html', text: `<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>${esc(p.name)}</title><style>body{font-family:Arial,sans-serif;max-width:860px;margin:30px auto;line-height:1.5}h2{border-bottom:1px solid #ddd;padding-bottom:4px}</style></head><body>${blocksToHtml(finalBlocks(p))}</body></html>` }),
+  figma: p => { const bl = finalBlocks(p); const slides = []; let cur = null; bl.forEach(b => { if (b.t === 'h1') slides.push({ layout: 'cover', title: b.x }); else if (b.t === 'h3') { cur = { layout: 'content', title: b.x, bullets: [] }; slides.push(cur); } else if (cur && b.t === 'kv' && cur.bullets.length < 8) cur.bullets.push(b.k + ': ' + String(b.v || '').slice(0, 160)); else if (b.t === 'h2') cur = null; }); return { mime: 'application/json', text: JSON.stringify({ schema: 'agency-strategy-os/figma-slides/1', slides }, null, 2) }; },
+};
+function doExport(fmt) {
+  const p = S.project; const ex = CFG.EXPORTERS.find(e => e.id === fmt); if (!ex || !ex.ready) return toast('Інтеграція буде додана у Phase 2', true);
+  if (fmt === 'pdf') { S.page = 'final'; render(); setTimeout(() => window.print(), 150); }
+  else { const r = EXPORT_IMPL[fmt](p); const blob = new Blob([r.text], { type: r.mime + ';charset=utf-8' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = slug(p.name) + '-strategy.' + ex.ext; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); }
+  p.exports.unshift({ id: uid('ex'), format: fmt, at: nowIso(), by: S.user }); touch(); render();
+}
+function generateFinal() {
+  const p = S.project; const qa = p.qa; if (!qa || qaStale(p)) return toast('Спершу виконайте актуальну QA-перевірку', true);
+  if (qa.summary.conflict && !confirm('У QA є конфлікти (' + qa.summary.conflict + '). Сформувати фінальну стратегію все одно?')) return;
+  p.final = { generatedAt: nowIso(), by: S.user, rev: ((p.final && p.final.rev) || 0) + 1 }; logEv(p, 'Сформовано Final Strategy v' + p.final.rev); touch('Final Strategy v' + p.final.rev); render();
+}
+
+/* ---------- Toast / UI утиліти ---------- */
+function toast(t, err) { const d = document.createElement('div'); d.className = 'toast' + (err ? ' err' : ''); d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), err ? 6000 : 3200); }
+/* =====================================================================
+   UI
+   ===================================================================== */
+const A = {}; // дії (data-act)
+const $ = s => document.querySelector(s);
+const chip = (t, c = '') => `<span class="chip ${c}">${t}</span>`;
+const bar = (pct, cls = '') => `<div class="bar ${cls}"><i style="width:${pct}%"></i></div>`;
+const statusChip = st => chip(`${st.icon} ${st.label}`, st.cls);
+const lvlChip = l => chip(`${CFG.LEVEL[l].icon} ${CFG.LEVEL[l].label}`, l === 'mandatory' ? 'ac' : l === 'recommended' ? 'info' : '');
+const modal = html => { $('#overlay').innerHTML = `<div class="modal-bg" data-act="mbg"><div class="modal">${html}</div></div>`; };
+const closeModal = () => { $('#overlay').innerHTML = ''; };
+A.mbg = (el, ev) => { if (ev.target === el) closeModal(); };
+A.closeModal = closeModal;
+const nl = s => esc(s).replace(/\n/g, '<br>');
+const linkOf = u => isUrl(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60))}</a>` : esc(u || '');
+
+function go(view, page) { S.view = view; if (page) S.page = page; render(); $('#main').scrollTop = 0; }
+function render() {
+  const main = $('#main'); const st = main.scrollTop;
+  renderSide();
+  try { main.innerHTML = viewHtml(); } catch (e) { console.error(e); main.innerHTML = `<div class="wrap"><div class="errbox">Помилка відображення: ${esc(e.message)}</div></div>`; }
+  main.scrollTop = st; updSave();
+}
+function updSave() { const el = $('#savei'); if (!el) return; el.textContent = S.conflict ? '⚠ Конфлікт версій' : S.saving ? 'Збереження…' : S.dirty ? 'Є незбережені зміни' : '✓ Збережено'; }
+
+/* ---------- Sidebar ---------- */
+function renderSide() {
+  const g = [['projects', 'Проєкти'], ['builder', 'Strategy Builder'], ['hub', 'Research Hub'], ['agents', 'AI Agents'], ['library', 'Бібліотека'], ['settings', 'Налаштування']];
+  let h = `<div class="brand"><i></i>Agency Strategy OS</div><div class="nav">` + g.map(([k, l]) => `<a class="${S.view === k ? 'on' : ''}" data-act="nav" data-v="${k}">${l}</a>`).join('');
+  const p = S.project;
+  if (p && S.view === 'project') {
+    const inc = includedList(p); const cnt = grp => { const l = inc.filter(x => x.def && x.def.group === grp); return l.length ? `${l.filter(x => isLocked(p, x.id)).length}/${l.length}` : ''; };
+    const items = [['overview', 'Огляд'], ['brief', 'Бриф'], ['services', 'Послуги'], ['structure', 'Структура'], ['research', 'Research', cnt('research')], ['brand', 'Brand', cnt('brand')], ['smm', 'SMM', cnt('smm')]];
+    [['meta', 'Meta Ads'], ['tiktok', 'TikTok'], ['ttads', 'TikTok Ads'], ['google', 'Google Ads'], ['cross', 'Cross-channel']].forEach(([k, l]) => { if (inc.some(x => x.def && x.def.group === k)) items.push([k, l, cnt(k)]); });
+    items.push(['map', 'Strategy Map'], ['qa', 'QA', p.qa ? (qaStale(p) ? '↻' : '✓') : ''], ['final', 'Final Strategy', p.final ? '✓' : ''], ['history', 'Історія']);
+    h += `<h6>Проєкт</h6><div style="padding:0 8px 6px;font-weight:600;font-size:13px">${esc(p.name)}</div>` + items.map(([k, l, d]) => `<a class="${S.page === k ? 'on' : ''}" data-act="page" data-v="${k}">${l}<span class="dot">${d || ''}</span></a>`).join('');
+  }
+  h += `</div><div class="side-foot">👤 ${esc(S.user || '—')}<br><span id="savei"></span></div>`;
+  $('#side').innerHTML = h;
+}
+A.nav = el => { S.view = el.dataset.v; render(); $('#main').scrollTop = 0; };
+A.page = el => { S.page = el.dataset.v; render(); $('#main').scrollTop = 0; };
+A.open = async el => { try { await openProject(el.dataset.id, el.dataset.page); render(); } catch (e) { toast(e.message, true); } };
+
+/* ---------- Верхня панель проєкту ---------- */
+function stepper(p) {
+  const { done, cur } = currentStep(p);
+  const tgt = { 1: 'overview', 2: 'brief', 3: 'services', 4: 'structure', 5: 'research', 6: 'research', 7: 'brand', 8: 'qa', 9: 'final' };
+  return `<div class="stepper no-print">` + CFG.STEPS.map(s => `<div class="step ${done[s.n] ? 'done' : s.n === cur ? 'cur' : ''}" data-act="page" data-v="${tgt[s.n]}" ${s.n === 6 ? 'data-tab="insights"' : ''}><b>${done[s.n] ? '✓' : s.n}</b>${s.label}</div>`).join('') + `</div>`;
+}
+function pTop(p, title, right = '') {
+  const pr = progress(p);
+  return `<div class="top"><h1>${esc(title)}</h1><span class="muted sm">${esc(p.name)}</span><span class="sp"></span><div style="min-width:220px"><div class="sm t2">Стратегія готова на <b>${pr}%</b></div>${bar(pr)}</div>${right}</div><div style="padding:10px 24px 0" class="no-print">${stepper(p)}</div>${S.conflict ? conflictBanner() : ''}`;
+}
+function conflictBanner() { return `<div class="wrap" style="padding-bottom:0"><div class="errbox"><b>Конфлікт версій.</b> ${esc(S.conflict.by || 'Колега')} зберіг(ла) зміни, поки ви редагували. <span class="row" style="display:inline-flex;margin-left:8px"><button class="btn sm" data-act="cfTheirs">Взяти версію колеги</button><button class="btn sm danger" data-act="cfMine">Перезаписати моєю</button></span></div></div>`; }
+A.cfTheirs = () => resolveConflict(false); A.cfMine = () => resolveConflict(true);
+
+/* ---------- Router ---------- */
+function viewHtml() {
+  const v = S.view;
+  if (v === 'projects') return projectsView(); if (v === 'builder') return builderView(); if (v === 'hub') return hubView(); if (v === 'agents') return agentsView(); if (v === 'library') return libraryView(); if (v === 'settings') return settingsView();
+  const p = S.project; if (!p) return projectsView();
+  const pg = S.page;
+  if (pg === 'overview') return overviewView(p); if (pg === 'brief') return briefView(p); if (pg === 'services') return servicesView(p); if (pg === 'structure') return structureView(p);
+  if (pg === 'research') return researchView(p); if (pg === 'map') return mapView(p); if (pg === 'qa') return qaView(p); if (pg === 'final') return finalView(p); if (pg === 'history') return historyView(p);
+  if (CFG.GROUPS[pg]) return groupView(p, pg);
+  return overviewView(p);
+}
+
+/* ---------- Проєкти ---------- */
+function projectsView() {
+  const rows = S.projects.map(r => { const m = r.meta || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><div class="muted sm">${esc(m.client || '')}</div></td><td>${(m.services || []).map(s => chip(svcLabel(s))).join(' ')}</td><td>${chip(m.status || '—', 'ac')}</td><td style="min-width:140px">${m.progress || 0}%${bar(m.progress || 0)}</td><td>${m.briefPct != null ? m.briefPct + '%' : '—'}</td><td class="sm t2">${fmtDate(r.updated_at)}<br>${esc(r.updated_by || '')}</td></tr>`; }).join('');
+  return `<div class="top"><h1>Проєкти</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">` +
+    (S.projects.length ? `<div class="card" style="padding:0;overflow:auto"><table><tr><th>Проєкт</th><th>Послуги</th><th>Статус</th><th>Strategy Progress</th><th>Бриф</th><th>Оновлено</th></tr>${rows}</table></div>` : `<div class="card"><h3>Ще немає проєктів</h3><p class="t2">Створіть перший проєкт. Стратегічний етап додається автоматично і не вимикається.</p><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div>`) + `</div>`;
+}
+A.newProj = () => modal(`<h3>Новий проєкт</h3><div class="lock-banner">🔒 <div><b>Створення стратегії</b><div class="sm" style="opacity:.8">Обовʼязково для кожного проєкту — додається автоматично</div></div></div><label class="f"><span>Назва проєкту</span><input type="text" id="np_name" autofocus></label><label class="f"><span>Клієнт</span><input type="text" id="np_client"></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="newProjOk">Створити</button></div>`);
+A.newProjOk = async () => {
+  const name = $('#np_name').value.trim(); if (!name) return toast('Вкажіть назву проєкту', true);
+  const p = newProject(name, $('#np_client').value.trim()); p.team[S.user] = nowIso();
+  try { await api('/projects', { method: 'POST', body: { id: p.id, name: p.name, data: p, meta: metaOf(p) } }); closeModal(); await openProject(p.id, 'brief'); S.projects = await api('/projects'); render(); } catch (e) { toast(e.message, true); }
+};
+
+/* ---------- Strategy Builder (методологія) ---------- */
+function builderView() {
+  const cols = [['base', 'Базовий пакет', []], ['meta', '+ Meta Ads', ['meta_ads']], ['tt', '+ TikTok Organic', ['tiktok_org']], ['tta', '+ TikTok Ads', ['tiktok_ads']], ['ttboth', '+ TikTok Org + Ads', ['tiktok_org', 'tiktok_ads']], ['g', '+ Google Ads', ['google_ads']]];
+  const base = ['instagram', 'facebook']; const lv = svcs => resolveRules({ id: 'matrix-' + svcs.join(), services: base.concat(svcs), brief: {} }).levels;
+  const bl = lv([]);
+  const head = cols.map(c => `<th>${c[1]}</th>`).join('');
+  const rows = CFG.MODULES.map(m => `<tr><td>${esc(m.title)}<div class="muted sm">${CFG.GROUPS[m.group].label}</div></td>` + cols.map(([k, , s]) => { const l = lv(s)[m.id]; const isBase = bl[m.id]; if (k === 'base') return `<td>${l ? CFG.LEVEL[l].icon : ''}</td>`; return `<td>${l && !isBase ? CFG.LEVEL[l].icon : ''}</td>`; }).join('') + `</tr>`).join('');
+  const multi = resolveRules({ id: 'matrix-multi', services: base.concat(['meta_ads']), brief: {} }).levels;
+  return `<div class="top"><h1>Strategy Builder</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">
+  <div class="card"><h3>Як працює система</h3><p class="t2">Один проєкт → одна стратегічна база → одна логіка бренду → багато каналів. Стратегічний етап 🔒 обовʼязковий для кожного клієнта; склад модулів формує <b>Rule Engine</b> за послугами клієнта (правила в конфігу методології, а не в UI).</p><div class="stepper" style="flex-wrap:wrap">${CFG.STEPS.map(s => `<div class="step"><b>${s.n}</b>${s.label}</div>`).join('')}</div></div>
+  <div class="card"><h3>Матриця: послуга → модулі стратегії</h3><p class="muted sm">Показано, які модулі додає кожна послуга поверх базового пакета (Instagram + Facebook). Cross-channel Funnel зʼявляється автоматично при більш ніж одному каналі (${multi.cross_funnel ? 'напр. Content + Meta' : ''}). 🔒 обовʼязковий · ★ рекомендований · ○ опціональний.</p><div style="overflow:auto"><table><tr><th>Модуль</th>${head}</tr>${rows}<tr><td>Cross-channel Funnel<div class="muted sm">Cross-channel</div></td><td></td><td colspan="5" class="t2">🔒 при &gt; 1 каналу (будь-яка комбінація)</td></tr></table></div></div></div>`;
+}
+
+/* ---------- Research Hub (глобально) ---------- */
+function hubView() {
+  const rows = S.projects.map(r => { const m = r.meta || {}; const rs = m.research || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}" data-page="research"><td><b>${esc(r.name)}</b></td><td>${rs.locked != null ? rs.locked + ' / ' + rs.total + ' зафіксовано' : '—'}</td><td>${rs.running ? chip('◐ ' + rs.running + ' виконується', 'info') : ''}</td><td class="sm t2">${fmtDate(r.updated_at)}</td></tr>`; }).join('');
+  return `<div class="top"><h1>Research Hub</h1></div><div class="wrap"><div class="card"><h3>Єдине дослідження на проєкт</h3><p class="t2">Market, Audience та Competitor Intelligence виконуються один раз і використовуються всіма агентами й каналами. Оберіть проєкт, щоб відкрити його Research Hub.</p></div><div class="card" style="padding:0"><table><tr><th>Проєкт</th><th>Research</th><th></th><th>Оновлено</th></tr>${rows}</table></div></div>`;
+}
+
+/* ---------- AI Agents ---------- */
+function agentsView() {
+  const items = Object.entries(CFG.AGENTS).map(([id, a]) => { const mods = CFG.MODULES.filter(m => m.agent === id).map(m => m.title); return `<div class="card"><div class="row"><h3 style="margin:0">${esc(a.name)}</h3>${chip(id)}</div><p class="t2 sm">${esc(a.prompt)}</p><div class="sm muted">Модулі: ${mods.length ? esc(mods.join(' · ')) : 'Перевірка / QA'}</div><label class="f" style="margin-top:8px"><span>Додаткові інструкції агенції для цього агента (додаються до системного промпта)</span><textarea data-prm="${id}" placeholder="Напр.: завжди пропонуй мінімум 2 гіпотези для тесту…">${esc((S.prompts || {})[id] || '')}</textarea></label></div>`; }).join('');
+  return `<div class="top"><h1>AI Agents</h1><span class="sp"></span><button class="btn pri" data-act="savePrompts">Зберегти інструкції</button></div><div class="wrap"><div class="card"><h3>Архітектура агентів</h3><p class="t2">Кожен агент отримує <b>тільки зафіксовані</b> результати залежностей (Project Context) і не має права змінювати їх. Спільні правила (без вигаданої статистики, типи тверджень, Research → Insight → Decision → Action) застосовуються до всіх агентів:</p><pre class="json" style="white-space:pre-wrap">${esc(CFG.GLOBAL_RULES)}</pre></div>${items}</div>`;
+}
+A.savePrompts = async () => { const o = {}; document.querySelectorAll('[data-prm]').forEach(t => { if (t.value.trim()) o[t.dataset.prm] = t.value.trim(); }); try { await api('/kv/prompts', { method: 'PUT', body: { value: o } }); S.prompts = o; toast('Інструкції збережено для всієї команди'); } catch (e) { toast(e.message, true); } };
+
+/* ---------- Бібліотека ---------- */
+const LIB_KINDS = ['Правила агенції', 'Методологія', 'Шаблон', 'Tone of Voice framework', 'Приклад стратегії', 'Успішний кейс', 'Шаблон рубрикатора', 'Advertising framework', 'Prompt', 'Benchmark'];
+function libraryView() {
+  const items = (S.lib || []).map((x, i) => `<div class="card"><div class="row"><b>${esc(x.title)}</b>${chip(x.kind)}${(x.tags || []).map(t => chip('#' + esc(t))).join('')}<span class="sp" style="flex:1"></span><label class="sm"><input type="checkbox" data-act="libTog" data-i="${i}" ${x.enabled !== false ? 'checked' : ''}> у контексті AI</label><button class="btn sm danger" data-act="libDel" data-i="${i}">Видалити</button></div><div class="t2 sm" style="white-space:pre-wrap;margin-top:6px">${esc(x.text)}</div></div>`).join('');
+  return `<div class="top"><h1>Бібліотека агенції</h1><span class="sp"></span><button class="btn pri" data-act="libAdd">+ Додати</button></div><div class="wrap"><div class="infobox">Agency Knowledge Base: увімкнені записи автоматично додаються AI як додатковий контекст (за тегами: <code>all</code>, назва групи модулів — <code>brand</code>, <code>smm</code>, <code>meta</code>… — або id модуля). Ліміт — ~6000 символів на запит.</div>${items || '<div class="card muted">Поки порожньо. Додайте правила агенції, методологію, шаблони, кейси, бенчмарки.</div>'}</div>`;
+}
+A.libAdd = () => modal(`<h3>Новий запис бази знань</h3><label class="f"><span>Тип</span><select id="lb_kind">${LIB_KINDS.map(k => `<option>${k}</option>`).join('')}</select></label><label class="f"><span>Назва</span><input type="text" id="lb_title"></label><label class="f"><span>Текст (правило, шаблон, фреймворк…)</span><textarea id="lb_text" style="min-height:140px"></textarea></label><label class="f"><span>Теги через кому (all, brand, smm, meta, tiktok, google, id модуля)</span><input type="text" id="lb_tags" value="all"></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="libSave">Зберегти</button></div>`);
+async function saveLib() { try { await api('/kv/library', { method: 'PUT', body: { value: S.lib } }); } catch (e) { toast(e.message, true); } }
+A.libSave = async () => { const t = $('#lb_title').value.trim(); if (!t) return toast('Вкажіть назву', true); S.lib.push({ id: uid('k'), kind: $('#lb_kind').value, title: t, text: $('#lb_text').value, tags: $('#lb_tags').value.split(',').map(x => x.trim()).filter(Boolean), enabled: true }); await saveLib(); closeModal(); render(); };
+A.libDel = async el => { if (!confirm('Видалити запис?')) return; S.lib.splice(+el.dataset.i, 1); await saveLib(); render(); };
+A.libTog = async el => { S.lib[+el.dataset.i].enabled = el.checked; await saveLib(); };
+
+/* ---------- Налаштування ---------- */
+function settingsView() {
+  const st = S.status || {};
+  return `<div class="top"><h1>Налаштування</h1></div><div class="wrap"><div class="card"><h3>Ви</h3><label class="f"><span>Імʼя (відображається в історії та команді проєкту)</span><input type="text" id="set_name" value="${esc(S.user)}"></label><label class="f"><span>Командний ключ ${st.teamKeyRequired ? '(потрібен)' : '(на сервері не задано)'}</span><input type="text" id="set_key" value="${esc(ls.get('aso_key') || '')}"></label><button class="btn pri" data-act="saveSettings">Зберегти</button></div>
+  <div class="card"><h3>Стан сервера</h3><div class="row">${chip(st.ai ? '✓ Claude API підключено' : '✕ Немає ANTHROPIC_API_KEY', st.ai ? 'ok' : 'bad')}${chip(st.parser ? '✓ Парсер (Apify) підключено' : '✕ Немає APIFY_TOKEN — парсинг вимкнено', st.parser ? 'ok' : 'warn')}${chip('Модель: ' + esc(st.model || '—'))}${chip('Методологія v' + CFG.VERSION)}</div></div></div>`;
+}
+A.saveSettings = async () => { S.user = $('#set_name').value.trim() || S.user; ls.set('aso_user', S.user); ls.set('aso_key', $('#set_key').value.trim()); toast('Збережено'); render(); };
+
+/* ---------- Огляд проєкту ---------- */
+function overviewView(p) {
+  const c = completeness(p); const rs = researchStatus(p); const pr = progress(p); const acts = nextActions(p);
+  const inc = includedList(p); const stale = inc.filter(x => x.def && statusOf(p, x.id).k === 'stale');
+  const cell = (l, v) => `<div class="card" style="margin:0"><div class="muted sm">${l}</div><div style="margin-top:4px">${v}</div></div>`;
+  return pTop(p, 'Огляд') + `<div class="wrap"><div class="grid g4" style="margin-bottom:14px">
+  ${cell('Проєкт', `<b>${esc(p.name)}</b>`)}${cell('Клієнт', esc(p.client || '—'))}${cell('Статус', chip(projectStatusText(p), 'ac'))}${cell('Останнє оновлення', fmtDate(p.updatedAt))}
+  ${cell('Послуги', `<div class="tags">${chip('🔒 Створення стратегії', 'ac')}${p.services.map(s => chip(svcLabel(s))).join('')}</div>`)}
+  ${cell('Strategy Progress', `<b>Стратегія готова на ${pr}%</b>${bar(pr)}`)}
+  ${cell('Brief Completeness', `<b>Заповненість: ${c.pct}%</b>${bar(c.pct, c.pct >= 70 ? 'ok' : 'warn')}`)}
+  ${cell('Research Status', `<b>${rs.locked} / ${rs.total}</b> зафіксовано ${rs.running ? chip('◐ ' + rs.running, 'info') : ''}${bar(rs.locked / rs.total * 100, rs.locked === rs.total ? 'ok' : '')}`)}
+  </div>
+  <div class="grid g2"><div class="card"><h3>Наступні дії</h3>${acts.length ? acts.map(a => `<div class="row" style="padding:5px 0;border-bottom:1px dashed var(--line)"><span style="flex:1">${esc(a.t)}</span><button class="btn sm" data-act="page" data-v="${a.page}" data-mod="${a.mod || ''}">Відкрити →</button></div>`).join('') : '<div class="okbox">Усе виконано.</div>'}</div>
+  <div class="card"><h3>Хто працює над проєктом</h3>${Object.entries(p.team || {}).sort((a, b) => b[1].localeCompare(a[1])).map(([n, t]) => `<div class="row" style="padding:3px 0">👤 ${esc(n)} <span class="muted sm">остання активність ${fmtDate(t)}</span></div>`).join('') || '<span class="muted">—</span>'}<label class="f" style="margin-top:10px"><span>Відповідальний PM</span><input type="text" data-b="__owner" value="${esc(p.owner || '')}"></label></div></div>
+  ${stale.length ? `<div class="warnbox"><b>↻ Потенційно застарілі AI-блоки:</b><br>${stale.map(x => `• ${esc(x.title)} — ${esc(statusOf(p, x.id).reasons.join('; '))}`).join('<br>')}</div>` : ''}
+  <div class="card"><h3>Стратегічний етап</h3><div class="lock-banner" style="margin:0">🔒 <div><b>Створення стратегії</b><div class="sm" style="opacity:.8">Обовʼязково для кожного проєкту · ${summaryText(p)}</div></div></div></div>
+  <div class="card"><h3>Активність</h3>${p.log.slice(0, 12).map(l => `<div class="sm" style="padding:2px 0"><span class="muted">${fmtDate(l.at)} · ${esc(l.by)}</span> — ${esc(l.text)}</div>`).join('') || '<span class="muted">—</span>'}</div></div>`;
+}
+function summaryText(p) { const c = levelCounts(p); const n = c.mandatory + c.recommended + c.optional; return `Ви обрали ${p.services.filter(s => !CFG.SERVICES.find(x => x.id === s).base).length ? 'Content + ' + p.services.filter(s => !CFG.SERVICES.find(x => x.id === s).base).map(svcLabel).join(' + ') : 'Content'}. Для цього проєкту сформовано <b>${n}</b> стратегічних модулів: <b>${c.mandatory}</b> — обовʼязкові, <b>${c.recommended}</b> — рекомендовані, <b>${c.optional}</b> — опціональні.`; }
+
+/* ---------- Бриф ---------- */
+function fieldHtml(f, val, attr) {
+  const cw = f.w >= 3 ? ' <span class="chip warn" style="font-size:10px" title="Критичне для якості генерації">важливо</span>' : '';
+  if (f.t === 'tags') return `<div class="f"><span style="display:block;font-size:12.5px;color:var(--tx2);margin-bottom:3px;font-weight:550">${f.l}${cw}</span><div class="tags">${f.o.map(o => `<span class="tag ${(val || []).includes(o) ? 'on' : ''}" data-act="tag" data-k="${f.k}" data-v="${esc(o)}">${esc(o)}</span>`).join('')}</div></div>`;
+  let inp;
+  if (f.t === 'area') inp = `<textarea ${attr}="${f.k}">${esc(val || '')}</textarea>`;
+  else if (f.t === 'select') inp = `<select ${attr}="${f.k}"><option value="">—</option>${f.o.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}" ${val === v ? 'selected' : ''}>${esc(l)}</option>`; }).join('')}</select>`;
+  else inp = `<input type="${f.t === 'url' ? 'url' : 'text'}" ${attr}="${f.k}" value="${esc(val || '')}">`;
+  return `<label class="f"><span>${f.l}${cw}</span>${inp}</label>`;
+}
+function briefWidget(p) { const c = completeness(p); return `<div class="card" id="bw" style="position:sticky;top:120px"><h3>Заповненість: ${c.pct}%</h3>${bar(c.pct, c.pct >= 70 ? 'ok' : 'warn')}${c.miss.length ? `<div class="warnbox" style="margin-top:12px"><b>Для якісної генерації не вистачає:</b><ul style="margin:6px 0 0;padding-left:18px">${c.miss.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div><div class="muted sm">Це не блокує роботу, але знижує якість результатів AI.</div>` : '<div class="okbox" style="margin-top:12px">Бриф заповнено достатньо.</div>'}</div>`; }
+function briefView(p) {
+  const secs = CFG.BRIEF.map(s => `<div class="card"><h3>${s.title}</h3><div class="grid g2">${s.fields.map(f => `<div style="${f.t === 'area' || f.t === 'tags' ? 'grid-column:1/-1' : ''}">${fieldHtml(f, p.brief[f.k], 'data-b')}</div>`).join('')}</div>${s.id === 'goals' ? '' : ''}</div>`);
+  const comps = p.brief.competitors || [];
+  const compHtml = `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${chip(comps.length + ' / ' + CFG.MAX_COMPETITORS)}<span style="flex:1"></span><button class="btn sm" data-act="addComp" ${comps.length >= CFG.MAX_COMPETITORS ? 'disabled' : ''}>+ Додати конкурента</button></div><p class="muted sm">До ${CFG.MAX_COMPETITORS}. Рекомендовано ≥ ${CFG.RECOMMENDED_COMPETITORS}. AI аналізує лише тих, кого ви вкажете тут.</p>${comps.map((c, i) => `<div class="item"><div class="ih">Конкурент ${i + 1}<span style="flex:1"></span><button class="btn sm danger" data-act="delComp" data-i="${i}">Видалити</button></div><div class="ib"><div class="grid g3">${[['name', 'Назва'], ['site', 'Сайт'], ['instagram', 'Instagram'], ['facebook', 'Facebook'], ['tiktok', 'TikTok']].map(([k, l]) => `<label class="f"><span>${l}</span><input type="text" data-c="${i}.${k}" value="${esc(c[k] || '')}"></label>`).join('')}<label class="f"><span>Додатковий коментар</span><input type="text" data-c="${i}.comment" value="${esc(c.comment || '')}"></label></div></div></div>`).join('') || '<div class="muted">Конкурентів ще не додано.</div>'}</div>`;
+  const before = secs.slice(0, 4).join('') + compHtml + secs.slice(4).join('');
+  return pTop(p, 'Бриф') + `<div class="wrap"><div class="grid" style="grid-template-columns:minmax(0,1fr) 300px;align-items:start"><div>${before}<div class="row"><button class="btn pri" data-act="page" data-v="services">Далі: послуги →</button></div></div><div>${briefWidget(p)}</div></div></div>`;
+}
+A.tag = el => { const p = S.project; const k = el.dataset.k, v = el.dataset.v; const a = p.brief[k] || []; p.brief[k] = a.includes(v) ? a.filter(x => x !== v) : a.concat(v); touch(); el.classList.toggle('on'); refreshBrief(); };
+A.addComp = () => { const p = S.project; p.brief.competitors = p.brief.competitors || []; if (p.brief.competitors.length >= CFG.MAX_COMPETITORS) return; p.brief.competitors.push({ id: uid('cp'), name: '' }); touch(); render(); };
+A.delComp = el => { const p = S.project; const c = p.brief.competitors.splice(+el.dataset.i, 1)[0]; if (c) delete p.parsed.comp[c.id]; touch(); render(); };
+function refreshBrief() { const w = $('#bw'); if (w) w.outerHTML = briefWidget(S.project); }
+
+/* ---------- Послуги ---------- */
+function servicesView(p) {
+  const groups = [...new Set(CFG.SERVICES.map(s => s.group))];
+  const d = S.ui.svcDiff;
+  return pTop(p, 'Послуги') + `<div class="wrap"><h2 style="margin:0 0 12px">Оберіть послуги проєкту</h2>
+  <div class="lock-banner">🔒 <div><b>Стратегічний етап</b><div class="sm" style="opacity:.85">Статус: Обовʼязково для кожного проєкту</div></div></div>
+  ${groups.map(g => `<h4 class="muted" style="margin:16px 0 8px">${g}</h4><div class="grid g3">${CFG.SERVICES.filter(s => s.group === g).map(s => { const on = p.services.includes(s.id); return `<div class="svc ${on ? 'on' : ''} ${s.base ? 'base' : ''}" ${s.base ? '' : `data-act="svc" data-id="${s.id}"`}><input type="checkbox" ${on ? 'checked' : ''} ${s.base ? 'disabled' : ''} tabindex="-1"><div><b>${s.label}</b><div class="muted sm">${s.desc}${s.base ? ' · базова послуга' : ''}</div></div></div>`; }).join('')}</div>`).join('')}
+  <div class="card" style="margin-top:18px"><h3>Структура стратегії перебудовується автоматично</h3><p>${summaryText(p)}</p>
+  ${d ? `<div class="infobox"><b>Що змінилось:</b> існуюча стратегія <b>не видаляється</b>. ${d.added.length ? `<br>Додано модулів: ${d.added.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.removed.length ? `<br>Не входять у поточний пакет (дані збережено): ${d.removed.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.stale.length ? `<br>Бажано оновити: ${d.stale.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}<br>Використовуються наявні Research Hub і Brand Platform; QA перепровіряє лише змінені залежності.</div>` : ''}
+  <div class="row"><button class="btn pri" data-act="svcOk">Підтвердити послуги → структура</button></div></div></div>`;
+}
+A.svc = el => { const p = S.project; const id = el.dataset.id; S.ui.svcDiff = setService(p, id, !p.services.includes(id)); touch('Послуги: ' + svcLabel(id)); render(); };
+A.svcOk = () => { const p = S.project; p.flags.servicesConfirmed = true; touch(); go('project', 'structure'); };
+
+/* ---------- Strategy Module Builder ---------- */
+function structureView(p) {
+  const act = activeList(p); const inact = inactiveList(p);
+  const rows = act.map(x => { const st = x.def ? statusOf(p, x.id) : { icon: x.custom ? '✎' : '', label: 'Custom', cls: '' }; const lock = x.level === 'mandatory';
+    return `<div class="dnd ${x.hidden ? 'hid' : ''}" draggable="true" data-dnd="${x.id}"><span class="h">⠿</span><div class="ttl"><input class="rn" data-rn="${x.id}" value="${esc(x.title)}" title="Перейменувати"><div class="muted sm">${x.custom ? 'Custom section' : CFG.GROUPS[x.def.group].label + ' · ' + esc(x.def.desc)}</div></div>${lvlChip(x.level)}${chip(`${st.icon} ${st.label}`, st.cls)}${x.custom ? `<button class="btn sm" data-act="editCustom" data-id="${x.id}">Текст</button><button class="btn sm danger" data-act="delCustom" data-id="${x.id}">Видалити</button>` : `<button class="btn sm" data-act="hide" data-id="${x.id}" ${lock ? 'disabled title="Обовʼязковий блок не можна приховати"' : ''}>${x.hidden ? 'Показати' : lock ? '🔒' : 'Приховати'}</button>`}</div>`; }).join('');
+  return pTop(p, 'Структура стратегії') + `<div class="wrap"><div class="card"><h3>${summaryText(p)}</h3><p class="t2 sm">Порядок блоків = порядок у фінальній стратегії. Перетягуйте, перейменовуйте, приховуйте рекомендовані й опціональні блоки, додавайте власні секції. Обовʼязкові блоки не видаляються.</p><div class="row"><button class="btn" data-act="addCustom">+ Custom section</button><button class="btn pri" data-act="structOk">Підтвердити структуру → Research</button></div></div>
+  <div id="dndl">${rows}</div>${inact.length ? `<div class="card" style="margin-top:14px"><h3>Не входять у поточний пакет послуг</h3><p class="muted sm">Модулі й дані збережено — зʼявляться знову, якщо послугу буде підключено.</p>${inact.map(x => chip(esc(x.title) + (x.had ? ' · є дані' : ''))).join(' ')}</div>` : ''}</div>`;
+}
+A.hide = el => { const p = S.project; const s = p.structure.find(x => x.id === el.dataset.id); s.hidden = !s.hidden; touch(); render(); };
+A.structOk = () => { const p = S.project; p.flags.structureConfirmed = true; touch('Структуру підтверджено'); go('project', 'research'); };
+A.addCustom = () => modal(`<h3>Custom section</h3><label class="f"><span>Назва</span><input type="text" id="cs_t"></label><label class="f"><span>Текст</span><textarea id="cs_b" style="min-height:120px"></textarea></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="addCustomOk">Додати</button></div>`);
+A.addCustomOk = () => { const p = S.project; const t = $('#cs_t').value.trim(); if (!t) return toast('Вкажіть назву', true); const id = uid('c'); p.custom.push({ id, title: t, body: $('#cs_b').value }); p.structure.push({ id, custom: true, hidden: false, title: '' }); touch('Додано custom section'); closeModal(); render(); };
+A.editCustom = el => { const c = S.project.custom.find(x => x.id === el.dataset.id); modal(`<h3>${esc(c.title)}</h3><textarea id="cs_b" style="min-height:220px">${esc(c.body)}</textarea><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="saveCustom" data-id="${c.id}">Зберегти</button></div>`); };
+A.saveCustom = el => { S.project.custom.find(x => x.id === el.dataset.id).body = $('#cs_b').value; touch(); closeModal(); render(); };
+A.delCustom = el => { const p = S.project; if (!confirm('Видалити custom section?')) return; p.custom = p.custom.filter(x => x.id !== el.dataset.id); p.structure = p.structure.filter(x => x.id !== el.dataset.id); touch(); render(); };
+document.addEventListener('dragstart', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (r) { S.ui.drag = r.dataset.dnd; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', S.ui.drag); } });
+document.addEventListener('dragover', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (r && S.ui.drag) { e.preventDefault(); document.querySelectorAll('.dnd.over').forEach(x => x.classList.remove('over')); r.classList.add('over'); } });
+document.addEventListener('drop', e => { const r = e.target.closest && e.target.closest('[data-dnd]'); if (!r || !S.ui.drag) return; e.preventDefault(); const p = S.project; const from = p.structure.findIndex(x => x.id === S.ui.drag); const to = p.structure.findIndex(x => x.id === r.dataset.dnd); S.ui.drag = null; if (from < 0 || to < 0 || from === to) return render(); const [it] = p.structure.splice(from, 1); p.structure.splice(to, 0, it); touch('Змінено порядок блоків'); render(); });
+document.addEventListener('dragend', () => { S.ui.drag = null; document.querySelectorAll('.dnd.over').forEach(x => x.classList.remove('over')); });
+
+/* ---------- Картка модуля та секції ---------- */
+function verdictChip(v) { return v === 'conflict' ? chip('✕ Конфлікт', 'bad') : v === 'warn' ? chip('⚠ Потребує доопрацювання', 'warn') : chip('✓ Узгоджено', 'ok'); }
+function claimsHtml(cl) { return cl && cl.length ? `<div class="claims">${cl.map(c => `<span class="claim ${c.type}" title="${esc(CLAIM_TYPES[c.type])}">${c.type === 'ai_hypothesis' ? '❓ гіпотеза: ' : c.type === 'external_research' ? '🔗 ' : c.type === 'client_data' ? '📋 ' : '💡 '}${esc(c.text)}${c.source ? ' · ' + linkOf(c.source) : ''}</span>`).join('')}</div>` : ''; }
+function implHtml(im) { return im ? `<div class="impl"><b class="t">Що це означає для нашої стратегії?</b>${[['learned', 'Що ми дізналися'], ['why', 'Чому це важливо'], ['impact', 'Як це впливає на стратегію'], ['action', 'Що конкретно ми робимо']].map(([k, l]) => `<div class="kv"><div class="k">${l}</div><div class="v">${esc(im[k])}</div></div>`).join('')}</div>` : ''; }
+function inp(v, attrs, big) { return big || String(v).length > 70 || /\n/.test(v) ? `<textarea ${attrs}>${esc(v)}</textarea>` : `<input type="text" ${attrs} value="${esc(v)}">`; }
+function secHtml(p, id, s, edit) {
+  const m = p.modules[id]; const sec = m && m.sections[s.key];
+  if (s.kind === 'refs') { const refs = (sec && sec.refs) || (m && m.sections[s.key] && m.sections[s.key].refs) || []; return `<div class="sec"><div class="sh">${esc(s.title)}</div><div class="sb">${refs.map((r, i) => `<div class="kv"><div class="k">${esc(r.title || 'Референс')}</div><div class="v">${linkOf(r.url)} ${esc(r.note || '')} <button class="btn sm danger" data-act="delRef" data-id="${id}" data-s="${s.key}" data-i="${i}">×</button></div></div>`).join('') || '<div class="muted sm">Референсів ще немає</div>'}<div class="row" style="margin-top:8px"><input type="text" id="rf_u_${id}" placeholder="URL референсу" style="flex:2"><input type="text" id="rf_t_${id}" placeholder="Назва" style="flex:1"><input type="text" id="rf_n_${id}" placeholder="Нотатка: що саме беремо" style="flex:2"><button class="btn sm" data-act="addRef" data-id="${id}" data-s="${s.key}">Додати</button></div></div></div>`; }
+  if (!sec) return `<div class="sec"><div class="sh">${esc(s.title)} ${s.ext ? chip('розширення', 'info') : ''}</div><div class="sb muted sm">Ще не згенеровано</div></div>`;
+  const ea = (i, f) => `data-e="1" data-m="${id}" data-s="${s.key}" data-i="${i}" data-f="${f}"`;
+  let body = '';
+  if (s.kind === 'text') body = edit ? `<textarea ${ea('', '')} style="min-height:120px">${esc(sec.data)}</textarea>` : `<div style="white-space:pre-wrap">${esc(sec.data)}</div>`;
+  else if (s.kind === 'fields') body = s.fields.map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(sec.data[f.k], ea('', f.k)) : esc(sec.data[f.k])}</div></div>`).join('');
+  else {
+    if (id === 'cross_funnel' && s.key === 'nodes') body += `<div class="row" style="margin-bottom:8px">${sec.data.map((n, i) => `${i ? '<span class="muted">→</span>' : ''}<span class="chip ac">${esc(n.stage)} · ${esc(n.channel)}</span>`).join('')}</div>`;
+    body += sec.data.map((it, i) => `<div class="item"><div class="ih">${it.id ? chip(it.id, 'ac') : ''}${esc(it[s.titleField] || 'Елемент ' + (i + 1))}${it._invalid ? chip('⚠ невалідний зв\'язок', 'warn') : ''}${it.verdict ? verdictChip(it.verdict) : ''}</div><div class="ib">${s.fields.filter(f => f.k !== s.titleField && f.k !== 'verdict').map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(it[f.k], ea(i, f.k)) : esc(it[f.k])}</div></div>`).join('')}</div></div>`).join('') || '<div class="muted">Порожньо</div>';
+  }
+  return `<div class="sec"><div class="sh">${esc(s.title)} ${sec.edited ? chip('✎ відредаговано') : ''} ${s.ext ? chip('розширення', 'info') : ''} ${(sec.warnings || []).length ? chip('⚠ ' + sec.warnings.length, 'warn') : ''}</div><div class="sb">${body}${implHtml(sec.implication)}${claimsHtml(sec.claims)}</div></div>`;
+}
+function modCard(p, id, forceOpen) {
+  const def = CFG.M[id]; const R = resolveRules(p); const level = R.levels[id]; const m = p.modules[id]; const st = statusOf(p, id); const open = forceOpen || S.ui.open[id];
+  const bl = blockers(p, id); const rq = requirementMsg(p, id); const running = st.k === 'running'; const has = hasOutput(m); const locked = m && m.state === 'locked'; const edit = S.ui.edit[id] && !locked;
+  const d = depsOf(p, id);
+  let h = `<div class="mod ${bl.length && !has ? 'blocked' : ''}" id="m_${id}"><div class="mh" data-act="toggle" data-id="${id}">${lvlChip(level)}<span class="ttl">${esc(titleOf(p, id))}</span>${statusChip(st)}${has ? chip(STATE_LABEL[m.state], m.state === 'locked' ? 'ok' : m.state === 'accepted' ? 'info' : '') : ''}${(m && m.comments.filter(c => !c.resolved).length) ? chip('💬 ' + m.comments.filter(c => !c.resolved).length) : ''}<span style="flex:1"></span><span class="muted sm">${open ? '▲' : '▼'}</span></div>`;
+  if (!open) return h + '</div>';
+  h += `<div class="mb"><p class="t2 sm" style="margin:10px 0 4px">${esc(def.desc)}</p><div class="muted sm">Залежить від: ${d.hard.map(x => `<b>${esc(titleOf(p, x))}</b> ${isLocked(p, x) ? '🔒' : '○'}`).join(', ') || '—'}${d.soft.length ? ' · бажано: ' + d.soft.map(x => esc(titleOf(p, x))).join(', ') : ''} · Агент: ${esc(CFG.AGENTS[def.agent].name)}${def.web ? ' · web search' : ''}</div>`;
+  if (bl.length && !has) h += `<div class="infobox">Очікує затвердження: ${bl.map(b => `<a data-act="jump" data-id="${b.id}" style="cursor:pointer">${esc(titleOf(p, b.id))}</a> (${b.why})`).join(', ')}.</div>`;
+  else if (bl.length) h += `<div class="infobox">Залежності не зафіксовано: ${bl.map(b => esc(titleOf(p, b.id))).join(', ')}.</div>`;
+  if (rq) h += `<div class="warnbox">${esc(rq)}</div>`;
+  if (st.k === 'stale') h += `<div class="warnbox"><b>↻ Потрібно оновити:</b><br>${st.reasons.map(esc).join('<br>')}</div>`;
+  if (m && m.error) h += `<div class="errbox"><b>Помилка:</b> ${esc(m.error)}</div>`;
+  const w = warningsOf(m); if (w.length && has) { const cnt = new Map(); w.forEach(x => cnt.set(x, (cnt.get(x) || 0) + 1)); h += `<div class="warnbox"><b>⚠ Потребує перевірки:</b><ul style="margin:4px 0 0;padding-left:18px">${[...cnt].slice(0, 8).map(([x, n]) => `<li>${esc(x)}${n > 1 ? ' (×' + n + ')' : ''}</li>`).join('')}</ul></div>`; }
+  const miss = has ? missingSections(p, id) : [];
+  h += `<div class="row" style="margin:10px 0">`;
+  if (def.id !== 'x') h += `<input type="text" data-instr="${id}" placeholder="Інструкція для AI (необовʼязково)" value="${esc(S.ui.instr[id] || '')}" style="flex:1;min-width:200px">`;
+  h += `<button class="btn ${has ? '' : 'pri'}" data-act="run" data-id="${id}" ${bl.length || rq || running ? 'disabled' : ''}>${running ? '<span class="spinner"></span> Аналізується…' : has ? '↻ Перегенерувати' : '▶ Запустити AI'}</button>`;
+  if (has && miss.length) h += `<button class="btn pri" data-act="runPart" data-id="${id}" ${bl.length || running ? 'disabled' : ''}>+ Догенерувати: ${esc(miss.map(x => x.title).join(', '))}</button>`;
+  if (has) h += `<button class="btn" data-act="accept" data-id="${id}" ${m.state !== 'draft' ? 'disabled' : ''}>Прийняти</button><button class="btn ${locked ? '' : 'ok'}" data-act="${locked ? 'unlock' : 'lock'}" data-id="${id}">${locked ? '🔓 Розфіксувати' : '🔒 Зафіксувати'}</button><button class="btn" data-act="edit" data-id="${id}" ${locked ? 'disabled title="Спершу розфіксуйте"' : ''}>${edit ? '✓ Готово' : '✎ Редагувати'}</button>`;
+  h += `<button class="btn" data-act="cm" data-id="${id}">💬 Коментар${m && m.comments.length ? ' (' + m.comments.length + ')' : ''}</button></div>`;
+  if (S.ui.cm[id]) h += `<div class="card" style="background:#fafbfc">${(m ? m.comments : []).map(c => `<div class="cm ${c.resolved ? 'res' : ''}"><div class="muted sm">${esc(c.by)} · ${fmtDate(c.at)}${c.forAi !== false ? ' · враховується при перегенерації' : ''}</div>${esc(c.text)} <button class="btn sm" data-act="resCm" data-id="${id}" data-c="${c.id}">${c.resolved ? 'Відновити' : 'Закрити'}</button></div>`).join('') || '<div class="muted sm">Коментарів немає</div>'}<div class="row" style="margin-top:8px"><input type="text" id="cm_t_${id}" placeholder="Коментар для команди / AI" style="flex:1"><label class="sm"><input type="checkbox" id="cm_a_${id}" checked> для AI</label><button class="btn sm" data-act="addCm" data-id="${id}">Додати</button></div></div>`;
+  if (has || sectionsFor(p, id).some(s => s.kind === 'refs')) {
+    if (has) h += `<div class="muted sm">rev ${m.rev} · ${fmtDate(m.generatedAt)} · ${esc(m.by || '')}${m.usage && m.usage.out ? ` · токени: ${m.usage.in}→${m.usage.out}` : ''}</div>`;
+    h += sectionsFor(p, id).map(s => secHtml(p, id, s, edit)).join('');
+    if (has) h += `<details style="margin-top:10px"><summary class="sm muted" style="cursor:pointer">Історія модуля</summary>${m.hist.slice(0, 15).map(x => `<div class="sm t2">${fmtDate(x.at)} · ${esc(x.by)} — ${esc(x.text)}</div>`).join('')}</details>`;
+  }
+  return h + '</div></div>';
+}
+A.toggle = el => { const id = el.dataset.id; S.ui.open[id] = !S.ui.open[id]; render(); };
+A.jump = el => { const p = S.project; const def = CFG.M[el.dataset.id]; S.ui.open[el.dataset.id] = true; S.page = CFG.GROUPS[def.group].page; if (S.page === 'research') S.ui.tab.research = el.dataset.id === 'insightsA' ? 'insights' : el.dataset.id; render(); setTimeout(() => { const e = document.getElementById('m_' + el.dataset.id); e && e.scrollIntoView({ block: 'center' }); }, 30); };
+A.run = el => { const p = S.project; const id = el.dataset.id; const m = p.modules[id]; if (m && m.state === 'locked' && hasOutput(m)) { const dp = dependents(p, id).filter(x => hasOutput(p.modules[x])); if (!confirm('Модуль зафіксований. Перегенерація створить нову чернетку' + (dp.length ? ' і позначить як застарілі: ' + dp.map(x => titleOf(p, x)).join(', ') : '') + '. Продовжити?')) return; }
+  runModule(id); };
+A.runPart = el => runModule(el.dataset.id, { only: missingSections(S.project, el.dataset.id).map(s => s.key) });
+A.accept = el => setState(el.dataset.id, 'accepted'); A.lock = el => setState(el.dataset.id, 'locked'); A.unlock = el => setState(el.dataset.id, 'accepted');
+A.edit = el => { S.ui.edit[el.dataset.id] = !S.ui.edit[el.dataset.id]; render(); };
+A.cm = el => { S.ui.cm[el.dataset.id] = !S.ui.cm[el.dataset.id]; render(); };
+A.addCm = el => { const id = el.dataset.id; const t = $('#cm_t_' + id).value.trim(); if (!t) return; addComment(id, t, $('#cm_a_' + id).checked); render(); };
+A.resCm = el => { const c = S.project.modules[el.dataset.id].comments.find(x => x.id === el.dataset.c); c.resolved = !c.resolved; touch(); render(); };
+A.addRef = el => { const id = el.dataset.id; const m = ensureMod(S.project, id); const u = $('#rf_u_' + id).value.trim(); if (!u) return toast('Вкажіть URL', true); const s = m.sections[el.dataset.s] = m.sections[el.dataset.s] || { data: null, warnings: [], refs: [] }; s.refs = s.refs || []; s.refs.push({ url: u, title: $('#rf_t_' + id).value.trim(), note: $('#rf_n_' + id).value.trim(), by: S.user, at: nowIso() }); touch(); render(); };
+A.delRef = el => { const m = S.project.modules[el.dataset.id]; m.sections[el.dataset.s].refs.splice(+el.dataset.i, 1); touch(); render(); };
+
+/* ---------- Група модулів ---------- */
+function groupView(p, g) {
+  const list = includedList(p).filter(x => x.def && x.def.group === g);
+  const label = CFG.GROUPS[g].label;
+  const todo = list.filter(x => statusOf(p, x.id).k === 'idle' && !blockers(p, x.id).length && !requirementMsg(p, x.id)).map(x => x.id);
+  return pTop(p, label, `<button class="btn" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити доступні (${todo.length})</button>`) + `<div class="wrap">${g === 'brand' ? `<div class="infobox">Brand Platform, УТП і Communication Platform — спільна стратегічна база для всіх каналів. Канали <b>не створюють власних версій</b> бренду, УТП чи Tone of Voice — вони отримують ці зафіксовані результати.</div>` : ''}${g === 'tiktok' ? '<div class="infobox">TikTok-стратегія адаптує Audience Intelligence і не копіює Instagram-стратегію.</div>' : ''}${list.map(x => modCard(p, x.id)).join('')}</div>`;
+}
+A.runAll = el => { const ids = el.dataset.ids.split(',').filter(Boolean); runMany(ids); };
+
+/* ---------- Research Hub (проєкт) ---------- */
+function researchView(p) {
+  const tab = S.ui.tab.research || 'overview';
+  const tabs = [['overview', 'Огляд'], ['market', 'Market'], ['audience', 'Audience'], ['competitors', 'Competitors'], ['avatars', 'Avatars'], ['insights', 'Висновки'], ['sources', 'Джерела'], ['parse', 'Парсинг']];
+  let body = '';
+  const three = ['market', 'audience', 'competitors'];
+  if (tab === 'overview') {
+    const todo = three.filter(x => statusOf(p, x).k === 'idle' && !requirementMsg(p, x));
+    body = `<div class="infobox">Research Hub — єдине джерело дослідження для всіх каналів. Результати цих модулів <b>не дублюються</b> по каналах: їх використовують усі AI-агенти після фіксації.</div><div class="grid g3">${three.map(x => `<div class="card" style="margin:0"><h3>${esc(titleOf(p, x))}</h3>${statusChip(statusOf(p, x))}<p class="muted sm">${esc(CFG.M[x].desc)}</p><div class="sm t2">Використовують: ${dependents(p, x).slice(0, 5).map(d => esc(titleOf(p, d))).join(', ') || '—'}…</div><div class="row" style="margin-top:8px"><button class="btn sm" data-act="tab" data-t="${x}">Відкрити</button></div></div>`).join('')}</div>
+    <div class="row" style="margin:14px 0"><button class="btn pri" data-act="runAll" data-ids="${todo.join(',')}" ${todo.length ? '' : 'disabled'}>▶ Запустити всі три (паралельно)</button><span class="muted sm">Порядок: Market · Audience · Competitors → Avatars → Strategic Insights</span></div>
+    ${competitorsOf(p).length ? '' : '<div class="warnbox">Competitor Intelligence потребує конкурентів у Брифі — AI не вигадує конкурентів.</div>'}`;
+  } else if (tab === 'insights') body = modCard(p, 'insightsA', true);
+  else if (tab === 'sources') body = sourcesHtml(p);
+  else if (tab === 'parse') body = parseHtml(p);
+  else body = modCard(p, tab, true);
+  return pTop(p, 'Research Hub') + `<div class="wrap"><div class="tabs">${tabs.map(([k, l]) => `<a class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l} ${['market', 'audience', 'competitors', 'avatars'].includes(k) ? statusOf(p, k).icon : k === 'insights' ? statusOf(p, 'insightsA').icon : ''}</a>`).join('')}</div>${body}</div>`;
+}
+A.tab = el => { S.ui.tab.research = el.dataset.t; S.page = 'research'; render(); };
+function sourcesHtml(p) {
+  const rows = p.sources.map((s, i) => `<tr><td>${chip(s.type === 'client_data' ? 'Дані клієнта' : 'Зовнішнє дослідження', s.type === 'client_data' ? 'info' : 'ok')}</td><td>${linkOf(s.url)}<div class="muted sm">${esc(s.title)}</div></td><td class="sm">${esc(s.date)}</td><td class="sm">${esc(s.evidence)}</td><td class="sm">${esc(s.moduleId ? titleOf(p, s.moduleId) : '')}${s.sectionKey ? ' › ' + esc(s.sectionKey) : ''}</td><td><button class="btn sm danger" data-act="delSrc" data-i="${i}">×</button></td></tr>`).join('');
+  const mods = includedList(p).filter(x => x.def);
+  return `<div class="infobox"><b>Розрізняємо:</b> 📋 дані клієнта (бриф) · 🔗 зовнішнє дослідження (URL, дата, evidence) · 💡 AI-висновок · ❓ AI-гіпотеза. AI-припущення не подаються як факти. Джерела з web search і парсингу зберігаються автоматично.</div>
+  <div class="card"><h3>Додати джерело</h3><div class="grid g3"><label class="f"><span>URL</span><input type="text" id="sr_u"></label><label class="f"><span>Назва / джерело</span><input type="text" id="sr_t"></label><label class="f"><span>Дата</span><input type="text" id="sr_d" value="${new Date().toISOString().slice(0, 10)}"></label></div><label class="f"><span>Короткий evidence (що саме підтверджує)</span><textarea id="sr_e"></textarea></label><div class="row"><select id="sr_m" style="max-width:280px"><option value="">Модуль (до якого висновку належить)</option>${mods.map(x => `<option value="${x.id}">${esc(x.title)}</option>`).join('')}</select><select id="sr_ty" style="max-width:200px"><option value="external_research">Зовнішнє дослідження</option><option value="client_data">Дані клієнта</option></select><button class="btn pri" data-act="addSrc">Додати</button></div></div>
+  <div class="card" style="padding:0;overflow:auto"><table><tr><th>Тип</th><th>Джерело</th><th>Дата</th><th>Evidence</th><th>Висновок</th><th></th></tr>${rows || '<tr><td colspan="6" class="muted">Джерел поки немає</td></tr>'}</table></div>`;
+}
+A.addSrc = () => { const p = S.project; const u = $('#sr_u').value.trim(); if (!u && !$('#sr_e').value.trim()) return toast('Вкажіть URL або evidence', true); p.sources.push({ id: uid('src'), url: u, title: $('#sr_t').value.trim(), date: $('#sr_d').value.trim(), evidence: $('#sr_e').value.trim(), type: $('#sr_ty').value, moduleId: $('#sr_m').value, sectionKey: '', by: S.user }); touch(); render(); };
+A.delSrc = el => { S.project.sources.splice(+el.dataset.i, 1); touch(); render(); };
+function statsHtml(r) {
+  if (!r) return ''; const s = r.stats || {}; const parts = [`<b>${s.count || 0}</b> ${r.ads ? 'оголошень' : 'публікацій'}`]; if (r.ads) { parts.push(`активних: ${s.active}`); } else { if (s.avgLikes != null) parts.push('сер. лайків ' + s.avgLikes); if (s.avgComments != null) parts.push('коментарів ' + s.avgComments); if (s.avgViews != null) parts.push('переглядів ' + s.avgViews); if (s.postsPerWeek) parts.push(s.postsPerWeek + ' публ./тиж.'); }
+  if (r.profile && r.profile.followers != null) parts.push('підписників ' + r.profile.followers);
+  const fm = Object.entries(s.formats || {}).map(([k, v]) => k + ' ' + v).join(', '); const tg = (s.topHashtags || []).slice(0, 6).map(t => '#' + t).join(' ');
+  return `<div class="sm t2" style="margin-top:4px">${parts.join(' · ')}${fm ? '<br>Формати: ' + esc(fm) : ''}${tg ? '<br>' + esc(tg) : ''}<br><span class="muted">зібрано ${fmtDate(r.fetchedAt)}</span></div>`;
+}
+function parseRow(label, platform, handle, key, r, country) {
+  const busy = S.ui.parsing && S.ui.parsing[key + '|' + platform];
+  return `<div class="row" style="padding:6px 0;border-bottom:1px dashed var(--line);align-items:flex-start"><div style="width:110px"><b>${label}</b></div><div style="flex:1;min-width:0"><div class="sm">${esc(handle || '—')}</div>${statsHtml(r)}</div><button class="btn sm" data-act="parse" data-pl="${platform}" data-h="${esc(handle)}" data-key="${key}" data-cty="${esc(country || '')}" ${!handle || busy || !S.status.parser ? 'disabled' : ''}>${busy ? '<span class="spinner"></span>' : r ? '↻ Оновити' : 'Спарсити'}</button></div>`;
+}
+function parseHtml(p) {
+  const meta = p.services.includes('meta_ads'); const cty = S.ui.adCountry || 'UA';
+  let h = `<div class="infobox">Парсинг збирає <b>публічні</b> дані (пости, метрики, реклама) через зовнішній парсер на сервері. Результати стають зовнішніми джерелами й потрапляють у контекст AI як факти. Метрики, яких парсер не повернув, AI не вигадує.</div>${S.status.parser ? '' : '<div class="warnbox">На сервері не налаштовано APIFY_TOKEN — парсинг недоступний (див. README).</div>'}`;
+  h += `<div class="card"><h3>Власні акаунти клієнта (для аудиту контенту)</h3>${parseRow('Instagram', 'instagram', p.brief.instagram, 'own', p.parsed.own.instagram)}${parseRow('TikTok', 'tiktok', p.brief.tiktok, 'own', p.parsed.own.tiktok)}${parseRow('Facebook', 'facebook', p.brief.facebook, 'own', p.parsed.own.facebook)}</div>`;
+  h += `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${meta ? `<label class="sm">Країна для Ads Library: <input type="text" data-adc="1" value="${esc(cty)}" style="width:60px;display:inline-block"></label>` : ''}</div>` + (competitorsOf(p).map(c => { const o = p.parsed.comp[c.id] || {}; return `<h4>${esc(c.name)}</h4>${parseRow('Instagram', 'instagram', c.instagram, c.id, o.instagram)}${parseRow('TikTok', 'tiktok', c.tiktok, c.id, o.tiktok)}${parseRow('Facebook', 'facebook', c.facebook, c.id, o.facebook)}${meta ? parseRow('Meta Ads', 'meta_ads', c.name, c.id, o.meta_ads, cty) : ''}`; }).join('') || '<div class="muted">Додайте конкурентів у Брифі</div>') + `</div>`;
+  return h;
+}
+A.parse = el => parseTarget(el.dataset.pl, el.dataset.h, el.dataset.key, el.dataset.cty);
+
+/* ---------- Strategy Map ---------- */
+function mapView(p) {
+  const inc = includedList(p).filter(x => x.def); const ids = new Set(inc.map(x => x.id)); const depth = {};
+  const dp = id => { if (depth[id] != null) return depth[id]; depth[id] = 0; const d = depsOf(p, id); depth[id] = Math.max(-1, ...d.hard.concat(d.soft).map(dp)) + 1; return depth[id]; };
+  inc.forEach(x => dp(x.id));
+  const maxD = Math.max(0, ...Object.values(depth)); const nodes = inc.map(x => ({ id: x.id, t: x.title, d: depth[x.id], g: x.def.group })); nodes.push({ id: 'qa', t: 'QA-перевірка', d: maxD + 1, g: 'qa' }, { id: 'final', t: 'Final Strategy', d: maxD + 2, g: 'final' });
+  const cols = {}; nodes.forEach(n => (cols[n.d] = cols[n.d] || []).push(n));
+  const W = 200, H = 46, GX = 70, GY = 14; const pos = {};
+  Object.keys(cols).forEach(d => cols[d].forEach((n, i) => { pos[n.id] = { x: 20 + d * (W + GX), y: 20 + i * (H + GY) }; }));
+  const edges = []; inc.forEach(x => { const d = depsOf(p, x.id); d.hard.forEach(a => edges.push([a, x.id, 1])); d.soft.forEach(a => edges.push([a, x.id, 0])); });
+  const lastCore = inc.map(x => x.id); nodes.filter(n => n.d === maxD).forEach(n => edges.push([n.id, 'qa', 0])); edges.push(['qa', 'final', 1]);
+  const total = Math.max(...Object.values(cols).map(c => c.length)); const svgW = 40 + (maxD + 3) * (W + GX), svgH = 40 + total * (H + GY);
+  const col = st => ({ done: '#ecfdf3', idle: '#fff', stale: '#fffaeb', review: '#fffaeb', running: '#eff8ff' }[st] || '#fff');
+  const foc = S.ui.mapFocus; const rel = new Set(); if (foc) { rel.add(foc); const up = id => edges.filter(e => e[1] === id).forEach(e => { if (!rel.has(e[0])) { rel.add(e[0]); up(e[0]); } }); const dn = id => edges.filter(e => e[0] === id).forEach(e => { if (!rel.has(e[1])) { rel.add(e[1]); dn(e[1]); } }); up(foc); dn(foc); }
+  const svg = `<svg width="${svgW}" height="${svgH}" style="background:#fff;border:1px solid var(--line);border-radius:10px"><defs><marker id="ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#98a2b3"/></marker></defs>` +
+    edges.filter(e => pos[e[0]] && pos[e[1]]).map(e => { const a = pos[e[0]], b = pos[e[1]]; const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2; const hi = foc && rel.has(e[0]) && rel.has(e[1]) && (e[0] === foc || e[1] === foc || (rel.has(e[0]) && rel.has(e[1]))); const dim = foc && !hi; return `<path d="M${x1},${y1} C${x1 + 40},${y1} ${x2 - 40},${y2} ${x2},${y2}" fill="none" stroke="${hi ? '#3538cd' : dim ? '#f2f4f7' : e[2] ? '#c3c9d6' : '#e4e7ec'}" stroke-width="${hi ? 1.8 : 1}" ${e[2] ? '' : 'stroke-dasharray="4 3"'} marker-end="url(#ar)"/>`; }).join('') +
+    nodes.map(n => { const q = pos[n.id]; const st = CFG.M[n.id] ? statusOf(p, n.id) : { k: n.id === 'qa' ? (p.qa && !qaStale(p) ? 'done' : 'idle') : (p.final ? 'done' : 'idle'), icon: '' }; const dim = foc && !rel.has(n.id); const lk = isLocked(p, n.id); return `<g class="node" data-act="mapNode" data-id="${n.id}" opacity="${dim ? .3 : 1}"><rect x="${q.x}" y="${q.y}" width="${W}" height="${H}" rx="8" fill="${col(st.k)}" stroke="${foc === n.id ? '#3538cd' : '#d0d5dd'}" stroke-width="${foc === n.id ? 2 : 1}"/><text x="${q.x + 10}" y="${q.y + 19}" font-weight="600">${esc((n.t.length > 27 ? n.t.slice(0, 26) + '…' : n.t))}</text><text x="${q.x + 10}" y="${q.y + 36}" fill="#667085">${n.g === 'qa' || n.g === 'final' ? '' : (CFG.GROUPS[n.g].label + ' · ')}${st.icon || ''} ${lk ? '🔒' : ''}</text></g>`; }).join('') + `</svg>`;
+  return pTop(p, 'Strategy Map') + `<div class="wrap"><div class="infobox">Суцільна лінія — жорстка залежність (потрібна зафіксована), пунктир — бажана. Клікніть модуль, щоб підсвітити, від чого він залежить і що від нього залежить. Подвійний клік — перейти до модуля.</div><div style="overflow:auto">${svg}</div></div>`;
+}
+A.mapNode = (el, ev) => { const id = el.dataset.id; if (ev.detail > 1 && CFG.M[id]) { A.jump({ dataset: { id } }); return; } S.ui.mapFocus = S.ui.mapFocus === id ? null : id; render(); };
+
+/* ---------- QA ---------- */
+const QA_CATS = { consistency: 'Consistency — чи однакова аудиторія в різних каналах', brand: 'Brand Consistency — відповідність Brand Platform', funnel: 'Funnel Consistency — логіка звʼязку каналів', contentads: 'Content × Ads — чи контент підтримує рекламу', evidence: 'Evidence — підґрунтя рішень', generic: 'Generic AI Content — загальні фрази' };
+function qaView(p) {
+  const q = p.qa; const stale = q && qaStale(p); const sc = qaScope(p);
+  const all = q ? q.prog.concat(q.ai) : [];
+  const ic = s => s === 'ok' ? '<span style="color:var(--ok)">✓ Узгоджено</span>' : s === 'warn' ? '<span style="color:var(--warn)">⚠ Потребує доопрацювання</span>' : '<span style="color:var(--bad)">✕ Конфлікт</span>';
+  const body = q ? Object.keys(QA_CATS).map(c => { const fs = all.filter(f => f.cat === c); if (!fs.length) return ''; return `<div class="card"><h3>${QA_CATS[c]}</h3>${fs.sort((a, b) => ({ conflict: 0, warn: 1, ok: 2 }[a.status] - { conflict: 0, warn: 1, ok: 2 }[b.status])).map(f => `<div style="padding:7px 0;border-bottom:1px dashed var(--line)"><div class="row">${ic(f.status)} ${f.target && CFG.M[f.target] ? `<a data-act="jump" data-id="${f.target}" style="cursor:pointer" class="sm">${esc(titleOf(p, f.target))}</a>` : ''} ${f.src === 'ai' ? chip('AI Reviewer') : chip('авто')}</div><div>${esc(f.problem)}</div>${f.fix ? `<div class="sm t2">→ ${esc(f.fix)}</div>` : ''}</div>`).join('')}</div>`; }).join('') : '';
+  return pTop(p, 'QA-перевірка', `<button class="btn pri" data-act="qa" ${S.ui.qaRunning ? 'disabled' : ''}>${S.ui.qaRunning ? '<span class="spinner"></span> Перевіряється…' : q ? '↻ Запустити повторно' : '▶ Запустити QA'}</button>`) + `<div class="wrap"><div class="infobox">Strategy Reviewer <b>не генерує нову стратегію</b> — він перевіряє готову. Замість оцінки «8/10» — чекліст із поясненням проблем. ${q ? `Наступний запуск перевірить лише змінені модулі та залежні від них${sc.length ? ': <b>' + sc.map(x => esc(titleOf(p, x))).join(', ') + '</b>' : ' (змін немає)'}.` : 'Перший запуск перевіряє весь проєкт.'}</div>${S.ui.qaErr ? `<div class="errbox">${esc(S.ui.qaErr)}</div>` : ''}${stale ? '<div class="warnbox">Після останньої QA-перевірки модулі змінились — результат неактуальний.</div>' : ''}
+  ${q ? `<div class="row" style="margin-bottom:12px">${chip('✓ ' + q.summary.ok, 'ok')}${chip('⚠ ' + q.summary.warn, 'warn')}${chip('✕ ' + q.summary.conflict, 'bad')}<span class="muted sm">${fmtDate(q.runAt)} · ${esc(q.by)}</span><span style="flex:1"></span><button class="btn pri" data-act="page" data-v="final">До фінальної стратегії →</button></div>` : ''}${body}</div>`;
+}
+A.qa = () => runQA();
+
+/* ---------- Final Strategy ---------- */
+function finalView(p) {
+  const fm = finalModules(p); const f = p.final;
+  const gate = !p.qa ? 'Спершу виконайте QA-перевірку.' : qaStale(p) ? 'QA неактуальна — повторіть перевірку.' : '';
+  let body;
+  if (!f) body = `<div class="card"><h3>Фінальна стратегія збирає лише підтверджені, актуальні й активні модулі</h3><div class="grid g2"><div><h4>Увійдуть (${fm.ok.length})</h4>${fm.ok.map(x => `<div class="sm">✓ ${esc(x.title)}</div>`).join('') || '<span class="muted">—</span>'}</div><div><h4>Не увійдуть (${fm.excl.length})</h4>${fm.excl.map(x => `<div class="sm">✕ ${esc(x.title)} — ${x.why}</div>`).join('') || '<span class="muted">—</span>'}</div></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}<button class="btn pri" data-act="genFinal" ${gate ? 'disabled' : ''}>Сформувати Final Strategy</button></div>`;
+  else body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div><div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
+  return pTop(p, 'Final Strategy') + `<div class="wrap">${body}</div>`;
+}
+A.genFinal = () => generateFinal();
+A.export = el => doExport(el.dataset.f);
+
+/* ---------- Історія ---------- */
+function historyView(p) {
+  const revs = S.ui.revs;
+  if (!revs) api('/projects/' + p.id + '/revisions').then(r => { S.ui.revs = r; render(); }).catch(() => { S.ui.revs = []; });
+  return pTop(p, 'Історія') + `<div class="wrap"><div class="card"><h3>Версії проєкту</h3><p class="muted sm">Знімки створюються при ключових подіях (генерація, фіксація, послуги, QA, фінал).</p>${(revs || []).map(r => `<div class="row" style="padding:5px 0;border-bottom:1px dashed var(--line)"><span class="sm muted" style="width:120px">${fmtDate(r.at)}</span><span style="flex:1">${esc(r.summary)} <span class="muted sm">· ${esc(r.by)}</span></span><button class="btn sm" data-act="restore" data-id="${r.id}">Відновити</button></div>`).join('') || '<span class="muted">Завантаження…</span>'}</div><div class="card"><h3>Журнал активності</h3>${p.log.map(l => `<div class="sm" style="padding:2px 0"><span class="muted">${fmtDate(l.at)} · ${esc(l.by)}</span> — ${esc(l.text)}</div>`).join('')}</div></div>`;
+}
+A.restore = async el => { if (!confirm('Відновити цю версію? Поточний стан буде замінено (його знімок залишиться в історії).')) return; try { const r = await api('/projects/' + S.project.id + '/revisions/' + el.dataset.id); const snap = r.snapshot; snap.id = S.project.id; S.project = snap; S.ui.revs = null; touch('Відновлено версію від ' + fmtDate(r.at)); toast('Версію відновлено'); render(); } catch (e) { toast(e.message, true); } };
+
+/* ---------- Глобальні обробники ---------- */
+document.addEventListener('click', ev => { const el = ev.target.closest('[data-act]'); if (!el) return; const f = A[el.dataset.act]; if (!f) return; if (el.tagName === 'A' || el.tagName === 'BUTTON') ev.preventDefault(); if (el.dataset.act === 'page' && el.dataset.tab) S.ui.tab.research = el.dataset.tab; if (el.dataset.act === 'page' && el.dataset.mod) { S.ui.open[el.dataset.mod] = true; const d = CFG.M[el.dataset.mod]; if (d && d.group === 'research') S.ui.tab.research = el.dataset.mod === 'insightsA' ? 'insights' : el.dataset.mod; } f(el, ev); });
+document.addEventListener('input', ev => {
+  const t = ev.target; const p = S.project;
+  if (t.dataset.b !== undefined && p) { const k = t.dataset.b; if (k === '__owner') p.owner = t.value; else { p.brief[k] = t.value; if (k === 'name') p.name = t.value; } touch(); if (k !== '__owner') refreshBrief(); }
+  else if (t.dataset.c !== undefined && p) { const [i, f] = t.dataset.c.split('.'); p.brief.competitors[+i][f] = t.value; touch(); refreshBrief(); }
+  else if (t.dataset.instr && p) S.ui.instr[t.dataset.instr] = t.value;
+  else if (t.dataset.adc) S.ui.adCountry = t.value.toUpperCase();
+});
+document.addEventListener('change', ev => {
+  const t = ev.target; const p = S.project;
+  if (t.dataset.e) { editField(t.dataset.m, t.dataset.s, t.dataset.i, t.dataset.f, t.value); }
+  else if (t.dataset.rn && p) { const s = p.structure.find(x => x.id === t.dataset.rn); s.title = t.value.trim() === (CFG.M[s.id] ? CFG.M[s.id].title : '') ? '' : t.value.trim(); const c = p.custom.find(x => x.id === s.id); if (c) { c.title = t.value.trim() || c.title; s.title = ''; } touch(); }
+  else if (t.dataset.b !== undefined && t.tagName === 'SELECT' && p) { if (t.dataset.b === 'bizModel') render(); }
+});
+
+/* ---------- Boot ---------- */
+function askIdentity(needKey) {
+  return new Promise(res => {
+    modal(`<h3>Вхід у Agency Strategy OS</h3><label class="f"><span>Ваше імʼя (для історії змін і команди проєкту)</span><input type="text" id="id_name" value="${esc(S.user)}" autofocus></label>${needKey ? `<label class="f"><span>Командний ключ</span><input type="text" id="id_key" value="${esc(ls.get('aso_key') || '')}"></label>` : ''}<div class="row" style="justify-content:flex-end"><button class="btn pri" id="id_ok">Продовжити</button></div>`);
+    $('#id_ok').onclick = () => { const n = $('#id_name').value.trim(); if (!n) return toast('Вкажіть імʼя', true); S.user = n; ls.set('aso_user', n); if (needKey) ls.set('aso_key', $('#id_key').value.trim()); closeModal(); res(); };
+  });
+}
+async function boot() {
+  S.user = ls.get('aso_user') || '';
+  try { S.status = await api('/status'); } catch (e) { S.status = {}; }
+  if (!S.user || (S.status.teamKeyRequired && !ls.get('aso_key'))) await askIdentity(S.status.teamKeyRequired);
+  for (; ;) {
+    try { S.projects = await api('/projects'); break; } catch (e) { if (e.status === 401) { toast('Невірний командний ключ', true); ls.set('aso_key', ''); await askIdentity(true); } else { toast('Сервер недоступний: ' + e.message, true); break; } }
+  }
+  try { S.lib = (await api('/kv/library')).value || []; S.prompts = (await api('/kv/prompts')).value || {}; } catch (e) { }
+  render(); setInterval(syncTick, 8000);
+  window.addEventListener('beforeunload', e => { if (S.dirty) { flush(); e.preventDefault(); e.returnValue = ''; } });
+}
+window.ASO = { S, CFG, runModule, api, render, openProject, setService, completeness, progress, statusOf, blockers, includedList, qaProgrammatic, finalBlocks, resolveRules, flush, touch, setState, runQA, generateFinal, parseTarget, boot };
+boot();
+</script>
+</body>
+</html>
