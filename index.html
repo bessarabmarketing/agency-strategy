@@ -760,9 +760,16 @@ async function runModule(id, opts = {}) {
   const only = opts.only || null;
   m.running = true; m.error = null; m.startedAt = nowIso(); m.runBy = S.user; m.runOnly = only; touch(); render();
   try {
-    const prompt = buildPrompt(p, id, only, opts.instruction || (S.ui.instr[id] || ''));
-    const res = await runJob('ai', { system: agentSystem(id), prompt, web: !!def.web, maxTokens: def.id === 'market' || def.id === 'audience' || def.id === 'competitors' ? 12000 : 9000 }, jid => { m.jobId = jid; touch(); });
-    const parsed = parseJSON(res.text); applyOutput(p, id, parsed, res, only);
+    const instr = opts.instruction || (S.ui.instr[id] || '');
+    const big = def.id === 'market' || def.id === 'audience' || def.id === 'competitors';
+    let res, parsed, lastErr;
+    for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+      const prompt = buildPrompt(p, id, only, attempt ? (instr + '\nВАЖЛИВО: попередня відповідь була обрізана або не була валідним JSON. Дай ЗНАЧНО компактнішу відповідь: короткі формулювання, менше пунктів у списках, без вступу. Виведи ТІЛЬКИ повний валідний JSON, що починається з { і закінчується }.').trim() : instr);
+      res = await runJob('ai', { system: agentSystem(id), prompt, web: !!def.web, maxTokens: attempt ? 20000 : (big ? 14000 : 10000) }, jid => { m.jobId = jid; touch(); });
+      try { parsed = parseJSON(res.text); } catch (e) { lastErr = e; }
+    }
+    if (!parsed) { const t = String(res.text || ''); throw new Error(lastErr.message + ` [stop: ${res.stop_reason || '?'}, ${t.length} симв., кінець: «${t.slice(-80).replace(/\s+/g, ' ')}»]`); }
+    applyOutput(p, id, parsed, res, only);
     logEv(p, `AI: «${titleOf(p, id)}» ${only ? 'догенеровано' : 'згенеровано'}`); touch('AI: ' + titleOf(p, id));
   } catch (e) { m.error = e.message; touch(); }
   finally { m.running = false; m.jobId = null; touch(); render(); }
