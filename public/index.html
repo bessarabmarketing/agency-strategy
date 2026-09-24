@@ -137,8 +137,8 @@ CFG.VERSION = '1.0';
 
 /* ---------- Послуги ---------- */
 CFG.SERVICES = [
-  { id: 'instagram', group: 'CONTENT', label: 'Instagram', base: true, channel: 'smm', desc: 'Базовий контент-супровід' },
-  { id: 'facebook', group: 'CONTENT', label: 'Facebook Cross-posting', base: true, channel: 'smm', desc: 'Кросспостинг з Instagram' },
+  { id: 'instagram', group: 'CONTENT', label: 'Instagram', channel: 'smm', desc: 'Контент-супровід Instagram' },
+  { id: 'facebook', group: 'CONTENT', label: 'Facebook Cross-posting', channel: 'smm', desc: 'Кросспостинг / контент Facebook' },
   { id: 'meta_ads', group: 'PAID MEDIA', label: 'Meta Ads', channel: 'meta', desc: 'Реклама у Facebook / Instagram' },
   { id: 'google_ads', group: 'PAID MEDIA', label: 'Google Ads', channel: 'google', desc: 'Search, PMax, Shopping — за потреби' },
   { id: 'tiktok_org', group: 'TIKTOK', label: 'TikTok Organic', channel: 'tiktok', desc: 'Органічний контент у TikTok' },
@@ -164,7 +164,8 @@ CFG.LEVEL = { mandatory: { icon: '🔒', label: 'Обов\'язковий', w: 3
 CFG.RULES = [
   { id: 'core', when: { always: true }, enable: {
     market: 'mandatory', audience: 'mandatory', avatars: 'mandatory', competitors: 'mandatory', insightsA: 'mandatory',
-    brand: 'mandatory', valueprop: 'mandatory', communication: 'mandatory', architectB: 'mandatory',
+    brand: 'mandatory', valueprop: 'mandatory', communication: 'mandatory', architectB: 'mandatory' } },
+  { id: 'content', when: { anyHas: ['instagram', 'facebook'] }, enable: {
     smm_audit: 'mandatory', smm_visual: 'mandatory', smm_rubrics: 'mandatory', smm_sound: 'recommended', smm_examples: 'recommended', smm_contests: 'optional' } },
   { id: 'meta', when: { has: 'meta_ads' }, enable: { meta_audit: 'mandatory', meta_audience: 'mandatory', meta_strategy: 'mandatory', meta_launch: 'mandatory', meta_creative: 'mandatory' }, sections: { competitors: ['ext_meta'] } },
   { id: 'tiktok_org', when: { has: 'tiktok_org' }, enable: { tt_org: 'mandatory' }, sections: { competitors: ['ext_tiktok'] } },
@@ -444,7 +445,7 @@ async function api(path, opt = {}) {
 /* ---------- Проєкт: створення ---------- */
 function newProject(name, client) {
   const p = { id: uid('p'), name, client: client || '', owner: S.user || '', createdAt: nowIso(), updatedAt: nowIso(), brief: { name, competitors: [] },
-    services: CFG.SERVICES.filter(s => s.base).map(s => s.id), structure: [], custom: [], modules: {}, sources: [], parsed: { own: {}, comp: {} }, log: [], team: {}, qa: null, final: null, exports: [], flags: {} };
+    services: [], structure: [], custom: [], modules: {}, sources: [], parsed: { own: {}, comp: {} }, log: [], team: {}, qa: null, final: null, exports: [], flags: {} };
   reconcile(p); logEv(p, 'Проєкт створено. Стратегічний етап додано автоматично.');
   return p;
 }
@@ -490,7 +491,6 @@ const svcSig = p => hash(p.services.slice().sort().join(','));
 function setService(p, id, on) {
   const before = new Set(activeList(p).map(x => x.id));
   const set = new Set(p.services); on ? set.add(id) : set.delete(id);
-  CFG.SERVICES.filter(s => s.base).forEach(s => set.add(s.id));
   p.services = CFG.SERVICES.map(s => s.id).filter(x => set.has(x));
   reconcile(p);
   const after = activeList(p).map(x => x.id);
@@ -760,9 +760,16 @@ async function runModule(id, opts = {}) {
   const only = opts.only || null;
   m.running = true; m.error = null; m.startedAt = nowIso(); m.runBy = S.user; m.runOnly = only; touch(); render();
   try {
-    const prompt = buildPrompt(p, id, only, opts.instruction || (S.ui.instr[id] || ''));
-    const res = await runJob('ai', { system: agentSystem(id), prompt, web: !!def.web, maxTokens: def.id === 'market' || def.id === 'audience' || def.id === 'competitors' ? 12000 : 9000 }, jid => { m.jobId = jid; touch(); });
-    const parsed = parseJSON(res.text); applyOutput(p, id, parsed, res, only);
+    const instr = opts.instruction || (S.ui.instr[id] || '');
+    const big = def.id === 'market' || def.id === 'audience' || def.id === 'competitors';
+    let res, parsed, lastErr;
+    for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+      const prompt = buildPrompt(p, id, only, attempt ? (instr + '\nВАЖЛИВО: попередня відповідь була обрізана або не була валідним JSON. Дай ЗНАЧНО компактнішу відповідь: короткі формулювання, менше пунктів у списках, без вступу. Виведи ТІЛЬКИ повний валідний JSON, що починається з { і закінчується }.').trim() : instr);
+      res = await runJob('ai', { system: agentSystem(id), prompt, web: !!def.web, maxTokens: attempt ? 20000 : (big ? 14000 : 10000) }, jid => { m.jobId = jid; touch(); });
+      try { parsed = parseJSON(res.text); } catch (e) { lastErr = e; }
+    }
+    if (!parsed) { const t = String(res.text || ''); throw new Error(lastErr.message + ` [stop: ${res.stop_reason || '?'}, ${t.length} симв., кінець: «${t.slice(-80).replace(/\s+/g, ' ')}»]`); }
+    applyOutput(p, id, parsed, res, only);
     logEv(p, `AI: «${titleOf(p, id)}» ${only ? 'догенеровано' : 'згенеровано'}`); touch('AI: ' + titleOf(p, id));
   } catch (e) { m.error = e.message; touch(); }
   finally { m.running = false; m.jobId = null; touch(); render(); }
@@ -819,6 +826,7 @@ async function syncTick() {
   try {
     S.projects = await api('/projects');
     const p = S.project;
+    if (p && S.view === 'project' && !S.saving && !S.projects.find(x => x.id === p.id)) { S.project = null; S.dirty = false; S.view = 'projects'; toast('Проєкт було видалено'); render(); return; }
     if (p && S.view === 'project' && !S.saving) { const e = S.projects.find(x => x.id === p.id); if (e && e.rev > S.rev) {
       if (!S.dirty && !/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) { const pg = S.page; await openProject(p.id, pg); toast('Проєкт оновив(ла) ' + e.updated_by); render(); }
       else if (S.dirty && !S.conflict) { S.conflict = { by: e.updated_by, at: e.updated_at, rev: e.rev }; render(); } } }
@@ -1021,10 +1029,19 @@ function viewHtml() {
 
 /* ---------- Проєкти ---------- */
 function projectsView() {
-  const rows = S.projects.map(r => { const m = r.meta || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><div class="muted sm">${esc(m.client || '')}</div></td><td>${(m.services || []).map(s => chip(svcLabel(s))).join(' ')}</td><td>${chip(m.status || '—', 'ac')}</td><td style="min-width:140px">${m.progress || 0}%${bar(m.progress || 0)}</td><td>${m.briefPct != null ? m.briefPct + '%' : '—'}</td><td class="sm t2">${fmtDate(r.updated_at)}<br>${esc(r.updated_by || '')}</td></tr>`; }).join('');
+  const rows = S.projects.map(r => { const m = r.meta || {}; return `<tr class="click" data-act="open" data-id="${esc(r.id)}"><td><b>${esc(r.name)}</b><div class="muted sm">${esc(m.client || '')}</div></td><td>${(m.services || []).map(s => chip(svcLabel(s))).join(' ')}</td><td>${chip(m.status || '—', 'ac')}</td><td style="min-width:140px">${m.progress || 0}%${bar(m.progress || 0)}</td><td>${m.briefPct != null ? m.briefPct + '%' : '—'}</td><td class="sm t2">${fmtDate(r.updated_at)}<br>${esc(r.updated_by || '')}</td><td><button class="btn sm danger" data-act="delProj" data-id="${esc(r.id)}" title="Видалити проєкт">🗑</button></td></tr>`; }).join('');
   return `<div class="top"><h1>Проєкти</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">` +
-    (S.projects.length ? `<div class="card" style="padding:0;overflow:auto"><table><tr><th>Проєкт</th><th>Послуги</th><th>Статус</th><th>Strategy Progress</th><th>Бриф</th><th>Оновлено</th></tr>${rows}</table></div>` : `<div class="card"><h3>Ще немає проєктів</h3><p class="t2">Створіть перший проєкт. Стратегічний етап додається автоматично і не вимикається.</p><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div>`) + `</div>`;
+    (S.projects.length ? `<div class="card" style="padding:0;overflow:auto"><table><tr><th>Проєкт</th><th>Послуги</th><th>Статус</th><th>Strategy Progress</th><th>Бриф</th><th>Оновлено</th><th></th></tr>${rows}</table></div>` : `<div class="card"><h3>Ще немає проєктів</h3><p class="t2">Створіть перший проєкт. Стратегічний етап додається автоматично і не вимикається.</p><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div>`) + `</div>`;
 }
+A.delProj = el => { const id = el.dataset.id; const r = S.projects.find(x => x.id === id) || (S.project && S.project.id === id ? S.project : null); if (!r) return;
+  modal(`<h3>Видалити проєкт?</h3><p class="t2">Проєкт <b>${esc(r.name)}</b> буде видалено разом з усіма модулями, джерелами та історією версій для всієї команди. Дію не можна скасувати.</p><label class="f"><span>Щоб підтвердити, введіть назву проєкту</span><input type="text" id="dp_name" autocomplete="off"></label><div class="row"><button class="btn danger" data-act="delProjOk" data-id="${esc(id)}" data-name="${esc(r.name)}">Видалити назавжди</button><button class="btn" data-act="closeModal">Скасувати</button></div>`); };
+A.delProjOk = async el => {
+  const id = el.dataset.id; if (($('#dp_name').value || '').trim() !== el.dataset.name.trim()) return toast('Назва не збігається — проєкт не видалено', true);
+  try {
+    if (S.project && S.project.id === id) { clearTimeout(_saveT); S.dirty = false; S.project = null; S.pid = null; }
+    await api('/projects/' + id, { method: 'DELETE' }); closeModal(); S.projects = await api('/projects'); go('projects'); toast('Проєкт видалено');
+  } catch (e) { toast('Не вдалося видалити: ' + e.message, true); }
+};
 A.newProj = () => modal(`<h3>Новий проєкт</h3><div class="lock-banner">🔒 <div><b>Створення стратегії</b><div class="sm" style="opacity:.8">Обовʼязково для кожного проєкту — додається автоматично</div></div></div><label class="f"><span>Назва проєкту</span><input type="text" id="np_name" autofocus></label><label class="f"><span>Клієнт</span><input type="text" id="np_client"></label><div class="row" style="justify-content:flex-end"><button class="btn" data-act="closeModal">Скасувати</button><button class="btn pri" data-act="newProjOk">Створити</button></div>`);
 A.newProjOk = async () => {
   const name = $('#np_name').value.trim(); if (!name) return toast('Вкажіть назву проєкту', true);
@@ -1034,15 +1051,15 @@ A.newProjOk = async () => {
 
 /* ---------- Strategy Builder (методологія) ---------- */
 function builderView() {
-  const cols = [['base', 'Базовий пакет', []], ['meta', '+ Meta Ads', ['meta_ads']], ['tt', '+ TikTok Organic', ['tiktok_org']], ['tta', '+ TikTok Ads', ['tiktok_ads']], ['ttboth', '+ TikTok Org + Ads', ['tiktok_org', 'tiktok_ads']], ['g', '+ Google Ads', ['google_ads']]];
-  const base = ['instagram', 'facebook']; const lv = svcs => resolveRules({ id: 'matrix-' + svcs.join(), services: base.concat(svcs), brief: {} }).levels;
+  const cols = [['base', 'Стратегічний етап', []], ['ig', '+ Instagram / Facebook', ['instagram']], ['meta', '+ Meta Ads', ['meta_ads']], ['tt', '+ TikTok Organic', ['tiktok_org']], ['tta', '+ TikTok Ads', ['tiktok_ads']], ['ttboth', '+ TikTok Org + Ads', ['tiktok_org', 'tiktok_ads']], ['g', '+ Google Ads', ['google_ads']]];
+  const lv = svcs => resolveRules({ id: 'matrix-' + svcs.join(), services: svcs, brief: {} }).levels;
   const bl = lv([]);
   const head = cols.map(c => `<th>${c[1]}</th>`).join('');
   const rows = CFG.MODULES.map(m => `<tr><td>${esc(m.title)}<div class="muted sm">${CFG.GROUPS[m.group].label}</div></td>` + cols.map(([k, , s]) => { const l = lv(s)[m.id]; const isBase = bl[m.id]; if (k === 'base') return `<td>${l ? CFG.LEVEL[l].icon : ''}</td>`; return `<td>${l && !isBase ? CFG.LEVEL[l].icon : ''}</td>`; }).join('') + `</tr>`).join('');
-  const multi = resolveRules({ id: 'matrix-multi', services: base.concat(['meta_ads']), brief: {} }).levels;
+  const multi = resolveRules({ id: 'matrix-multi', services: ['instagram', 'meta_ads'], brief: {} }).levels;
   return `<div class="top"><h1>Strategy Builder</h1><span class="sp"></span><button class="btn pri" data-act="newProj">+ Новий проєкт</button></div><div class="wrap">
   <div class="card"><h3>Як працює система</h3><p class="t2">Один проєкт → одна стратегічна база → одна логіка бренду → багато каналів. Стратегічний етап 🔒 обовʼязковий для кожного клієнта; склад модулів формує <b>Rule Engine</b> за послугами клієнта (правила в конфігу методології, а не в UI).</p><div class="stepper" style="flex-wrap:wrap">${CFG.STEPS.map(s => `<div class="step"><b>${s.n}</b>${s.label}</div>`).join('')}</div></div>
-  <div class="card"><h3>Матриця: послуга → модулі стратегії</h3><p class="muted sm">Показано, які модулі додає кожна послуга поверх базового пакета (Instagram + Facebook). Cross-channel Funnel зʼявляється автоматично при більш ніж одному каналі (${multi.cross_funnel ? 'напр. Content + Meta' : ''}). 🔒 обовʼязковий · ★ рекомендований · ○ опціональний.</p><div style="overflow:auto"><table><tr><th>Модуль</th>${head}</tr>${rows}<tr><td>Cross-channel Funnel<div class="muted sm">Cross-channel</div></td><td></td><td colspan="5" class="t2">🔒 при &gt; 1 каналу (будь-яка комбінація)</td></tr></table></div></div></div>`;
+  <div class="card"><h3>Матриця: послуга → модулі стратегії</h3><p class="muted sm">Показано, які модулі додає кожна послуга поверх обовʼязкового стратегічного етапу; послуги обираються повністю вільно. Cross-channel Funnel зʼявляється автоматично при більш ніж одному каналі (${multi.cross_funnel ? 'напр. Instagram + Meta Ads' : ''}). 🔒 обовʼязковий · ★ рекомендований · ○ опціональний.</p><div style="overflow:auto"><table><tr><th>Модуль</th>${head}</tr>${rows}<tr><td>Cross-channel Funnel<div class="muted sm">Cross-channel</div></td><td></td><td colspan="6" class="t2">🔒 при &gt; 1 каналу (будь-яка комбінація)</td></tr></table></div></div></div>`;
 }
 
 /* ---------- Research Hub (глобально) ---------- */
@@ -1083,7 +1100,7 @@ function overviewView(p) {
   const c = completeness(p); const rs = researchStatus(p); const pr = progress(p); const acts = nextActions(p);
   const inc = includedList(p); const stale = inc.filter(x => x.def && statusOf(p, x.id).k === 'stale');
   const cell = (l, v) => `<div class="card" style="margin:0"><div class="muted sm">${l}</div><div style="margin-top:4px">${v}</div></div>`;
-  return pTop(p, 'Огляд') + `<div class="wrap"><div class="grid g4" style="margin-bottom:14px">
+  return pTop(p, 'Огляд', `<button class="btn sm danger" data-act="delProj" data-id="${esc(p.id)}" style="margin-left:14px">🗑 Видалити проєкт</button>`) + `<div class="wrap"><div class="grid g4" style="margin-bottom:14px">
   ${cell('Проєкт', `<b>${esc(p.name)}</b>`)}${cell('Клієнт', esc(p.client || '—'))}${cell('Статус', chip(projectStatusText(p), 'ac'))}${cell('Останнє оновлення', fmtDate(p.updatedAt))}
   ${cell('Послуги', `<div class="tags">${chip('🔒 Створення стратегії', 'ac')}${p.services.map(s => chip(svcLabel(s))).join('')}</div>`)}
   ${cell('Strategy Progress', `<b>Стратегія готова на ${pr}%</b>${bar(pr)}`)}
@@ -1096,7 +1113,7 @@ function overviewView(p) {
   <div class="card"><h3>Стратегічний етап</h3><div class="lock-banner" style="margin:0">🔒 <div><b>Створення стратегії</b><div class="sm" style="opacity:.8">Обовʼязково для кожного проєкту · ${summaryText(p)}</div></div></div></div>
   <div class="card"><h3>Активність</h3>${p.log.slice(0, 12).map(l => `<div class="sm" style="padding:2px 0"><span class="muted">${fmtDate(l.at)} · ${esc(l.by)}</span> — ${esc(l.text)}</div>`).join('') || '<span class="muted">—</span>'}</div></div>`;
 }
-function summaryText(p) { const c = levelCounts(p); const n = c.mandatory + c.recommended + c.optional; return `Ви обрали ${p.services.filter(s => !CFG.SERVICES.find(x => x.id === s).base).length ? 'Content + ' + p.services.filter(s => !CFG.SERVICES.find(x => x.id === s).base).map(svcLabel).join(' + ') : 'Content'}. Для цього проєкту сформовано <b>${n}</b> стратегічних модулів: <b>${c.mandatory}</b> — обовʼязкові, <b>${c.recommended}</b> — рекомендовані, <b>${c.optional}</b> — опціональні.`; }
+function summaryText(p) { const c = levelCounts(p); const n = c.mandatory + c.recommended + c.optional; const sv = p.services.map(svcLabel); return `${sv.length ? 'Ви обрали: ' + sv.join(' + ') + '.' : 'Послуги ще не обрано — доступний лише стратегічний етап 🔒 (Research, Brand, Communication).'} Для цього проєкту сформовано <b>${n}</b> стратегічних модулів: <b>${c.mandatory}</b> — обовʼязкові, <b>${c.recommended}</b> — рекомендовані, <b>${c.optional}</b> — опціональні.`; }
 
 /* ---------- Бриф ---------- */
 function fieldHtml(f, val, attr) {
@@ -1127,7 +1144,7 @@ function servicesView(p) {
   const d = S.ui.svcDiff;
   return pTop(p, 'Послуги') + `<div class="wrap"><h2 style="margin:0 0 12px">Оберіть послуги проєкту</h2>
   <div class="lock-banner">🔒 <div><b>Стратегічний етап</b><div class="sm" style="opacity:.85">Статус: Обовʼязково для кожного проєкту</div></div></div>
-  ${groups.map(g => `<h4 class="muted" style="margin:16px 0 8px">${g}</h4><div class="grid g3">${CFG.SERVICES.filter(s => s.group === g).map(s => { const on = p.services.includes(s.id); return `<div class="svc ${on ? 'on' : ''} ${s.base ? 'base' : ''}" ${s.base ? '' : `data-act="svc" data-id="${s.id}"`}><input type="checkbox" ${on ? 'checked' : ''} ${s.base ? 'disabled' : ''} tabindex="-1"><div><b>${s.label}</b><div class="muted sm">${s.desc}${s.base ? ' · базова послуга' : ''}</div></div></div>`; }).join('')}</div>`).join('')}
+  ${groups.map(g => `<h4 class="muted" style="margin:16px 0 8px">${g}</h4><div class="grid g3">${CFG.SERVICES.filter(s => s.group === g).map(s => { const on = p.services.includes(s.id); return `<div class="svc ${on ? 'on' : ''}" data-act="svc" data-id="${s.id}"><input type="checkbox" ${on ? 'checked' : ''} tabindex="-1"><div><b>${s.label}</b><div class="muted sm">${s.desc}</div></div></div>`; }).join('')}</div>`).join('')}
   <div class="card" style="margin-top:18px"><h3>Структура стратегії перебудовується автоматично</h3><p>${summaryText(p)}</p>
   ${d ? `<div class="infobox"><b>Що змінилось:</b> існуюча стратегія <b>не видаляється</b>. ${d.added.length ? `<br>Додано модулів: ${d.added.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.removed.length ? `<br>Не входять у поточний пакет (дані збережено): ${d.removed.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}${d.stale.length ? `<br>Бажано оновити: ${d.stale.map(x => esc(titleOf(p, x))).join(', ')}.` : ''}<br>Використовуються наявні Research Hub і Brand Platform; QA перепровіряє лише змінені залежності.</div>` : ''}
   <div class="row"><button class="btn pri" data-act="svcOk">Підтвердити послуги → структура</button></div></div></div>`;
