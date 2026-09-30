@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стратегія</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800&display=swap&subset=cyrillic,cyrillic-ext,latin" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--panel:#141416;--panel2:#1a1a1c;--line:rgba(244,243,238,.13);--line2:rgba(244,243,238,.24);--tx:#f4f3ee;--tx2:#a5a49d;--tx3:#6c6b66;
+--ac:#cbff2e;--ac2:rgba(203,255,46,.10);--acink:#0c1300;--acline:rgba(203,255,46,.38);
+--r:18px;--fd:'Unbounded','Manrope',sans-serif;--fb:'Manrope',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:15px/1.65 var(--fb);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+.blob{position:fixed;width:52vw;height:52vw;max-width:760px;max-height:760px;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:0}
+.blob.b1{background:var(--ac);top:-18vw;left:-16vw}
+.blob.b2{background:var(--ac);bottom:-20vw;right:-18vw}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:64px 24px 120px}
+.hero{padding:40px 0 30px;border-bottom:1px solid var(--line)}
+.hero .brand{font-family:var(--fd);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.hero .brand i{width:10px;height:10px;border-radius:3px;background:var(--ac);display:inline-block}
+.hero h1{font-family:var(--fd);font-weight:800;font-size:clamp(28px,5vw,46px);line-height:1.08;margin:0 0 14px;text-transform:uppercase;letter-spacing:-.01em}
+.hero .meta{color:var(--tx2);font-size:13.5px}
+h2.sec{font-family:var(--fd);font-weight:800;font-size:clamp(20px,3.4vw,30px);text-transform:uppercase;letter-spacing:-.005em;margin:64px 0 4px;padding-top:28px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px}
+h2.sec i{width:22px;height:4px;background:var(--ac);border-radius:3px;display:inline-block;flex:none}
+h3.mod{font-family:var(--fd);font-weight:600;font-size:17px;margin:34px 0 12px;color:var(--tx)}
+h4.sub{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin:20px 0 6px}
+h5.item{font-family:var(--fb);font-weight:700;font-size:14.5px;margin:16px 0 4px;color:var(--tx)}
+p.b{margin:0 0 10px;color:var(--tx);white-space:pre-wrap}
+.kv{margin:3px 0;font-size:14px}
+.kv b{color:var(--tx2);font-weight:600}
+blockquote{border-left:3px solid var(--ac);margin:12px 0;padding:8px 16px;background:var(--ac2);border-radius:0 10px 10px 0;color:var(--tx);font-style:normal}
+.srcs{margin-top:8px}
+.edit[contenteditable="true"]{outline:1px dashed var(--acline);border-radius:4px;padding:1px 3px;cursor:text}
+.edit[contenteditable="true"]:focus{outline:2px solid var(--ac);background:rgba(203,255,46,.06)}
+.bar{position:fixed;right:18px;bottom:18px;z-index:5;display:flex;gap:8px;align-items:center}
+.btn{font:600 13px var(--fb);background:var(--panel2);color:var(--tx);border:1px solid var(--line2);padding:9px 16px;border-radius:999px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.btn.pri{background:var(--ac);color:var(--acink);border-color:var(--ac)}
+.btn:disabled{opacity:.5;cursor:default}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:20}
+.modal{background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;width:min(420px,92vw)}
+.modal h3{margin:0 0 12px;font-family:var(--fd);font-size:15px}
+.modal input{width:100%;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;color:var(--tx);padding:9px 12px;font:14px var(--fb);margin-bottom:12px}
+.modal .row{display:flex;gap:8px;justify-content:flex-end}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line2);color:var(--tx);padding:11px 18px;border-radius:14px;z-index:30;box-shadow:0 12px 32px rgba(0,0,0,.5);font-size:13.5px}
+.toast.err{background:#2a1211;border-color:rgba(255,122,112,.35);color:#ff7a70}
+.center{max-width:520px;margin:120px auto;text-align:center;padding:0 20px;position:relative;z-index:1}
+.center h1{font-family:var(--fd);font-size:22px;margin-bottom:8px}
+.editbadge{position:fixed;top:14px;right:14px;background:var(--ac);color:var(--acink);font:700 11px var(--fb);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;z-index:5}
+@media print{.bar,.editbadge{display:none!important}.blob{display:none}body{background:#fff;color:#111}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div>
+<div id="root"><div class="center"><h1>Завантаження…</h1></div></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const token = location.pathname.replace(/^\/s\//, '').replace(/\/+$/, '');
+const ls = { get:k=>{try{return localStorage.getItem(k)}catch{return null}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}} };
+let DATA = null, EDIT = false, DIRTY = false;
+
+function toast(t, err) { const d = document.createElement('div'); d.className = 'toast' + (err ? ' err' : ''); d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), err ? 6000 : 3000); }
+
+async function api(path, opt) {
+  opt = opt || {};
+  const h = { 'content-type': 'application/json' };
+  const k = ls.get('aso_key'); if (k) h['x-team-key'] = k;
+  const r = await fetch('/api' + path, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || ('HTTP ' + r.status)); e.status = r.status; throw e; }
+  return j;
+}
+
+function blockHtml(b, i) {
+  const ed = c => EDIT ? ` contenteditable="true" class="edit" data-idx="${i}"${c ? ' data-field="' + c + '"' : ''}` : '';
+  if (b.t === 'h1') return `<div class="hero"><div class="brand"><i></i>BESSARAB M.A.</div><h1${ed()}>${esc(b.x)}</h1></div>`;
+  if (b.t === 'meta') return `<div class="meta"${ed()}>${esc(b.x)}</div>`;
+  if (b.t === 'h2') return `<h2 class="sec"><i></i><span${ed()}>${esc(b.x)}</span></h2>`;
+  if (b.t === 'h3') return `<h3 class="mod"${ed()}>${esc(b.x)}</h3>`;
+  if (b.t === 'h4') return `<h4 class="sub"${ed()}>${esc(b.x)}</h4>`;
+  if (b.t === 'h5') return `<h5 class="item"${ed()}>${esc(b.x)}</h5>`;
+  if (b.t === 'p') return `<p class="b"${ed()}>${esc(b.x)}</p>`;
+  if (b.t === 'quote') return `<blockquote${ed()}>${esc(b.x)}</blockquote>`;
+  if (b.t === 'kv') return `<p class="kv"><b>${esc(b.k)}:</b> <span${ed('v')}>${esc(b.v || '')}</span></p>`;
+  return '';
+}
+
+function renderDoc() {
+  const root = $('#root');
+  root.innerHTML = `<div class="wrap">${DATA.blocks.map(blockHtml).join('\n')}</div>
+    ${EDIT ? '<div class="editbadge">Режим редагування</div>' : ''}
+    <div class="bar no-print">
+      ${EDIT ? `<button class="btn" id="cancelBtn">Скасувати</button><button class="btn pri" id="saveBtn" ${DIRTY ? '' : 'disabled'}>💾 Зберегти</button>` : `<button class="btn" id="editBtn">✎ Редагувати</button>`}
+    </div>`;
+  if (EDIT) {
+    root.querySelectorAll('.edit').forEach(el => el.addEventListener('input', () => { DIRTY = true; const b = $('#saveBtn'); if (b) b.disabled = false; }));
+    $('#saveBtn').onclick = saveEdits;
+    $('#cancelBtn').onclick = () => { if (DIRTY && !confirm('Скасувати незбережені правки?')) return; EDIT = false; DIRTY = false; load(); };
+  } else {
+    $('#editBtn').onclick = enterEdit;
+  }
+}
+
+function collectEdits() {
+  document.querySelectorAll('.edit').forEach(el => {
+    const i = +el.dataset.idx; const field = el.dataset.field;
+    const val = el.innerText.replace(/\n+$/, '');
+    if (field) DATA.blocks[i][field] = val; else DATA.blocks[i].x = val;
+  });
+}
+
+async function saveEdits() {
+  collectEdits();
+  try { await api('/share/' + token, { method: 'PUT', body: { blocks: DATA.blocks } }); DIRTY = false; EDIT = false; toast('Збережено'); renderDoc(); }
+  catch (e) { if (e.status === 401) { ls.set('aso_key', ''); toast('Невірний командний ключ — увійдіть ще раз', true); askKey().then(ok => { if (ok) saveEdits(); }); } else toast(e.message, true); }
+}
+
+function askKey() {
+  return new Promise(res => {
+    const bg = document.createElement('div'); bg.className = 'modal-bg';
+    bg.innerHTML = `<div class="modal"><h3>Редагування стратегії</h3><p style="color:var(--tx2);font-size:13px;margin:0 0 10px">Потрібен командний ключ команди BMA.</p><input type="text" id="keyInput" placeholder="Командний ключ" autofocus><div class="row"><button class="btn" id="keyCancel">Скасувати</button><button class="btn pri" id="keyOk">Увійти</button></div></div>`;
+    document.body.appendChild(bg);
+    $('#keyCancel').onclick = () => { bg.remove(); res(false); };
+    $('#keyOk').onclick = () => { const v = $('#keyInput').value.trim(); if (!v) return; ls.set('aso_key', v); bg.remove(); res(true); };
+  });
+}
+
+async function enterEdit() {
+  if (!ls.get('aso_key')) { const ok = await askKey(); if (!ok) return; }
+  EDIT = true; DIRTY = false; renderDoc();
+}
+
+async function load() {
+  try {
+    DATA = await api('/share/' + token);
+    document.title = DATA.name || 'Стратегія';
+    renderDoc();
+  } catch (e) {
+    $('#root').innerHTML = `<div class="center"><h1>Сторінку не знайдено</h1><p style="color:var(--tx2)">Посилання застаріло або стратегію знято з публікації.</p></div>`;
+  }
+}
+load();
+</script>
+</body>
+</html>
