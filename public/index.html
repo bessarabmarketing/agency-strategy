@@ -1909,11 +1909,30 @@ function finalView(p) {
   const gate = !p.qa ? 'Спершу виконайте QA-перевірку.' : qaStale(p) ? 'QA неактуальна — повторіть перевірку.' : '';
   let body;
   if (!f) body = `<div class="card"><h3>Фінальна стратегія збирає всі прийняті модулі</h3><div class="grid g2"><div><h4>Увійдуть (${fm.ok.length})</h4>${fm.ok.map(x => `<div class="sm">✓ ${esc(x.title)}${x.stale ? ' ' + chip('⚠ потребує оновлення', 'warn') : ''}</div>`).join('') || '<span class="muted">—</span>'}</div><div><h4>Не увійдуть (${fm.excl.length})</h4>${fm.excl.map(x => `<div class="sm">✕ ${esc(x.title)} — ${x.why}</div>`).join('') || '<span class="muted">—</span>'}</div></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}<button class="btn pri" data-act="genFinal" ${gate ? 'disabled' : ''}>Сформувати Фінальна стратегія</button></div>`;
-  else body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div><div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
+  else {
+    const sh = p.share;
+    const shareBox = `<div class="card no-print" style="margin-top:14px">${sh ? `<div class="row" style="flex-wrap:wrap"><div style="flex:1;min-width:220px"><b>🔗 Сторінка для клієнта</b><div class="sm muted">Опубліковано ${fmtDate(sh.publishedAt)}${sh.updatedAt && sh.updatedAt !== sh.publishedAt ? ' · оновлено ' + fmtDate(sh.updatedAt) : ''}</div><div class="sm" style="margin-top:4px"><a href="${esc(sh.url)}" target="_blank" rel="noopener noreferrer">${esc(sh.url)}</a></div></div><button class="btn sm" data-act="copyShare">Копіювати посилання</button><button class="btn sm" data-act="publish" ${gate ? 'disabled' : ''}>↻ Оновити для клієнта</button><button class="btn sm danger" data-act="unpublish">Зняти з публікації</button></div>` : `<div class="row"><div style="flex:1"><b>Сторінка для клієнта</b><div class="sm muted">Публікує цю стратегію на окремій сторінці зі своїм посиланням — гарно оформленій, без входу в конструктор. Текст на ній потім можна відредагувати.</div></div><button class="btn pri sm" data-act="publish" ${gate ? 'disabled' : ''}>🔗 Опублікувати для клієнта</button></div>`}</div>`;
+    body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div>${shareBox}<div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
+  }
   return pTop(p, 'Фінальна стратегія') + `<div class="wrap">${body}</div>`;
 }
 A.genFinal = () => generateFinal();
 A.export = el => doExport(el.dataset.f);
+A.publish = async () => {
+  const p = S.project; const isUpdate = !!p.share;
+  if (isUpdate && !confirm('Оновити сторінку клієнта? Це замінить весь текст на ній свіжим варіантом із конструктора — ручні правки, зроблені на сторінці клієнта після публікації, буде втрачено.')) return;
+  try {
+    const r = await api('/share', { method: 'POST', body: { projectId: p.id, name: p.name, client: p.client, blocks: finalBlocks(p), token: p.share && p.share.token } });
+    p.share = { token: r.token, url: r.url, publishedAt: r.publishedAt, updatedAt: nowIso(), by: S.user };
+    logEv(p, (isUpdate ? 'Оновлено' : 'Опубліковано') + ' сторінку для клієнта: ' + r.url); touch('Сторінка для клієнта: ' + r.url); render();
+    toast(isUpdate ? 'Сторінку клієнта оновлено' : 'Сторінку опубліковано — посилання нижче');
+  } catch (e) { toast(e.message, true); }
+};
+A.copyShare = async () => { try { await navigator.clipboard.writeText(S.project.share.url); toast('Посилання скопійовано'); } catch { toast('Не вдалося скопіювати — виділіть посилання вручну', true); } };
+A.unpublish = async () => {
+  const p = S.project; if (!confirm('Зняти сторінку з публікації? Посилання перестане працювати для клієнта.')) return;
+  try { await api('/share/' + p.share.token, { method: 'DELETE' }); p.share = null; logEv(p, 'Сторінку для клієнта знято з публікації'); touch(); render(); toast('Знято з публікації'); } catch (e) { toast(e.message, true); }
+};
 
 /* ---------- Історія ---------- */
 function historyView(p) {
