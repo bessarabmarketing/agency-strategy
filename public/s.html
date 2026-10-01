@@ -76,6 +76,48 @@ blockquote:hover{background:rgba(203,255,46,.16)}
 .center h1{font-family:var(--fd);font-size:22px;margin-bottom:8px}
 .editbadge{position:fixed;top:14px;right:14px;background:var(--ac);color:var(--acink);font:700 11px var(--fb);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;z-index:5}
 
+.herostats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.herostat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 14px 9px}
+.herostat b{font-family:var(--fd);font-size:20px;color:var(--ac);display:block;line-height:1.1}
+.herostat span{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
+
+.modtitle{font-family:var(--fd);font-weight:700;font-size:19px;margin:42px 0 2px;color:var(--tx)}
+.sec-wrap+.modtitle,.modtitle:first-of-type{margin-top:10px}
+
+.itemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:14px 0 24px}
+.itemcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;transition:border-color .18s,transform .18s,background .18s}
+.itemcard:hover{border-color:var(--acline);transform:translateY(-2px);background:var(--panel2)}
+.itemcard.accent{border-left:3px solid var(--ac)}
+.itemcard .ibadge{display:inline-block;font-size:13px;margin-bottom:6px}
+.itemcard h5{margin:0 0 10px;font-family:var(--fd);font-weight:600;font-size:15px;color:var(--tx)}
+.itemcard .ifield{margin:0 0 9px;font-size:13px}
+.itemcard .ifield:last-child{margin-bottom:0}
+.itemcard .ifield b{display:block;color:var(--tx3);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.itemcard .ifield span{color:var(--tx)}
+.itemcard .reflink{display:inline-block;margin-top:8px;font-size:11px;color:var(--ac);background:var(--ac2);padding:3px 10px;border-radius:999px}
+
+.segtabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.segtab{background:var(--panel2);border:1px solid var(--line2);color:var(--tx2);font:600 12.5px var(--fb);padding:8px 14px;border-radius:999px;cursor:pointer}
+.segtab:hover{color:var(--tx)}
+.segtab.active{background:var(--ac);color:var(--acink);border-color:var(--ac)}
+.segpanel{display:none}
+.segpanel.active{display:block}
+.segpanel h5{font-family:var(--fd);font-weight:600;font-size:16px;margin:0 0 12px}
+
+.funnel{display:flex;flex-wrap:wrap;gap:22px;margin:14px 0 24px}
+.funnel .stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;flex:1;min-width:210px;position:relative}
+.funnel .stage:not(:first-child):before{content:'→';position:absolute;left:-19px;top:50%;transform:translateY(-50%);color:var(--ac);font-weight:700;font-size:16px}
+.funnel .stagelabel{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:700;margin-bottom:5px}
+.funnel .stage h5{margin:0 0 9px;font-family:var(--fd);font-weight:600;font-size:15px}
+.funnel .stage .f{font-size:12.5px;color:var(--tx2);margin:4px 0}
+.funnel .stage .f b{color:var(--tx3);font-weight:600}
+
+.srclist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:14px 0}
+.srccard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:12.5px}
+.srccard a{color:var(--ac);text-decoration:none;font-weight:600}
+.srccard a:hover{text-decoration:underline}
+.srccard .note{color:var(--tx2);margin-top:4px}
+
 @media (max-width:960px){
   .page{display:block}
   .toc{position:sticky;top:0;height:auto;width:100%;padding:0;background:rgba(11,11,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:10}
@@ -85,6 +127,8 @@ blockquote:hover{background:rgba(203,255,46,.16)}
   .toc a.active{border-left-color:transparent;border-bottom-color:var(--ac)}
   .toc-progress{display:none}
   .wrap{padding:28px 18px 120px}
+  .funnel{flex-direction:column}
+  .funnel .stage:not(:first-child):before{content:'↓';left:50%;top:-19px;transform:translateX(-50%)}
 }
 @media print{.bar,.editbadge,.toc,.progress{display:none!important}.blob{display:none}.page{display:block}.wrap{max-width:none}}
 </style>
@@ -229,11 +273,205 @@ async function enterEdit() {
   EDIT = true; DIRTY = false; renderDoc();
 }
 
+/* =====================================================================
+   МОДУЛЬНИЙ РЕНДЕРЕР (Strategy Website) — свіжі публікації несуть DATA.modules:
+   groups[] → modules[] → sections[] (text/fields/list/refs), а не плаский
+   список блоків. Кожен тип секції отримує свій UI-компонент (сегменти —
+   вкладки, конкуренти/ризики/гіпотези — картки, етапи воронки — степпер),
+   замість суцільного потоку тексту. Якщо modules відсутні (старе
+   посилання, опубліковане до цього оновлення) — працює старий рендер
+   нижче (renderDoc/blockHtml), повністю без змін.
+   ===================================================================== */
+const ICON = { insights: '💡', opportunities: '✦', commOpps: '✦', risks: '⚠', priorities: '◆', hypotheses: '🧪' };
+let EDITMAP = [];
+function edAttr(desc) { if (!EDIT) return ''; const idx = EDITMAP.length; EDITMAP.push(desc); return ` contenteditable="true" class="edit" data-eidx="${idx}"`; }
+
+function wordCountModules(groups) {
+  let n = 0; const add = s => { if (!s) return; n += String(s).trim().split(/\s+/).filter(Boolean).length; };
+  groups.forEach(g => g.modules.forEach(m => {
+    if (m.custom) { add(m.text); return; }
+    (m.sections || []).forEach(s => { add(s.text); (s.fields || []).forEach(f => add(f.v)); (s.items || []).forEach(it => { add(it.title); (it.fields || []).forEach(f => add(f.v)); }); });
+  }));
+  return n;
+}
+const readTimeModules = groups => Math.max(1, Math.round(wordCountModules(groups) / 180));
+
+function findSection(groups, modId, secKey) {
+  for (const g of groups) for (const m of g.modules) if (m.id === modId) for (const s of (m.sections || [])) if (s.key === secKey) return s;
+  return null;
+}
+function findSegmentTitle(groups, segId) {
+  const s = findSection(groups, 'audience', 'segments'); if (!s || !s.items) return null;
+  const it = s.items.find(x => x.id === segId); return it ? it.title : null;
+}
+function heroStats(groups) {
+  const stats = [];
+  const seg = findSection(groups, 'audience', 'segments'); if (seg && seg.items && seg.items.length) stats.push({ v: seg.items.length, l: 'сегментів ЦА' });
+  const comp = findSection(groups, 'competitors', 'matrix'); if (comp && comp.items && comp.items.length) stats.push({ v: comp.items.length, l: 'конкурентів' });
+  const ins = findSection(groups, 'insightsA', 'insights'); if (ins && ins.items && ins.items.length) stats.push({ v: ins.items.length, l: 'стратегічних висновків' });
+  const hyp = findSection(groups, 'insightsA', 'hypotheses'); if (hyp && hyp.items && hyp.items.length) stats.push({ v: hyp.items.length, l: 'гіпотез до перевірки' });
+  return stats.slice(0, 4);
+}
+
+function renderTextSec(gi, mi, si, sec) {
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><p class="b"${edAttr({ kind: 'sectext', gi, mi, si })}>${esc(sec.text || '')}</p>`;
+  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  if (sec.hypotheses && sec.hypotheses.length) h += `<blockquote>Гіпотези (потребують перевірки): ${esc(sec.hypotheses.join(' | '))}</blockquote>`;
+  return h + `</div>`;
+}
+function renderFieldsSec(gi, mi, si, sec) {
+  const rows = sec.fields.map((f, fi) => f.v ? `<div class="stat"><b>${esc(f.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi })}>${esc(f.v)}</span></div>` : '').join('');
+  if (!rows) return '';
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="stats">${rows}</div>`;
+  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  return h + `</div>`;
+}
+function renderRefsSec(sec) {
+  if (!sec.refs || !sec.refs.length) return '';
+  const cards = sec.refs.map(r => `<div class="srccard">${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}</div>`).join('');
+  return `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="srclist">${cards}</div></div>`;
+}
+function itemCardHtml(gi, mi, si, it, ii, groups, icon, accent) {
+  let h = `<div class="itemcard${accent ? ' accent' : ''}">`;
+  if (icon) h += `<span class="ibadge">${icon}</span>`;
+  h += `<h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc((it.id ? it.id + '. ' : '') + it.title)}</h5>`;
+  (it.fields || []).forEach((f, fi) => { if (!f.v) return; h += `<div class="ifield"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>`; });
+  if (it.ref) { const t = findSegmentTitle(groups, it.ref); if (t) h += `<span class="reflink">↳ ${esc(t)}</span>`; }
+  return h + `</div>`;
+}
+function renderItemGrid(gi, mi, si, sec, groups, icon, accent) {
+  if (!sec.items || !sec.items.length) return '';
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="itemgrid">${sec.items.map((it, ii) => itemCardHtml(gi, mi, si, it, ii, groups, icon, accent)).join('')}</div>`;
+  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  return h + `</div>`;
+}
+function renderSegments(gi, mi, si, sec) {
+  if (!sec.items || !sec.items.length) return '';
+  const key = `${gi}-${mi}-${si}`;
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="segtabs">`;
+  h += sec.items.map((it, ii) => `<button type="button" class="segtab${ii === 0 ? ' active' : ''}" data-seg="${key}-${ii}">${esc((it.id ? it.id + ' · ' : '') + it.title)}</button>`).join('');
+  h += `</div>`;
+  h += sec.items.map((it, ii) => {
+    const rows = (it.fields || []).map((f, fi) => f.v ? `<div class="stat"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>` : '').join('');
+    return `<div class="segpanel${ii === 0 ? ' active' : ''}" data-segpanel="${key}-${ii}"><h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title)}</h5><div class="itemgrid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${rows}</div></div>`;
+  }).join('');
+  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  return h + `</div>`;
+}
+function renderFunnel(gi, mi, si, sec) {
+  if (!sec.items || !sec.items.length) return '';
+  const stages = sec.items.map((it, ii) => {
+    const stageF = (it.fields || []).find(f => f.k === 'stage');
+    const rest = (it.fields || []).filter(f => f.k !== 'stage');
+    const label = (stageF && stageF.v) || it.title || ('Етап ' + (ii + 1));
+    let c = `<div class="stage"><div class="stagelabel">${esc(label)}</div>`;
+    c += `<h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title || label)}</h5>`;
+    rest.forEach(f => { if (!f.v) return; const fi = it.fields.indexOf(f); c += `<div class="f"><b>${esc(f.l)}:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>`; });
+    return c + `</div>`;
+  }).join('');
+  return `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="funnel">${stages}</div></div>`;
+}
+function renderSection(gi, mi, si, sec, groups, modId) {
+  if (sec.kind === 'text') return renderTextSec(gi, mi, si, sec);
+  if (sec.kind === 'fields') return renderFieldsSec(gi, mi, si, sec);
+  if (sec.kind === 'refs') return renderRefsSec(sec);
+  if (sec.kind === 'list') {
+    if (modId === 'audience' && sec.key === 'segments') return renderSegments(gi, mi, si, sec);
+    if (sec.isFunnel) return renderFunnel(gi, mi, si, sec);
+    return renderItemGrid(gi, mi, si, sec, groups, ICON[sec.key], sec.key === 'insights');
+  }
+  return '';
+}
+function renderModule(gi, mi, mod, groups) {
+  let h = `<div class="modtitle reveal">${esc(mod.title)}</div>`;
+  if (mod.custom) return h + `<div class="reveal"><p class="b"${edAttr({ kind: 'modtext', gi, mi })}>${esc(mod.text || '')}</p></div>`;
+  (mod.sections || []).forEach((sec, si) => { h += renderSection(gi, mi, si, sec, groups, mod.id); });
+  return h;
+}
+function renderGroup(gi, g, groups) {
+  let h = `<div class="sec-wrap reveal"><h2 class="sec" id="sec-${gi}"><i></i><span>${esc(g.label)}</span></h2></div>`;
+  g.modules.forEach((mod, mi) => { h += renderModule(gi, mi, mod, groups); });
+  return h;
+}
+function renderSourcesSection(sources, gi) {
+  if (!sources || !sources.length) return '';
+  const cards = sources.map(s => `<div class="srccard"><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>${s.date ? ' · ' + esc(s.date) : ''}${s.evidence ? `<div class="note">${esc(s.evidence)}</div>` : ''}</div>`).join('');
+  return `<div class="sec-wrap reveal"><h2 class="sec" id="sec-${gi}"><i></i><span>Джерела</span></h2></div><div class="reveal"><div class="srclist">${cards}</div></div>`;
+}
+function renderHeroModules() {
+  const groups = DATA.modules;
+  let h = `<div class="hero"><div class="brand"><i></i>BESSARAB M.A.</div><h1>Стратегія: <span${edAttr({ kind: 'name' })}>${esc(DATA.name)}</span></h1>`;
+  if (DATA.meta) h += `<div class="meta"${edAttr({ kind: 'meta' })}>${esc(DATA.meta)}</div>`;
+  const hs = heroStats(groups);
+  if (hs.length) h += `<div class="herostats">${hs.map(s => `<div class="herostat"><b>${s.v}</b><span>${esc(s.l)}</span></div>`).join('')}</div>`;
+  h += `<div class="readtime"><i></i>~${readTimeModules(groups)} хв читання</div></div>`;
+  return h;
+}
+
+function renderModulesDoc() {
+  EDITMAP = [];
+  const groups = DATA.modules;
+  let body = ''; groups.forEach((g, gi) => { body += renderGroup(gi, g, groups); });
+  const srcGi = groups.length;
+  body += renderSourcesSection(DATA.sources, srcGi);
+  const tocItems = groups.map((g, gi) => ({ i: gi, x: g.label }));
+  if (DATA.sources && DATA.sources.length) tocItems.push({ i: srcGi, x: 'Джерела' });
+  const toc = (!EDIT && tocItems.length) ? `<nav class="toc"><div class="toc-inner"><div class="toc-brand"><i></i>Зміст</div>${tocItems.map(it => `<a href="#sec-${it.i}" data-target="sec-${it.i}">${esc(it.x)}</a>`).join('')}<div class="toc-progress">~${readTimeModules(groups)} хв читання</div></div></nav>` : '';
+  const root = $('#root');
+  root.innerHTML = `<div class="page">${toc}<div class="wrap">${renderHeroModules()}${body}</div></div>
+    ${EDIT ? '<div class="editbadge">Режим редагування</div>' : ''}
+    <div class="bar no-print">
+      ${EDIT ? `<button class="btn" id="cancelBtn">Скасувати</button><button class="btn pri" id="saveBtn" ${DIRTY ? '' : 'disabled'}>💾 Зберегти</button>` : `<button class="btn" id="editBtn">✎ Редагувати</button>`}
+    </div>`;
+  if (EDIT) {
+    root.querySelectorAll('.edit').forEach(el => el.addEventListener('input', () => { DIRTY = true; const b = $('#saveBtn'); if (b) b.disabled = false; }));
+    $('#saveBtn').onclick = saveEditsModules;
+    $('#cancelBtn').onclick = () => { if (DIRTY && !confirm('Скасувати незбережені правки?')) return; EDIT = false; DIRTY = false; load(); };
+  } else {
+    $('#editBtn').onclick = enterEditModules;
+    root.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault(); const t = document.getElementById(a.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+  }
+  root.querySelectorAll('.segtab').forEach(btn => btn.addEventListener('click', () => {
+    const key = btn.dataset.seg; const scope = btn.closest('.reveal') || root;
+    scope.querySelectorAll('.segtab').forEach(b => b.classList.toggle('active', b === btn));
+    scope.querySelectorAll('.segpanel').forEach(p => p.classList.toggle('active', p.dataset.segpanel === key));
+  }));
+  revealCheck();
+}
+
+function collectEditsModules() {
+  document.querySelectorAll('.edit').forEach(el => {
+    const d = EDITMAP[+el.dataset.eidx]; if (!d) return;
+    const val = el.innerText.replace(/\n+$/, '');
+    if (d.kind === 'name') { DATA.name = val; return; }
+    if (d.kind === 'meta') { DATA.meta = val; return; }
+    const mod = DATA.modules[d.gi].modules[d.mi];
+    if (d.kind === 'modtext') mod.text = val;
+    else if (d.kind === 'sectext') mod.sections[d.si].text = val;
+    else if (d.kind === 'secfieldv') mod.sections[d.si].fields[d.fi].v = val;
+    else if (d.kind === 'itemtitle') mod.sections[d.si].items[d.ii].title = val;
+    else if (d.kind === 'itemfieldv') mod.sections[d.si].items[d.ii].fields[d.fi].v = val;
+  });
+}
+async function saveEditsModules() {
+  collectEditsModules();
+  try {
+    await api('/share/' + token, { method: 'PUT', body: { modules: DATA.modules, name: DATA.name, meta: DATA.meta } });
+    DIRTY = false; EDIT = false; toast('Збережено'); renderModulesDoc();
+  } catch (e) { if (e.status === 401) { ls.set('aso_key', ''); toast('Невірний командний ключ — увійдіть ще раз', true); askKey().then(ok => { if (ok) saveEditsModules(); }); } else toast(e.message, true); }
+}
+async function enterEditModules() {
+  if (!ls.get('aso_key')) { const ok = await askKey(); if (!ok) return; }
+  EDIT = true; DIRTY = false; renderModulesDoc();
+}
+
 async function load() {
   try {
     DATA = await api('/share/' + token);
     document.title = DATA.name || 'Стратегія';
-    renderDoc();
+    if (DATA.modules && DATA.modules.length) renderModulesDoc(); else renderDoc();
   } catch (e) {
     $('#root').innerHTML = `<div class="center"><h1>Сторінку не знайдено</h1><p style="color:var(--tx2)">Посилання застаріло або стратегію знято з публікації.</p></div>`;
   }

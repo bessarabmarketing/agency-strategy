@@ -940,6 +940,44 @@ function secToBlocks(sdef, sec, out) {
   if (sec.implication) out.push({ t: 'quote', x: 'Що це означає для нашої стратегії? ' + [sec.implication.learned, sec.implication.why, sec.implication.impact, sec.implication.action].filter(Boolean).join(' → ') });
   const hy = (sec.claims || []).filter(c => c.type === 'ai_hypothesis'); if (hy.length) out.push({ t: 'quote', x: 'Гіпотези (потребують перевірки): ' + hy.map(c => c.text).join(' | ') });
 }
+/* ---------- Структурований експорт для Strategy Website (публічна сторінка) ----------
+   На відміну від finalBlocks (плаский список h1..h5/p/kv для MD/HTML/PDF-експортів),
+   тут зберігається реальна структура: групи → модулі → секції (text/fields/list/refs)
+   з типізованими полями. Це дозволяє публічній сторінці рендерити кожен тип даних
+   своїм UI-компонентом (сегменти — вкладки, конкуренти — картки, воронка — степпер),
+   а не одним суцільним потоком тексту. */
+function structuredModules(p) {
+  const { ok } = finalModules(p); const groups = []; let cur = null;
+  const pushGroup = label => { if (!cur || cur.label !== label) { cur = { label, modules: [] }; groups.push(cur); } };
+  ok.forEach(x => {
+    if (x.custom) {
+      pushGroup('Додаткові розділи');
+      cur.modules.push({ id: x.id, title: x.title, custom: true, text: p.custom.find(y => y.id === x.id).body });
+      return;
+    }
+    pushGroup(CFG.GROUPS[x.def.group].label);
+    const m = p.modules[x.id];
+    const sections = sectionsFor(p, x.id).map(s => {
+      const sec = m.sections[s.key]; if (!sec) return null;
+      const out = { key: s.key, title: s.title, kind: s.kind };
+      if (s.kind === 'text') out.text = sec.data;
+      else if (s.kind === 'fields') out.fields = s.fields.map(f => ({ k: f.k, l: f.l, v: sec.data ? sec.data[f.k] : '' }));
+      else if (s.kind === 'list') {
+        out.items = (sec.data || []).map(it => ({
+          id: it.id || '', title: it[s.titleField] || '', ref: s.ref ? it[s.ref] : undefined,
+          fields: s.fields.filter(f => f.k !== s.titleField).map(f => ({ k: f.k, l: f.l, v: it[f.k] })) }));
+        if (s.fields.some(f => f.k === 'stage')) out.isFunnel = true;
+      }
+      else if (s.kind === 'refs') out.refs = (sec.refs || []).map(r => ({ title: r.title || r.url, url: r.url || '', note: r.note || '' }));
+      if (sec.implication) { const im = sec.implication; const t = [im.learned, im.why, im.impact, im.action].filter(Boolean).join(' → '); if (t) out.implication = t; }
+      const hy = (sec.claims || []).filter(c => c.type === 'ai_hypothesis'); if (hy.length) out.hypotheses = hy.map(c => c.text);
+      return out;
+    }).filter(Boolean);
+    cur.modules.push({ id: x.id, title: x.title, sections });
+  });
+  const sources = p.sources.filter(s => isUrl(s.url)).map(s => ({ title: s.title || s.url, url: s.url, date: s.date || '', evidence: s.evidence || '' }));
+  return { groups, sources };
+}
 function finalBlocks(p) {
   const { ok } = finalModules(p); const b = [];
   b.push({ t: 'h1', x: 'Стратегія: ' + p.name }); b.push({ t: 'meta', x: `Клієнт: ${p.client || '—'} · Послуги: ${p.services.map(svcLabel).join(', ')} · Сформовано ${fmtDate(p.final && p.final.generatedAt)} · Автор: ${(p.final && p.final.by) || '—'}` });
@@ -1922,7 +1960,9 @@ A.publish = async () => {
   const p = S.project; const isUpdate = !!p.share;
   if (isUpdate && !confirm('Оновити сторінку клієнта? Це замінить весь текст на ній свіжим варіантом із конструктора — ручні правки, зроблені на сторінці клієнта після публікації, буде втрачено.')) return;
   try {
-    const r = await api('/share', { method: 'POST', body: { projectId: p.id, name: p.name, client: p.client, blocks: finalBlocks(p), token: p.share && p.share.token } });
+    const struct = structuredModules(p);
+    const meta = `Клієнт: ${p.client || '—'} · Послуги: ${p.services.map(svcLabel).join(', ')} · Сформовано ${fmtDate(p.final && p.final.generatedAt)} · Автор: ${(p.final && p.final.by) || '—'}`;
+    const r = await api('/share', { method: 'POST', body: { projectId: p.id, name: p.name, client: p.client, meta, blocks: finalBlocks(p), modules: struct.groups, sources: struct.sources, token: p.share && p.share.token } });
     p.share = { token: r.token, url: r.url, publishedAt: r.publishedAt, updatedAt: nowIso(), by: S.user };
     logEv(p, (isUpdate ? 'Оновлено' : 'Опубліковано') + ' сторінку для клієнта: ' + r.url); touch('Сторінка для клієнта: ' + r.url); render();
     toast(isUpdate ? 'Сторінку клієнта оновлено' : 'Сторінку опубліковано — посилання нижче');
