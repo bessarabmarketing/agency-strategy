@@ -145,6 +145,7 @@ hr{border:0;border-top:1px solid var(--line)}
 <body>
 <div id="app"><aside id="side"></aside><main id="main"></main></div>
 <div id="overlay"></div>
+<script src="vendor/jszip.min.js"></script>
 <script>
 /* =====================================================================
    МЕТОДОЛОГІЯ АГЕНЦІЇ (CFG) — декларативна конфігурація.
@@ -977,6 +978,106 @@ function structuredModules(p) {
   });
   const sources = p.sources.filter(s => isUrl(s.url)).map(s => ({ title: s.title || s.url, url: s.url, date: s.date || '', evidence: s.evidence || '' }));
   return { groups, sources };
+}
+/* ---------- Пакет для Claude: промпт + окремий .md на кожен блок ----------
+   Замість публічного сайту-презентації — набір файлів, які можна завантажити
+   у проєкт Claude: Claude сам читає структуру (структуровані дані з
+   structuredModules, а не плаский blocksToMd) і збирає з них презентацію. */
+function fieldsToMd(fields) {
+  const present = (fields || []).filter(f => f.v);
+  if (!present.length) return '';
+  return present.map(f => `- **${f.l}:** ${String(f.v).trim().replace(/\n+/g, ' ')}`).join('\n') + '\n\n';
+}
+function sectionToMd(sec) {
+  let out = `### ${sec.title}\n\n`;
+  if (sec.kind === 'text') { if (sec.text && sec.text.trim()) out += sec.text.trim() + '\n\n'; }
+  else if (sec.kind === 'fields') out += fieldsToMd(sec.fields);
+  else if (sec.kind === 'list') {
+    if (!sec.items || !sec.items.length) return '';
+    sec.items.forEach((it, i) => {
+      out += `#### ${it.id ? it.id + '. ' : ''}${it.title || ('Елемент ' + (i + 1))}\n\n`;
+      out += fieldsToMd(it.fields);
+    });
+  } else if (sec.kind === 'refs') {
+    if (!sec.refs || !sec.refs.length) return '';
+    sec.refs.forEach(r => { out += `- [${r.title}](${r.url})${r.note ? ' — ' + r.note : ''}\n`; });
+    out += '\n';
+  }
+  if (sec.implication) out += `> **Що це означає для стратегії:** ${sec.implication}\n\n`;
+  if (sec.hypotheses && sec.hypotheses.length) out += `**Гіпотези до перевірки:**\n` + sec.hypotheses.map(h => `- ${h}`).join('\n') + '\n\n';
+  return out;
+}
+function moduleToMd(mod) {
+  let out = `# ${mod.title}\n\n`;
+  if (mod.custom) return out + (mod.text || '').trim() + '\n';
+  (mod.sections || []).forEach(s => { out += sectionToMd(s); });
+  return out;
+}
+function buildAiPackagePrompt(p, struct, fileNames) {
+  const meta = `Клієнт: ${p.client || '—'} · Послуги: ${p.services.map(svcLabel).join(', ')} · Сформовано ${fmtDate(p.final && p.final.generatedAt)} · Автор: ${(p.final && p.final.by) || '—'}`;
+  const chapters = struct.groups.map((g, gi) => `${gi + 1}. **${g.label}** — ${g.modules.map(m => m.title).join(', ')}`).join('\n');
+  const files = fileNames.map(f => `- \`${f}\``).join('\n');
+  return `# Промпт: зібрати презентацію стратегії "${p.name}"
+
+${meta}
+
+## Що тут є
+
+До цього промпту прикладені окремі файли — по одному на кожен блок стратегії, плюс файл джерел. Кожен файл містить реальні дані з Конструктора стратегій: жодних вигаданих фактів чи цифр там немає — якщо якогось поля не заповнено, його просто немає у файлі.
+
+Файли (саме в цьому порядку = порядок розділів стратегії):
+
+${files}
+
+## Структура стратегії (розділи йдуть у такому порядку)
+
+${chapters}
+
+## Завдання
+
+Зібрати з цих файлів **одну цілісну презентацію** цієї маркетингової стратегії — для клієнта або для команди агенції.
+
+Вимоги:
+1. Збережи порядок розділів як у списку файлів вище — це логіка стратегії (від дослідження до каналів і наступних кроків), її міняти не треба.
+2. Використовуй **тільки факти з цих файлів**. Нічого не вигадуй і не додавай від себе — ні цифр, ні прикладів, ні назв.
+3. Там, де в блоці є рядок "Що це означає для стратегії" — це головний висновок блоку, він має бути помітним у презентації, а не загубленим серед деталей.
+4. Big Idea / платформа бренду (якщо є в матеріалах) — емоційне ядро презентації, подай його як головну тезу, а не як один з пунктів списку.
+5. Не перетворюй усе на суцільний текст-стіну: там, де в блоці є перелік (сегменти, конкуренти, етапи воронки, рубрики) — зберігай це як перелік/структуру, а не один абзац.
+6. Якщо для якогось блоку даних немає (порожній файл або блок відсутній у списку файлів) — просто пропусти його, не вигадуй заповнення.
+7. Мова презентації — та сама, якою написані самі файли (українська/російська, залежно від контенту).
+
+На виході — готовий документ/презентація, яку можна одразу показати клієнту.`;
+}
+function buildAiPackage(p) {
+  const struct = structuredModules(p);
+  const files = [];
+  let idx = 1;
+  struct.groups.forEach(g => {
+    g.modules.forEach(mod => {
+      const n = String(idx++).padStart(2, '0');
+      files.push({ name: `${n}-${slug(g.label)}-${slug(mod.title)}.md`, content: moduleToMd(mod) });
+    });
+  });
+  if (struct.sources && struct.sources.length) {
+    let s = '# Джерела\n\n';
+    struct.sources.forEach(src => { s += `- [${src.title}](${src.url})${src.date ? ' · ' + src.date : ''}${src.evidence ? ' — ' + src.evidence : ''}\n`; });
+    files.push({ name: `${String(idx++).padStart(2, '0')}-dzherela.md`, content: s });
+  }
+  const prompt = buildAiPackagePrompt(p, struct, files.map(f => f.name));
+  return { files, prompt };
+}
+async function doExportAiPackage() {
+  const p = S.project;
+  if (typeof JSZip === 'undefined') { toast('Не вдалося завантажити бібліотеку для ZIP — перевірте інтернет-зʼєднання і спробуйте ще раз', true); return; }
+  const { files, prompt } = buildAiPackage(p);
+  const zip = new JSZip();
+  zip.file('00-PROMPT.md', prompt);
+  files.forEach(f => zip.file(f.name, f.content));
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = slug(p.name) + '-ai-pack.zip'; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  p.exports.unshift({ id: uid('ex'), format: 'ai_pack', at: nowIso(), by: S.user }); touch(); render();
+  toast('Пакет для Claude завантажено — розпакуйте ZIP і додайте файли у проєкт Claude');
 }
 function finalBlocks(p) {
   const { ok } = finalModules(p); const b = [];
@@ -1948,31 +2049,14 @@ function finalView(p) {
   let body;
   if (!f) body = `<div class="card"><h3>Фінальна стратегія збирає всі прийняті модулі</h3><div class="grid g2"><div><h4>Увійдуть (${fm.ok.length})</h4>${fm.ok.map(x => `<div class="sm">✓ ${esc(x.title)}${x.stale ? ' ' + chip('⚠ потребує оновлення', 'warn') : ''}</div>`).join('') || '<span class="muted">—</span>'}</div><div><h4>Не увійдуть (${fm.excl.length})</h4>${fm.excl.map(x => `<div class="sm">✕ ${esc(x.title)} — ${x.why}</div>`).join('') || '<span class="muted">—</span>'}</div></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}<button class="btn pri" data-act="genFinal" ${gate ? 'disabled' : ''}>Сформувати Фінальна стратегія</button></div>`;
   else {
-    const sh = p.share;
-    const shareBox = `<div class="card no-print" style="margin-top:14px">${sh ? `<div class="row" style="flex-wrap:wrap"><div style="flex:1;min-width:220px"><b>🔗 Сторінка для клієнта</b><div class="sm muted">Опубліковано ${fmtDate(sh.publishedAt)}${sh.updatedAt && sh.updatedAt !== sh.publishedAt ? ' · оновлено ' + fmtDate(sh.updatedAt) : ''}</div><div class="sm" style="margin-top:4px"><a href="${esc(sh.url)}" target="_blank" rel="noopener noreferrer">${esc(sh.url)}</a></div></div><button class="btn sm" data-act="copyShare">Копіювати посилання</button><button class="btn sm" data-act="publish" ${gate ? 'disabled' : ''}>↻ Оновити для клієнта</button><button class="btn sm danger" data-act="unpublish">Зняти з публікації</button></div>` : `<div class="row"><div style="flex:1"><b>Сторінка для клієнта</b><div class="sm muted">Публікує цю стратегію на окремій сторінці зі своїм посиланням — гарно оформленій, без входу в конструктор. Текст на ній потім можна відредагувати.</div></div><button class="btn pri sm" data-act="publish" ${gate ? 'disabled' : ''}>🔗 Опублікувати для клієнта</button></div>`}</div>`;
-    body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div>${shareBox}<div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
+    const aiBox = `<div class="card no-print" style="margin-top:14px"><div class="row" style="flex-wrap:wrap"><div style="flex:1;min-width:260px"><b>📦 Пакет для Claude</b><div class="sm muted">Промпт на збірку + окремий .md-файл на кожен блок стратегії (в архіві ZIP). Розпакуйте і додайте файли у проєкт Claude — він збере з них одну презентацію.</div></div><button class="btn pri sm" data-act="exportAiPack" ${gate ? 'disabled' : ''}>⬇ Згенерувати пакет (ZIP)</button></div></div>`;
+    body = `<div class="card no-print"><div class="row"><b>Версія ${f.rev}</b><span class="muted sm">${fmtDate(f.generatedAt)} · ${esc(f.by)}</span><span style="flex:1"></span>${CFG.EXPORTERS.map(e => `<button class="btn sm" data-act="export" data-f="${e.id}" ${e.ready ? '' : 'disabled title="Phase 2"'}>${e.ready ? '⬇ ' : ''}${esc(e.label)}</button>`).join('')}<button class="btn sm" data-act="genFinal" ${gate ? 'disabled' : ''}>↻ Пересформувати</button></div>${gate ? `<div class="warnbox">${gate}</div>` : ''}${fm.excl.length ? `<div class="muted sm" style="margin-top:6px">Не увійшли: ${fm.excl.map(x => esc(x.title) + ' (' + x.why + ')').join('; ')}</div>` : ''}</div>${aiBox}<div class="doc">${blocksToHtml(finalBlocks(p))}</div>${p.exports.length ? `<div class="card no-print" style="margin-top:14px"><h4>Історія експортів</h4>${p.exports.slice(0, 8).map(e => `<div class="sm">${fmtDate(e.at)} · ${esc(e.by)} · ${esc(e.format)}</div>`).join('')}</div>` : ''}`;
   }
   return pTop(p, 'Фінальна стратегія') + `<div class="wrap">${body}</div>`;
 }
 A.genFinal = () => generateFinal();
 A.export = el => doExport(el.dataset.f);
-A.publish = async () => {
-  const p = S.project; const isUpdate = !!p.share;
-  if (isUpdate && !confirm('Оновити сторінку клієнта? Це замінить весь текст на ній свіжим варіантом із конструктора — ручні правки, зроблені на сторінці клієнта після публікації, буде втрачено.')) return;
-  try {
-    const struct = structuredModules(p);
-    const meta = `Клієнт: ${p.client || '—'} · Послуги: ${p.services.map(svcLabel).join(', ')} · Сформовано ${fmtDate(p.final && p.final.generatedAt)} · Автор: ${(p.final && p.final.by) || '—'}`;
-    const r = await api('/share', { method: 'POST', body: { projectId: p.id, name: p.name, client: p.client, meta, blocks: finalBlocks(p), modules: struct.groups, sources: struct.sources, token: p.share && p.share.token } });
-    p.share = { token: r.token, url: r.url, publishedAt: r.publishedAt, updatedAt: nowIso(), by: S.user };
-    logEv(p, (isUpdate ? 'Оновлено' : 'Опубліковано') + ' сторінку для клієнта: ' + r.url); touch('Сторінка для клієнта: ' + r.url); render();
-    toast(isUpdate ? 'Сторінку клієнта оновлено' : 'Сторінку опубліковано — посилання нижче');
-  } catch (e) { toast(e.message, true); }
-};
-A.copyShare = async () => { try { await navigator.clipboard.writeText(S.project.share.url); toast('Посилання скопійовано'); } catch { toast('Не вдалося скопіювати — виділіть посилання вручну', true); } };
-A.unpublish = async () => {
-  const p = S.project; if (!confirm('Зняти сторінку з публікації? Посилання перестане працювати для клієнта.')) return;
-  try { await api('/share/' + p.share.token, { method: 'DELETE' }); p.share = null; logEv(p, 'Сторінку для клієнта знято з публікації'); touch(); render(); toast('Знято з публікації'); } catch (e) { toast(e.message, true); }
-};
+A.exportAiPack = () => doExportAiPackage();
 
 /* ---------- Історія ---------- */
 function historyView(p) {
