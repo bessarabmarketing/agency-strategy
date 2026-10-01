@@ -948,14 +948,14 @@ function secToBlocks(sdef, sec, out) {
    а не одним суцільним потоком тексту. */
 function structuredModules(p) {
   const { ok } = finalModules(p); const groups = []; let cur = null;
-  const pushGroup = label => { if (!cur || cur.label !== label) { cur = { label, modules: [] }; groups.push(cur); } };
+  const pushGroup = (label, groupKey) => { if (!cur || cur.groupKey !== groupKey) { cur = { label, groupKey, modules: [] }; groups.push(cur); } };
   ok.forEach(x => {
     if (x.custom) {
-      pushGroup('Додаткові розділи');
+      pushGroup('Додаткові розділи', 'custom');
       cur.modules.push({ id: x.id, title: x.title, custom: true, text: p.custom.find(y => y.id === x.id).body });
       return;
     }
-    pushGroup(CFG.GROUPS[x.def.group].label);
+    pushGroup(CFG.GROUPS[x.def.group].label, x.def.group);
     const m = p.modules[x.id];
     const sections = sectionsFor(p, x.id).map(s => {
       const sec = m.sections[s.key]; if (!sec) return null;

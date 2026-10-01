@@ -26,11 +26,15 @@ body{font:15px/1.65 var(--fb);background:var(--bg);color:var(--tx);-webkit-font-
 .toc-brand i{width:8px;height:8px;border-radius:2px;background:var(--ac);display:inline-block;flex:none}
 .toc a{color:var(--tx3);text-decoration:none;font-size:12.5px;font-weight:600;padding:7px 10px;border-radius:9px;border-left:2px solid transparent;transition:color .15s,background .15s,border-color .15s;line-height:1.35}
 .toc a:hover{color:var(--tx);background:var(--panel2)}
-.toc a.active{color:var(--ac);background:var(--ac2);border-left-color:var(--ac)}
+.toc a.active{color:var(--ac);background:transparent;border-left-color:var(--ac)}
 .toc-progress{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);color:var(--tx3);font-size:11px;letter-spacing:.04em}
+.toc-chapter{font-size:10.5px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin:0 0 14px;font-weight:700}
 
 .wrap{padding:64px 24px 140px;min-width:0}
-.hero{padding:40px 0 26px;border-bottom:1px solid var(--line)}
+.hero{min-height:56vh;display:flex;flex-direction:column;justify-content:center;padding:30px 0 50px;border-bottom:1px solid var(--line);position:relative}
+.hero-scroll{position:absolute;bottom:10px;left:0;font-size:10.5px;color:var(--tx3);display:flex;align-items:center;gap:9px;letter-spacing:.07em;text-transform:uppercase}
+.hero-scroll i{width:1px;height:22px;background:var(--tx3);display:inline-block;animation:scrolldown 1.8s infinite}
+@keyframes scrolldown{0%{opacity:.15;transform:translateY(0)}50%{opacity:1}100%{opacity:.15;transform:translateY(7px)}}
 .hero .brand{font-family:var(--fd);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .hero .brand i{width:10px;height:10px;border-radius:3px;background:var(--ac);display:inline-block}
 .hero h1{font-family:var(--fd);font-weight:800;font-size:clamp(28px,5vw,46px);line-height:1.08;margin:0 0 14px;text-transform:uppercase;letter-spacing:-.01em}
@@ -42,7 +46,9 @@ h2.sec{font-family:var(--fd);font-weight:800;font-size:clamp(20px,3.4vw,30px);te
 h2.sec i{width:22px;height:4px;background:var(--ac);border-radius:3px;display:inline-block;flex:none}
 .sec-wrap{margin-top:60px}
 h3.mod{font-family:var(--fd);font-weight:600;font-size:17px;margin:34px 0 12px;color:var(--tx)}
-h4.sub{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin:20px 0 6px}
+h4.sub{font-family:var(--fd);font-size:13.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--tx);margin:38px 0 14px;padding-left:15px;position:relative;display:flex;align-items:center;min-height:16px}
+h4.sub:before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:4px;height:15px;background:var(--ac);border-radius:2px}
+h4.sub:first-child{margin-top:4px}
 h5.item{font-family:var(--fb);font-weight:700;font-size:14.5px;margin:16px 0 4px;color:var(--tx)}
 p.b{margin:0 0 10px;color:var(--tx);white-space:pre-wrap}
 blockquote{border-left:3px solid var(--ac);margin:18px 0;padding:14px 18px;background:var(--ac2);border-radius:0 10px 10px 0;color:var(--tx);font-style:normal;transition:background .2s,border-color .2s}
@@ -81,8 +87,79 @@ blockquote:hover{background:rgba(203,255,46,.16)}
 .herostat b{font-family:var(--fd);font-size:20px;color:var(--ac);display:block;line-height:1.1}
 .herostat span{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
 
-.modtitle{font-family:var(--fd);font-weight:700;font-size:19px;margin:42px 0 2px;color:var(--tx)}
-.sec-wrap+.modtitle,.modtitle:first-of-type{margin-top:10px}
+.modtitle{font-family:var(--fd);font-weight:700;font-size:19px;margin:50px 0 2px;color:var(--tx);padding-left:17px;position:relative}
+.modtitle:before{content:'';position:absolute;left:0;top:5px;width:5px;height:19px;background:var(--ac);border-radius:3px;opacity:.55}
+.sec-wrap+.modtitle,.modtitle:first-of-type{margin-top:14px}
+.chapter+.modtitle{margin-top:34px}
+
+/* ---- розділові "chapter" екрани між великими смисловими блоками ---- */
+.chapter-bg{position:relative}
+.chapter-bg.v0{background:radial-gradient(ellipse 620px 420px at 10% 0%,rgba(203,255,46,.035),transparent 62%)}
+.chapter-bg.v1{background:radial-gradient(ellipse 560px 460px at 92% 12%,rgba(203,255,46,.03),transparent 58%),radial-gradient(ellipse 420px 340px at 6% 94%,rgba(203,255,46,.025),transparent 60%)}
+.chapter-bg.v2{background:linear-gradient(180deg,rgba(203,255,46,.026),transparent 38%)}
+.chapter{min-height:58vh;display:flex;flex-direction:column;justify-content:center;padding:54px 0 36px;position:relative;scroll-margin-top:24px}
+.chapter-num{font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.chapter-num i{width:28px;height:2px;background:var(--ac);display:inline-block;opacity:.7}
+.chapter h2.sec{border-top:none;padding-top:0;margin:0 0 16px;font-size:clamp(30px,5.6vw,56px)}
+.chapter-tag{font-size:15px;color:var(--tx2);max-width:560px;line-height:1.55}
+
+/* ---- маніфест бренд-платформи ---- */
+.manifesto{padding:6px 0 10px}
+.manifesto .eyebrow{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:16px}
+.manifesto .bigstatement{font-family:var(--fd);font-weight:700;font-size:clamp(21px,3.4vw,32px);line-height:1.3;margin:0 0 28px;max-width:720px}
+.triad{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:18px 0 26px}
+.triad>div{background:var(--panel);padding:18px 20px 20px}
+.triad b{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.triad span{font-size:14px;color:var(--tx)}
+.proseblock{max-width:680px}
+.proseblock p{font-size:15px;line-height:1.75;color:var(--tx2);margin:0 0 14px}
+.proseblock p:last-child{margin-bottom:0}
+.proseblock b{color:var(--tx3)}
+
+/* ---- велика ідея: суцільна заява, не картка ---- */
+.bigidea-block{padding:54px 24px;text-align:center;border:1px solid var(--line);border-radius:22px;background:var(--panel);margin:16px 0 28px}
+.bigidea-block .ideaeyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:700;margin-bottom:16px}
+.bigidea-block .ideastatement{font-family:var(--fd);font-weight:800;font-size:clamp(22px,4vw,40px);line-height:1.2;max-width:780px;margin:0 auto 16px}
+.bigidea-block .ideasub{font-size:14px;color:var(--tx2);max-width:560px;margin:0 auto}
+
+/* ---- розділений блок типу SAY/DON'T-SAY, USE/AVOID, STRENGTHS/WEAKNESSES ---- */
+.splitpair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:14px 0 22px}
+.splitcol{background:var(--panel);padding:16px 20px 18px}
+.splitcol.neg{background:rgba(255,100,90,.045)}
+.splitcol.pos{background:var(--ac2)}
+.splitlabel{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+.splitcol.pos .splitlabel{color:var(--ac)}
+.splitcol.neg .splitlabel{color:#ff8a7e}
+.splitbody div{font-size:13.5px;color:var(--tx);padding:7px 0;border-top:1px solid var(--line);line-height:1.55}
+.splitbody div:first-child{border-top:none;padding-top:0}
+@media (max-width:640px){.splitpair{grid-template-columns:1fr}}
+
+/* ---- "стрічка" коротких полів без рамок-карток ---- */
+.fieldstrip{display:flex;flex-wrap:wrap;gap:0;margin:12px 0 22px;border-top:1px solid var(--line)}
+.fitem{flex:1 1 180px;padding:13px 20px 13px 0;border-bottom:1px solid var(--line)}
+.fitem b{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px}
+.fitem span{font-size:13.5px;color:var(--tx)}
+
+/* ---- важливе число — окрема велика заява, не картка ---- */
+.bignum{margin:18px 0 10px}
+.bignum .bnval{font-family:var(--fd);font-weight:800;font-size:clamp(34px,6.4vw,64px);color:var(--ac);line-height:1}
+.bignum .bnlabel{font-size:12px;color:var(--tx2);margin-top:6px;max-width:440px;text-transform:uppercase;letter-spacing:.04em}
+
+/* ---- "то й що?" — візуальний висновок замість цитати ---- */
+.sowhat{margin:18px 0 10px;padding:16px 22px;border-left:3px solid var(--ac);background:var(--ac2);border-radius:0 14px 14px 0}
+.sowhat-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:7px}
+.sowhat-text{font-size:14px;color:var(--tx);line-height:1.6}
+
+/* ---- JTBD-заява + звʼязана часова лінія шляху сегмента ---- */
+.jtbd-statement{font-family:var(--fd);font-weight:700;font-size:clamp(17px,2.4vw,24px);line-height:1.4;max-width:680px;margin:4px 0 24px;padding:18px 22px;border:1px solid var(--acline);border-radius:16px;background:var(--ac2)}
+.jtbd-statement b{color:var(--ac);display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--fb);font-weight:800}
+.journey{position:relative;margin:18px 0 8px;padding-left:26px}
+.journey:before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line2)}
+.jstep{position:relative;margin-bottom:17px}
+.jstep:last-child{margin-bottom:0}
+.jdot{position:absolute;left:-26px;top:3px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--ac)}
+.jstep b{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:4px}
+.jstep span{font-size:13.5px;color:var(--tx);line-height:1.55}
 
 .itemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:14px 0 24px}
 .itemcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;transition:border-color .18s,transform .18s,background .18s}
@@ -126,9 +203,13 @@ blockquote:hover{background:rgba(203,255,46,.16)}
   .toc a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent}
   .toc a.active{border-left-color:transparent;border-bottom-color:var(--ac)}
   .toc-progress{display:none}
+  .toc-chapter{display:none}
   .wrap{padding:28px 18px 120px}
+  .hero{min-height:0}
+  .hero-scroll{display:none}
   .funnel{flex-direction:column}
   .funnel .stage:not(:first-child):before{content:'↓';left:50%;top:-19px;transform:translateX(-50%)}
+  .triad{grid-template-columns:1fr}
 }
 @media print{.bar,.editbadge,.toc,.progress{display:none!important}.blob{display:none}.page{display:block}.wrap{max-width:none}}
 </style>
@@ -286,6 +367,43 @@ const ICON = { insights: '💡', opportunities: '✦', commOpps: '✦', risks: '
 let EDITMAP = [];
 function edAttr(desc) { if (!EDIT) return ''; const idx = EDITMAP.length; EDITMAP.push(desc); return ` contenteditable="true" class="edit" data-eidx="${idx}"`; }
 
+// заголовки-«розділи» (chapter screens) — по одному канонічному теглайну на групу модулів;
+// background-variant циклічно змінюється між главами, щоб сторінка не виглядала однією
+// нескінченною чорною стрічкою, без фабрикації жодних даних проєкту
+const CHAPTER_TAGS = {
+  research: 'Де ми стоїмо зараз: ринок, аудиторія та конкурентне поле, з яких починається стратегія.',
+  brand: 'Хто ми: платформа бренду, позиціонування та ідея, що тримає комунікацію разом.',
+  smm: 'Як це живе в соцмережах: контент, візуал, звук і регулярні рубрики.',
+  meta: 'Платна дистрибуція в Meta: структура кампаній і шлях від охоплення до дії.',
+  tiktok: 'TikTok: органічна присутність на території короткого відео.',
+  ttads: 'TikTok Ads: платне просування на платформі.',
+  google: 'Google Ads: пошуковий і медійний контур performance-стратегії.',
+  cross: 'Як канали працюють разом: наскрізна воронка та передача естафети між точками контакту.',
+  custom: 'Додаткові матеріали стратегії.'
+};
+const BG_VARIANTS = ['v0', 'v1', 'v2'];
+
+// пари протилежних полів (say/don't-say, use/avoid…) — рендеряться як один split-блок,
+// а не як окремі однакові картки
+const KNOWN_PAIRS = [
+  { a: 'sayThis', b: 'notThis', al: 'Говоримо', bl: 'Не говоримо' },
+  { a: 'allowed', b: 'forbidden', al: 'Можна', bl: 'Не можна' },
+  { a: 'useInReels', b: 'avoid', al: 'Використовуємо', bl: 'Уникаємо' },
+  { a: 'use', b: 'avoid', al: 'Використовуємо', bl: 'Уникаємо' },
+  { a: 'strengths', b: 'weaknesses', al: 'Сильні сторони', bl: 'Слабкі сторони' },
+];
+// коротке числове значення ("34%", "~2.1М", "x3") — показуємо як окрему велику заяву,
+// а не ховаємо в дрібну картку серед інших полів
+function isBigNum(v) {
+  const s = String(v || '').trim();
+  if (!s || s.length > 22) return false;
+  return /^~?\d[\d.,]*\s?(%|грн|\$|€|x|х)?$/i.test(s) || /^~?\d[\d.,]*\s?(млн|тис|k)\b/i.test(s);
+}
+function renderSoWhat(text) {
+  if (!text) return '';
+  return `<div class="sowhat"><div class="sowhat-eyebrow">Що це означає для стратегії</div><div class="sowhat-text">${esc(text)}</div></div>`;
+}
+
 function wordCountModules(groups) {
   let n = 0; const add = s => { if (!s) return; n += String(s).trim().split(/\s+/).filter(Boolean).length; };
   groups.forEach(g => g.modules.forEach(m => {
@@ -314,16 +432,76 @@ function heroStats(groups) {
 }
 
 function renderTextSec(gi, mi, si, sec) {
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><p class="b"${edAttr({ kind: 'sectext', gi, mi, si })}>${esc(sec.text || '')}</p>`;
-  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="proseblock"><p${edAttr({ kind: 'sectext', gi, mi, si })}>${esc(sec.text || '')}</p></div>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
   if (sec.hypotheses && sec.hypotheses.length) h += `<blockquote>Гіпотези (потребують перевірки): ${esc(sec.hypotheses.join(' | '))}</blockquote>`;
   return h + `</div>`;
 }
+// Поля ('fields'-секції) — більше НЕ суцільна сітка однакових карток (стара .stats-поведінка).
+// Кожне значення класифікується: коротке число → велика заява (.bignum); відома пара
+// протилежних полів (say/don't-say тощо) → split-панель; решта коротких полів → горизонтальна
+// "стрічка" без рамок (.fieldstrip); довгі описові поля → проза (.proseblock). CARD ≠ default.
 function renderFieldsSec(gi, mi, si, sec) {
-  const rows = sec.fields.map((f, fi) => f.v ? `<div class="stat"><b>${esc(f.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi })}>${esc(f.v)}</span></div>` : '').join('');
-  if (!rows) return '';
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="stats">${rows}</div>`;
-  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  const present = sec.fields.filter(f => f.v);
+  if (!present.length) return '';
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4>`;
+
+  const bigs = [], rest0 = [];
+  present.forEach(f => (isBigNum(f.v) ? bigs : rest0).push(f));
+  bigs.forEach(f => { h += `<div class="bignum"><div class="bnval"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(f) })}>${esc(f.v)}</div><div class="bnlabel">${esc(f.l)}</div></div>`; });
+
+  const used = new Set();
+  KNOWN_PAIRS.forEach(p => {
+    const fa = rest0.find(f => f.k === p.a), fb = rest0.find(f => f.k === p.b);
+    if (fa && fb) {
+      used.add(fa); used.add(fb);
+      h += `<div class="splitpair"><div class="splitcol pos"><div class="splitlabel">✓ ${esc(p.al)}</div><div class="splitbody"><div${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(fa) })}>${esc(fa.v)}</div></div></div><div class="splitcol neg"><div class="splitlabel">✕ ${esc(p.bl)}</div><div class="splitbody"><div${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(fb) })}>${esc(fb.v)}</div></div></div></div>`;
+    }
+  });
+
+  const remaining = rest0.filter(f => !used.has(f));
+  const short = remaining.filter(f => f.v.length <= 60), long = remaining.filter(f => f.v.length > 60);
+  if (short.length) h += `<div class="fieldstrip">${short.map(f => `<div class="fitem"><b>${esc(f.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
+  if (long.length) h += `<div class="proseblock">${long.map(f => `<p><b>${esc(f.l)}.</b> <span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(f) })}>${esc(f.v)}</span></p>`).join('')}</div>`;
+
+  if (sec.implication) h += renderSoWhat(sec.implication);
+  return h + `</div>`;
+}
+// Платформа бренду — не сітка карток, а "маніфест": eyebrow + велика заява (essence/mission)
+// + тріада МІСІЯ—ЦІННОСТІ—ОБІЦЯНКА + решта полів прозою
+function renderManifesto(gi, mi, si, sec) {
+  const present = sec.fields.filter(f => f.v); if (!present.length) return '';
+  const f = k => present.find(x => x.k === k);
+  const big = f('essence') || f('brandEssence') || f('mission') || f('purpose');
+  // без h4.sub: заголовок секції тут дублює заголовок модуля ("Платформа бренду" = "Платформа
+  // бренду" в CFG), тож маніфест починається одразу з eyebrow — без потрійного повтору назви
+  let h = `<div class="reveal"><div class="manifesto"><div class="eyebrow">Хто ми</div>`;
+  if (big) h += `<div class="bigstatement"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
+  const triadDefs = [{ k: 'mission', l: 'Місія' }, { k: 'values', l: 'Цінності' }, { k: 'promise', l: 'Обіцянка' }];
+  const triad = triadDefs.map(d => ({ d, fl: f(d.k) })).filter(x => x.fl && x.fl !== big);
+  if (triad.length) h += `<div class="triad">${triad.map(x => `<div><b>${esc(x.d.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(x.fl) })}>${esc(x.fl.v)}</span></div>`).join('')}</div>`;
+  const used = new Set([big, ...triad.map(x => x.fl)].filter(Boolean));
+  const rest = present.filter(x => !used.has(x));
+  if (rest.length) h += `<div class="proseblock">${rest.map(x => `<p><b>${esc(x.l)}.</b> <span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(x) })}>${esc(x.v)}</span></p>`).join('')}</div>`;
+  h += `</div>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
+  return h + `</div>`;
+}
+// Велика ідея — окрема повноцінна заява на весь блок, ніколи не картка
+function renderBigIdea(gi, mi, si, sec) {
+  const present = sec.fields.filter(f => f.v); if (!present.length) return renderFieldsSec(gi, mi, si, sec);
+  const f = k => present.find(x => x.k === k);
+  const big = f('bigIdea'); if (!big) return renderFieldsSec(gi, mi, si, sec);
+  const keyMsg = f('keyMessage'), supp = f('supporting');
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4>`;
+  h += `<div class="bigidea-block"><div class="ideastatement"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
+  if (keyMsg) h += `<div class="ideasub"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(keyMsg) })}>${esc(keyMsg.v)}</div>`;
+  h += `</div>`;
+  if (supp) h += `<div class="proseblock"><p><b>${esc(supp.l)}.</b> <span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(supp) })}>${esc(supp.v)}</span></p></div>`;
+  const used = new Set([big, keyMsg, supp].filter(Boolean));
+  const rest = present.filter(x => !used.has(x));
+  if (rest.length) h += `<div class="fieldstrip">${rest.map(x => `<div class="fitem"><b>${esc(x.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(x) })}>${esc(x.v)}</span></div>`).join('')}</div>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
 function renderRefsSec(sec) {
@@ -342,9 +520,13 @@ function itemCardHtml(gi, mi, si, it, ii, groups, icon, accent) {
 function renderItemGrid(gi, mi, si, sec, groups, icon, accent) {
   if (!sec.items || !sec.items.length) return '';
   let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="itemgrid">${sec.items.map((it, ii) => itemCardHtml(gi, mi, si, it, ii, groups, icon, accent)).join('')}</div>`;
-  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
+// Сегменти ЦА — не плоска сітка карток: JTBD виокремлюється як велика цитата-заява,
+// а шлях (контекст → потреба → біль → тригер → бар'єр → результат → меседж → офер)
+// рендериться як звʼязана вертикальна таймлайн-лінія; решта полів — легка "стрічка"
+const JOURNEY_KEYS = ['context', 'need', 'pain', 'trigger', 'barrier', 'outcome', 'message', 'offer'];
 function renderSegments(gi, mi, si, sec) {
   if (!sec.items || !sec.items.length) return '';
   const key = `${gi}-${mi}-${si}`;
@@ -352,10 +534,19 @@ function renderSegments(gi, mi, si, sec) {
   h += sec.items.map((it, ii) => `<button type="button" class="segtab${ii === 0 ? ' active' : ''}" data-seg="${key}-${ii}">${esc((it.id ? it.id + ' · ' : '') + it.title)}</button>`).join('');
   h += `</div>`;
   h += sec.items.map((it, ii) => {
-    const rows = (it.fields || []).map((f, fi) => f.v ? `<div class="stat"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>` : '').join('');
-    return `<div class="segpanel${ii === 0 ? ' active' : ''}" data-segpanel="${key}-${ii}"><h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title)}</h5><div class="itemgrid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${rows}</div></div>`;
+    const present = (it.fields || []).filter(f => f.v);
+    const ff = k => present.find(x => x.k === k);
+    const jtbd = ff('jtbd');
+    let panel = `<div class="segpanel${ii === 0 ? ' active' : ''}" data-segpanel="${key}-${ii}"><h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title)}</h5>`;
+    if (jtbd) panel += `<div class="jtbd-statement"><b>Job to be done</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(jtbd) })}>${esc(jtbd.v)}</span></div>`;
+    const journeyFields = JOURNEY_KEYS.map(k => ff(k)).filter(Boolean);
+    if (journeyFields.length) panel += `<div class="journey">${journeyFields.map(f => `<div class="jstep"><div class="jdot"></div><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
+    const used = new Set([jtbd, ...journeyFields].filter(Boolean));
+    const rest = present.filter(f => !used.has(f));
+    if (rest.length) panel += `<div class="fieldstrip">${rest.map(f => `<div class="fitem"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
+    return panel + `</div>`;
   }).join('');
-  if (sec.implication) h += `<blockquote>Що це означає для стратегії? ${esc(sec.implication)}</blockquote>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
 function renderFunnel(gi, mi, si, sec) {
@@ -369,11 +560,17 @@ function renderFunnel(gi, mi, si, sec) {
     rest.forEach(f => { if (!f.v) return; const fi = it.fields.indexOf(f); c += `<div class="f"><b>${esc(f.l)}:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>`; });
     return c + `</div>`;
   }).join('');
-  return `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="funnel">${stages}</div></div>`;
+  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="funnel">${stages}</div>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
+  return h + `</div>`;
 }
 function renderSection(gi, mi, si, sec, groups, modId) {
   if (sec.kind === 'text') return renderTextSec(gi, mi, si, sec);
-  if (sec.kind === 'fields') return renderFieldsSec(gi, mi, si, sec);
+  if (sec.kind === 'fields') {
+    if (modId === 'brand' && sec.key === 'platform') return renderManifesto(gi, mi, si, sec);
+    if (modId === 'communication' && sec.key === 'bigidea') return renderBigIdea(gi, mi, si, sec);
+    return renderFieldsSec(gi, mi, si, sec);
+  }
   if (sec.kind === 'refs') return renderRefsSec(sec);
   if (sec.kind === 'list') {
     if (modId === 'audience' && sec.key === 'segments') return renderSegments(gi, mi, si, sec);
@@ -389,8 +586,17 @@ function renderModule(gi, mi, mod, groups) {
   return h;
 }
 function renderGroup(gi, g, groups) {
-  let h = `<div class="sec-wrap reveal"><h2 class="sec" id="sec-${gi}"><i></i><span>${esc(g.label)}</span></h2></div>`;
+  const tag = CHAPTER_TAGS[g.groupKey] || '';
+  // перший розділ одразу під hero — без додаткового фонового акценту (там і так є blob),
+  // щоб не накопичувати яскравість; далі варіанти циклічно чергуються
+  const variant = gi === 0 ? '' : BG_VARIANTS[(gi - 1) % BG_VARIANTS.length];
+  let h = `<div class="chapter-bg ${variant}"><div class="chapter reveal" id="sec-${gi}">
+      <div class="chapter-num"><i></i>Розділ ${String(gi + 1).padStart(2, '0')} / ${String(groups.length).padStart(2, '0')}</div>
+      <h2 class="sec"><span>${esc(g.label)}</span></h2>
+      ${tag ? `<div class="chapter-tag">${esc(tag)}</div>` : ''}
+    </div>`;
   g.modules.forEach((mod, mi) => { h += renderModule(gi, mi, mod, groups); });
+  h += `</div>`;
   return h;
 }
 function renderSourcesSection(sources, gi) {
@@ -404,19 +610,23 @@ function renderHeroModules() {
   if (DATA.meta) h += `<div class="meta"${edAttr({ kind: 'meta' })}>${esc(DATA.meta)}</div>`;
   const hs = heroStats(groups);
   if (hs.length) h += `<div class="herostats">${hs.map(s => `<div class="herostat"><b>${s.v}</b><span>${esc(s.l)}</span></div>`).join('')}</div>`;
-  h += `<div class="readtime"><i></i>~${readTimeModules(groups)} хв читання</div></div>`;
+  h += `<div class="readtime"><i></i>~${readTimeModules(groups)} хв читання</div>`;
+  h += `<div class="hero-scroll"><i></i>Гортайте</div>`;
+  h += `</div>`;
   return h;
 }
 
+let GROUP_COUNT = 0;
 function renderModulesDoc() {
   EDITMAP = [];
   const groups = DATA.modules;
+  GROUP_COUNT = groups.length;
   let body = ''; groups.forEach((g, gi) => { body += renderGroup(gi, g, groups); });
   const srcGi = groups.length;
   body += renderSourcesSection(DATA.sources, srcGi);
   const tocItems = groups.map((g, gi) => ({ i: gi, x: g.label }));
   if (DATA.sources && DATA.sources.length) tocItems.push({ i: srcGi, x: 'Джерела' });
-  const toc = (!EDIT && tocItems.length) ? `<nav class="toc"><div class="toc-inner"><div class="toc-brand"><i></i>Зміст</div>${tocItems.map(it => `<a href="#sec-${it.i}" data-target="sec-${it.i}">${esc(it.x)}</a>`).join('')}<div class="toc-progress">~${readTimeModules(groups)} хв читання</div></div></nav>` : '';
+  const toc = (!EDIT && tocItems.length) ? `<nav class="toc"><div class="toc-inner"><div class="toc-chapter" id="tocChapter">Розділ 01 / ${String(groups.length).padStart(2, '0')}</div><div class="toc-brand"><i></i>Зміст</div>${tocItems.map(it => `<a href="#sec-${it.i}" data-target="sec-${it.i}">${esc(it.x)}</a>`).join('')}<div class="toc-progress">~${readTimeModules(groups)} хв читання</div></div></nav>` : '';
   const root = $('#root');
   root.innerHTML = `<div class="page">${toc}<div class="wrap">${renderHeroModules()}${body}</div></div>
     ${EDIT ? '<div class="editbadge">Режим редагування</div>' : ''}
@@ -488,11 +698,16 @@ function onScroll() {
     const max = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
     const pct = max > 0 ? Math.min(100, (scrolled / max) * 100) : 0;
     const pb = $('#progress'); if (pb) pb.style.width = pct + '%';
-    const secs = document.querySelectorAll('h2.sec[id]');
+    const secs = document.querySelectorAll('.chapter[id], h2.sec[id]');
     if (secs.length) {
       let current = null;
       secs.forEach(s => { if (s.getBoundingClientRect().top < 140) current = s.id; });
       document.querySelectorAll('.toc a').forEach(a => a.classList.toggle('active', a.dataset.target === current));
+      if (current && GROUP_COUNT) {
+        const m = /^sec-(\d+)$/.exec(current);
+        const tc = $('#tocChapter');
+        if (tc && m) { const n = +m[1]; tc.textContent = n < GROUP_COUNT ? `Розділ ${String(n + 1).padStart(2, '0')} / ${String(GROUP_COUNT).padStart(2, '0')}` : 'Джерела'; }
+      }
     }
     revealCheck();
     ticking = false;
