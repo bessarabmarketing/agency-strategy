@@ -17,42 +17,10 @@ export default async (req) => {
     const m0 = req.method;
     let m;
     if (p === '/api/status') return J(200, { ai: !!env('ANTHROPIC_API_KEY'), parser: !!env('APIFY_TOKEN'), model: env('ANTHROPIC_MODEL') || 'claude-sonnet-4-5', teamKeyRequired: !!env('TEAM_KEY'), version: '1.0.0-netlify' });
-    // Публічна сторінка для клієнта: читання без командного ключа (посилання само по собі й є "доступом").
-    if ((m = p.match(/^\/api\/share\/([\w-]+)$/)) && m0 === 'GET') {
-      const sh = await getJ(store('shares'), m[1]);
-      return sh ? J(200, { name: sh.name, client: sh.client, meta: sh.meta || '', blocks: sh.blocks, modules: sh.modules || null, sources: sh.sources || [], publishedAt: sh.publishedAt, updatedAt: sh.updatedAt }) : J(404, { error: 'Сторінку не знайдено або її знято з публікації' });
-    }
     const TEAM_KEY = env('TEAM_KEY');
     if (TEAM_KEY && req.headers.get('x-team-key') !== TEAM_KEY) return J(401, { error: 'Невірний командний ключ' });
     let by = 'невідомо'; try { by = decodeURIComponent(req.headers.get('x-user') || '') || by; } catch { }
     const projects = store('projects'), revs = store('revs'), kv = store('kv'), jobs = store('jobs');
-
-    if (p === '/api/share' && m0 === 'POST') {
-      const b = await rd(req);
-      if (!b.projectId || !Array.isArray(b.blocks)) return J(400, { error: 'projectId і blocks обовʼязкові' });
-      const shares = store('shares');
-      const token = (b.token && /^[\w-]{8,40}$/.test(b.token) && await getJ(shares, b.token)) ? b.token : crypto.randomUUID().replace(/-/g, '').slice(0, 16);
-      const at = nowIso();
-      const prev = await getJ(shares, token);
-      const sh = { token, projectId: b.projectId, name: b.name || '', client: b.client || '', meta: b.meta || '', blocks: b.blocks, modules: Array.isArray(b.modules) ? b.modules : null, sources: Array.isArray(b.sources) ? b.sources : [], publishedAt: (prev && prev.publishedAt) || at, publishedBy: (prev && prev.publishedBy) || by, updatedAt: at, updatedBy: by };
-      await shares.setJSON(token, sh);
-      return J(200, { token, url: url.origin + '/s/' + token, publishedAt: sh.publishedAt });
-    }
-    if ((m = p.match(/^\/api\/share\/([\w-]+)$/)) && m0 === 'PUT') {
-      const shares = store('shares'); const sh = await getJ(shares, m[1]);
-      if (!sh) return J(404, { error: 'Не знайдено' });
-      const b = await rd(req); if (!Array.isArray(b.blocks) && !Array.isArray(b.modules)) return J(400, { error: 'blocks або modules обовʼязкові' });
-      if (Array.isArray(b.blocks)) sh.blocks = b.blocks;
-      if (Array.isArray(b.modules)) sh.modules = b.modules;
-      if (typeof b.name === 'string') sh.name = b.name;
-      if (typeof b.meta === 'string') sh.meta = b.meta;
-      sh.updatedAt = nowIso(); sh.updatedBy = by;
-      await shares.setJSON(m[1], sh);
-      return J(200, { ok: true, updatedAt: sh.updatedAt });
-    }
-    if ((m = p.match(/^\/api\/share\/([\w-]+)$/)) && m0 === 'DELETE') {
-      await store('shares').delete(m[1]); return J(200, { ok: true });
-    }
 
     if (p === '/api/projects' && m0 === 'GET') {
       const { blobs } = await projects.list({ prefix: 'meta/' });
