@@ -17,8 +17,9 @@ body{font:15px/1.65 var(--fb);background:var(--bg);color:var(--tx);-webkit-font-
 .blob{position:fixed;width:52vw;height:52vw;max-width:760px;max-height:760px;border-radius:50%;filter:blur(90px);opacity:.28;pointer-events:none;z-index:0}
 .blob.b1{background:var(--ac);top:-18vw;left:-16vw}
 .blob.b2{background:var(--ac);bottom:-20vw;right:-18vw}
-.progress{position:fixed;top:0;left:0;height:3px;background:var(--ac);z-index:40;width:0%;box-shadow:0 0 12px var(--ac);transition:width .08s linear}
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--ac);z-index:50;width:0%;box-shadow:0 0 12px var(--ac);transition:width .08s linear}
 
+/* ===================== LEGACY (стара плоска версія посилань) ===================== */
 .page{position:relative;z-index:1;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,860px);gap:0;justify-content:center}
 .toc{position:sticky;top:0;align-self:start;height:100vh;padding:38px 14px 40px 28px;overflow-y:auto;scrollbar-width:thin}
 .toc-inner{display:flex;flex-direction:column;gap:2px}
@@ -28,13 +29,9 @@ body{font:15px/1.65 var(--fb);background:var(--bg);color:var(--tx);-webkit-font-
 .toc a:hover{color:var(--tx);background:var(--panel2)}
 .toc a.active{color:var(--ac);background:transparent;border-left-color:var(--ac)}
 .toc-progress{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);color:var(--tx3);font-size:11px;letter-spacing:.04em}
-.toc-chapter{font-size:10.5px;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin:0 0 14px;font-weight:700}
 
 .wrap{padding:64px 24px 140px;min-width:0}
-.hero{min-height:56vh;display:flex;flex-direction:column;justify-content:center;padding:30px 0 50px;border-bottom:1px solid var(--line);position:relative}
-.hero-scroll{position:absolute;bottom:10px;left:0;font-size:10.5px;color:var(--tx3);display:flex;align-items:center;gap:9px;letter-spacing:.07em;text-transform:uppercase}
-.hero-scroll i{width:1px;height:22px;background:var(--tx3);display:inline-block;animation:scrolldown 1.8s infinite}
-@keyframes scrolldown{0%{opacity:.15;transform:translateY(0)}50%{opacity:1}100%{opacity:.15;transform:translateY(7px)}}
+.hero{padding:40px 0 26px;border-bottom:1px solid var(--line)}
 .hero .brand{font-family:var(--fd);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .hero .brand i{width:10px;height:10px;border-radius:3px;background:var(--ac);display:inline-block}
 .hero h1{font-family:var(--fd);font-weight:800;font-size:clamp(28px,5vw,46px);line-height:1.08;margin:0 0 14px;text-transform:uppercase;letter-spacing:-.01em}
@@ -67,127 +64,25 @@ blockquote:hover{background:rgba(203,255,46,.16)}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
 .reveal.visible{opacity:1;transform:none}
 
-.bar{position:fixed;right:18px;bottom:18px;z-index:5;display:flex;gap:8px;align-items:center}
+.bar{position:fixed;right:18px;bottom:18px;z-index:46;display:flex;gap:8px;align-items:center}
 .btn{font:600 13px var(--fb);background:var(--panel2);color:var(--tx);border:1px solid var(--line2);padding:9px 16px;border-radius:999px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .btn.pri{background:var(--ac);color:var(--acink);border-color:var(--ac)}
 .btn:disabled{opacity:.5;cursor:default}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:20}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:70}
 .modal{background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:24px;width:min(420px,92vw)}
 .modal h3{margin:0 0 12px;font-family:var(--fd);font-size:15px}
 .modal input{width:100%;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;color:var(--tx);padding:9px 12px;font:14px var(--fb);margin-bottom:12px}
 .modal .row{display:flex;gap:8px;justify-content:flex-end}
-.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line2);color:var(--tx);padding:11px 18px;border-radius:14px;z-index:30;box-shadow:0 12px 32px rgba(0,0,0,.5);font-size:13.5px}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line2);color:var(--tx);padding:11px 18px;border-radius:14px;z-index:71;box-shadow:0 12px 32px rgba(0,0,0,.5);font-size:13.5px}
 .toast.err{background:#2a1211;border-color:rgba(255,122,112,.35);color:#ff7a70}
 .center{max-width:520px;margin:120px auto;text-align:center;padding:0 20px;position:relative;z-index:1}
 .center h1{font-family:var(--fd);font-size:22px;margin-bottom:8px}
-.editbadge{position:fixed;top:14px;right:14px;background:var(--ac);color:var(--acink);font:700 11px var(--fb);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;z-index:5}
+.editbadge{position:fixed;top:14px;right:14px;background:var(--ac);color:var(--acink);font:700 11px var(--fb);letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;z-index:46}
 
 .herostats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
 .herostat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 14px 9px}
 .herostat b{font-family:var(--fd);font-size:20px;color:var(--ac);display:block;line-height:1.1}
 .herostat span{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em}
-
-.modtitle{font-family:var(--fd);font-weight:700;font-size:19px;margin:50px 0 2px;color:var(--tx);padding-left:17px;position:relative}
-.modtitle:before{content:'';position:absolute;left:0;top:5px;width:5px;height:19px;background:var(--ac);border-radius:3px;opacity:.55}
-.sec-wrap+.modtitle,.modtitle:first-of-type{margin-top:14px}
-.chapter+.modtitle{margin-top:34px}
-
-/* ---- розділові "chapter" екрани між великими смисловими блоками ---- */
-.chapter-bg{position:relative}
-.chapter-bg.v0{background:radial-gradient(ellipse 620px 420px at 10% 0%,rgba(203,255,46,.035),transparent 62%)}
-.chapter-bg.v1{background:radial-gradient(ellipse 560px 460px at 92% 12%,rgba(203,255,46,.03),transparent 58%),radial-gradient(ellipse 420px 340px at 6% 94%,rgba(203,255,46,.025),transparent 60%)}
-.chapter-bg.v2{background:linear-gradient(180deg,rgba(203,255,46,.026),transparent 38%)}
-.chapter{min-height:58vh;display:flex;flex-direction:column;justify-content:center;padding:54px 0 36px;position:relative;scroll-margin-top:24px}
-.chapter-num{font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.chapter-num i{width:28px;height:2px;background:var(--ac);display:inline-block;opacity:.7}
-.chapter h2.sec{border-top:none;padding-top:0;margin:0 0 16px;font-size:clamp(30px,5.6vw,56px)}
-.chapter-tag{font-size:15px;color:var(--tx2);max-width:560px;line-height:1.55}
-
-/* ---- маніфест бренд-платформи ---- */
-.manifesto{padding:6px 0 10px}
-.manifesto .eyebrow{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:16px}
-.manifesto .bigstatement{font-family:var(--fd);font-weight:700;font-size:clamp(21px,3.4vw,32px);line-height:1.3;margin:0 0 28px;max-width:720px}
-.triad{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:18px 0 26px}
-.triad>div{background:var(--panel);padding:18px 20px 20px}
-.triad b{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
-.triad span{font-size:14px;color:var(--tx)}
-.proseblock{max-width:680px}
-.proseblock p{font-size:15px;line-height:1.75;color:var(--tx2);margin:0 0 14px}
-.proseblock p:last-child{margin-bottom:0}
-.proseblock b{color:var(--tx3)}
-
-/* ---- велика ідея: суцільна заява, не картка ---- */
-.bigidea-block{padding:54px 24px;text-align:center;border:1px solid var(--line);border-radius:22px;background:var(--panel);margin:16px 0 28px}
-.bigidea-block .ideaeyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:700;margin-bottom:16px}
-.bigidea-block .ideastatement{font-family:var(--fd);font-weight:800;font-size:clamp(22px,4vw,40px);line-height:1.2;max-width:780px;margin:0 auto 16px}
-.bigidea-block .ideasub{font-size:14px;color:var(--tx2);max-width:560px;margin:0 auto}
-
-/* ---- розділений блок типу SAY/DON'T-SAY, USE/AVOID, STRENGTHS/WEAKNESSES ---- */
-.splitpair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin:14px 0 22px}
-.splitcol{background:var(--panel);padding:16px 20px 18px}
-.splitcol.neg{background:rgba(255,100,90,.045)}
-.splitcol.pos{background:var(--ac2)}
-.splitlabel{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
-.splitcol.pos .splitlabel{color:var(--ac)}
-.splitcol.neg .splitlabel{color:#ff8a7e}
-.splitbody div{font-size:13.5px;color:var(--tx);padding:7px 0;border-top:1px solid var(--line);line-height:1.55}
-.splitbody div:first-child{border-top:none;padding-top:0}
-@media (max-width:640px){.splitpair{grid-template-columns:1fr}}
-
-/* ---- "стрічка" коротких полів без рамок-карток ---- */
-.fieldstrip{display:flex;flex-wrap:wrap;gap:0;margin:12px 0 22px;border-top:1px solid var(--line)}
-.fitem{flex:1 1 180px;padding:13px 20px 13px 0;border-bottom:1px solid var(--line)}
-.fitem b{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px}
-.fitem span{font-size:13.5px;color:var(--tx)}
-
-/* ---- важливе число — окрема велика заява, не картка ---- */
-.bignum{margin:18px 0 10px}
-.bignum .bnval{font-family:var(--fd);font-weight:800;font-size:clamp(34px,6.4vw,64px);color:var(--ac);line-height:1}
-.bignum .bnlabel{font-size:12px;color:var(--tx2);margin-top:6px;max-width:440px;text-transform:uppercase;letter-spacing:.04em}
-
-/* ---- "то й що?" — візуальний висновок замість цитати ---- */
-.sowhat{margin:18px 0 10px;padding:16px 22px;border-left:3px solid var(--ac);background:var(--ac2);border-radius:0 14px 14px 0}
-.sowhat-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:7px}
-.sowhat-text{font-size:14px;color:var(--tx);line-height:1.6}
-
-/* ---- JTBD-заява + звʼязана часова лінія шляху сегмента ---- */
-.jtbd-statement{font-family:var(--fd);font-weight:700;font-size:clamp(17px,2.4vw,24px);line-height:1.4;max-width:680px;margin:4px 0 24px;padding:18px 22px;border:1px solid var(--acline);border-radius:16px;background:var(--ac2)}
-.jtbd-statement b{color:var(--ac);display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:var(--fb);font-weight:800}
-.journey{position:relative;margin:18px 0 8px;padding-left:26px}
-.journey:before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line2)}
-.jstep{position:relative;margin-bottom:17px}
-.jstep:last-child{margin-bottom:0}
-.jdot{position:absolute;left:-26px;top:3px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2px solid var(--ac)}
-.jstep b{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:4px}
-.jstep span{font-size:13.5px;color:var(--tx);line-height:1.55}
-
-.itemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:14px 0 24px}
-.itemcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;transition:border-color .18s,transform .18s,background .18s}
-.itemcard:hover{border-color:var(--acline);transform:translateY(-2px);background:var(--panel2)}
-.itemcard.accent{border-left:3px solid var(--ac)}
-.itemcard .ibadge{display:inline-block;font-size:13px;margin-bottom:6px}
-.itemcard h5{margin:0 0 10px;font-family:var(--fd);font-weight:600;font-size:15px;color:var(--tx)}
-.itemcard .ifield{margin:0 0 9px;font-size:13px}
-.itemcard .ifield:last-child{margin-bottom:0}
-.itemcard .ifield b{display:block;color:var(--tx3);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
-.itemcard .ifield span{color:var(--tx)}
-.itemcard .reflink{display:inline-block;margin-top:8px;font-size:11px;color:var(--ac);background:var(--ac2);padding:3px 10px;border-radius:999px}
-
-.segtabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
-.segtab{background:var(--panel2);border:1px solid var(--line2);color:var(--tx2);font:600 12.5px var(--fb);padding:8px 14px;border-radius:999px;cursor:pointer}
-.segtab:hover{color:var(--tx)}
-.segtab.active{background:var(--ac);color:var(--acink);border-color:var(--ac)}
-.segpanel{display:none}
-.segpanel.active{display:block}
-.segpanel h5{font-family:var(--fd);font-weight:600;font-size:16px;margin:0 0 12px}
-
-.funnel{display:flex;flex-wrap:wrap;gap:22px;margin:14px 0 24px}
-.funnel .stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;flex:1;min-width:210px;position:relative}
-.funnel .stage:not(:first-child):before{content:'→';position:absolute;left:-19px;top:50%;transform:translateY(-50%);color:var(--ac);font-weight:700;font-size:16px}
-.funnel .stagelabel{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:700;margin-bottom:5px}
-.funnel .stage h5{margin:0 0 9px;font-family:var(--fd);font-weight:600;font-size:15px}
-.funnel .stage .f{font-size:12.5px;color:var(--tx2);margin:4px 0}
-.funnel .stage .f b{color:var(--tx3);font-weight:600}
 
 .srclist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:14px 0}
 .srccard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:12.5px}
@@ -203,15 +98,193 @@ blockquote:hover{background:rgba(203,255,46,.16)}
   .toc a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent}
   .toc a.active{border-left-color:transparent;border-bottom-color:var(--ac)}
   .toc-progress{display:none}
-  .toc-chapter{display:none}
   .wrap{padding:28px 18px 120px}
-  .hero{min-height:0}
-  .hero-scroll{display:none}
-  .funnel{flex-direction:column}
-  .funnel .stage:not(:first-child):before{content:'↓';left:50%;top:-19px;transform:translateX(-50%)}
-  .triad{grid-template-columns:1fr}
 }
 @media print{.bar,.editbadge,.toc,.progress{display:none!important}.blob{display:none}.page{display:block}.wrap{max-width:none}}
+
+/* ===================== V2 PRESENTATION ENGINE (Strategy Website) =====================
+   Кожен macro-розділ (group) має власне візуальне середовище (env-dark/env-light/env-accent
+   — перемикає весь набір CSS-змінних, тож усі вкладені компоненти перефарбовуються
+   автоматично) і власну геометрію сторінки на рівні секції (frame-narrow/-wide/-split/-canvas/
+   fullbleed), а не один суцільний контент-стовпець. Sidebar як суцільний фон прибрано —
+   навігація плаваюча (floatnav/dotrail/navoverlay). CARD — лише для дійсно дискретних сутностей
+   (конкуренти, ризики, інсайти, етапи); для journey/funnel/map/ecosystem — окремі діаграми. */
+.env-dark{--bg:#0b0b0c;--panel:#141416;--panel2:#1a1a1c;--line:rgba(244,243,238,.13);--line2:rgba(244,243,238,.24);--tx:#f4f3ee;--tx2:#a5a49d;--tx3:#6c6b66;--ac:#cbff2e;--ac2:rgba(203,255,46,.10);--acink:#0c1300;--acline:rgba(203,255,46,.38);background:var(--bg);color:var(--tx)}
+.env-light{--bg:#f4f3ee;--panel:#e8e6dc;--panel2:#dcd9cc;--line:rgba(21,21,15,.12);--line2:rgba(21,21,15,.22);--tx:#15150f;--tx2:#55544a;--tx3:#847f6e;--ac:#5c7a00;--ac2:rgba(92,122,0,.1);--acink:#f4f3ee;--acline:rgba(92,122,0,.38);background:var(--bg);color:var(--tx)}
+.env-accent{--bg:#cbff2e;--panel:#bdf01a;--panel2:#b0e40d;--line:rgba(12,19,0,.15);--line2:rgba(12,19,0,.26);--tx:#0c1300;--tx2:#28330a;--tx3:#4a5618;--ac:#0c1300;--ac2:rgba(12,19,0,.08);--acink:#cbff2e;--acline:rgba(12,19,0,.3);background:var(--bg);color:var(--tx)}
+.fullbleed{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw}
+
+.t-eyebrow{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.t-chapter{font-family:var(--fd);font-weight:800;font-size:clamp(32px,6vw,80px);line-height:1.0;text-transform:uppercase;margin:0}
+.t-display{font-family:var(--fd);font-weight:800;font-size:clamp(30px,5.6vw,54px);line-height:1.06;text-transform:uppercase;letter-spacing:-.01em;margin:0}
+
+.floatnav{position:fixed;top:18px;left:18px;z-index:45}
+.floatnav-pill{display:flex;align-items:center;gap:9px;background:rgba(9,9,10,.6);backdrop-filter:blur(10px);border:1px solid rgba(244,243,238,.18);border-radius:999px;padding:7px 16px 7px 7px;cursor:pointer}
+.floatnav-pill .nn{background:#cbff2e;color:#0c1300;font:800 10.5px var(--fd);padding:4px 9px;border-radius:999px;letter-spacing:.02em}
+.floatnav-pill .nl{text-transform:uppercase;font-size:10.5px;letter-spacing:.08em;color:#f4f3ee;opacity:.9;font-weight:700;font-family:var(--fb)}
+.dotrail{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;gap:9px}
+.dotrail button{width:7px;height:7px;padding:0;border-radius:50%;border:none;background:rgba(150,150,140,.45);cursor:pointer}
+.dotrail button.active{background:#cbff2e;width:9px;height:9px}
+.navoverlay{position:fixed;inset:0;background:rgba(7,7,8,.95);backdrop-filter:blur(8px);z-index:60;display:none;align-items:center;justify-content:center;padding:40px 20px}
+.navoverlay.open{display:flex}
+.navoverlay .nlist{display:flex;flex-direction:column;gap:4px;text-align:center;max-height:86vh;overflow:auto}
+.navoverlay a{font-family:var(--fd);font-weight:700;font-size:clamp(18px,3.6vw,32px);color:#716f66;text-decoration:none;padding:5px 0;text-transform:uppercase;letter-spacing:-.005em}
+.navoverlay a:hover,.navoverlay a.active{color:#cbff2e}
+.navoverlay .nclose{position:absolute;top:20px;right:22px;background:none;border:none;color:#f4f3ee;font-size:26px;cursor:pointer;line-height:1}
+@media (max-width:720px){.dotrail{display:none}.floatnav{top:12px;left:12px}.floatnav-pill .nl{display:none}}
+
+.mhero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;padding:0 24px;position:relative;max-width:1040px;margin:0 auto}
+.mhero-brand{display:flex;align-items:center;gap:8px;margin-bottom:26px}
+.mhero-brand i{width:9px;height:9px;border-radius:3px;background:var(--ac);display:inline-block}
+.mhero-brand span{font-family:var(--fd);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+.mhero h1{max-width:960px}
+.mhero .meta{color:var(--tx2);font-size:14px;margin-top:18px;max-width:680px}
+.mhero-nums{display:flex;flex-wrap:wrap;gap:0;margin-top:46px}
+.mhero-num{padding-right:28px;margin-right:28px;border-right:1px solid var(--line)}
+.mhero-num:last-child{border-right:none;margin-right:0}
+.mhero-num b{font-family:var(--fd);font-weight:800;font-size:clamp(30px,4.4vw,52px);color:var(--ac);line-height:1;display:block}
+.mhero-num span{font-size:10.5px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+.mhero-scroll{position:absolute;bottom:26px;left:0;font-size:10.5px;color:var(--tx3);display:flex;align-items:center;gap:9px;letter-spacing:.07em;text-transform:uppercase}
+.mhero-scroll i{width:1px;height:22px;background:var(--tx3);display:inline-block;animation:scrolldown 1.8s infinite}
+@keyframes scrolldown{0%{opacity:.15;transform:translateY(0)}50%{opacity:1}100%{opacity:.15;transform:translateY(7px)}}
+@media (max-width:720px){.mhero{min-height:0;padding:40px 18px 60px}.mhero-scroll{display:none}}
+
+.mchapter-env{position:relative}
+.mchapter{min-height:86vh;display:flex;flex-direction:column;justify-content:center;padding:70px 24px;max-width:1040px;margin:0 auto;position:relative;scroll-margin-top:10px}
+.mchapter .mnum{font-family:var(--fd);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);margin-bottom:22px;display:flex;align-items:center;gap:10px}
+.mchapter .mnum i{width:30px;height:2px;background:var(--ac);display:inline-block;opacity:.7}
+.mchapter .mtitle{max-width:960px;margin:0 0 20px}
+.mchapter .mtag{font-size:16px;color:var(--tx2);max-width:560px;line-height:1.55}
+@media (max-width:720px){.mchapter{min-height:60vh;padding:48px 18px}}
+
+.frame-narrow{max-width:700px;margin:0 auto;padding:60px 24px}
+.frame-wide{max-width:1040px;margin:0 auto;padding:60px 24px}
+.frame-split{max-width:1180px;margin:0 auto;padding:70px 24px;display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:start}
+.frame-canvas{max-width:1180px;margin:0 auto;padding:60px 24px}
+@media (max-width:860px){.frame-split{grid-template-columns:1fr;gap:30px}.frame-narrow,.frame-wide,.frame-canvas{padding:40px 18px}}
+
+.m-modtitle{font-family:var(--fd);font-weight:700;font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.09em;margin:0}
+.m-subtitle{font-family:var(--fd);font-weight:800;font-size:clamp(19px,2.4vw,28px);margin:0 0 20px;letter-spacing:-.005em}
+
+.story{min-height:52vh;display:flex;flex-direction:column;justify-content:center}
+.story .headline{font-family:var(--fd);font-weight:800;font-size:clamp(26px,4.6vw,52px);line-height:1.1;max-width:880px;margin:0}
+.story .sub{font-size:16px;color:var(--tx2);max-width:620px;line-height:1.7;margin:0}
+
+.manifesto .bigstatement{font-family:var(--fd);font-weight:800;font-size:clamp(25px,4.2vw,44px);line-height:1.18;margin:0 0 50px;max-width:820px}
+.triad{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:34px;margin:10px 0 50px;padding-top:24px;border-top:1px solid var(--line)}
+.triad b{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ac);margin-bottom:10px}
+.triad span{font-size:15px;color:var(--tx);line-height:1.5}
+.proseblock{max-width:680px}
+.proseblock p{font-size:15px;line-height:1.8;color:var(--tx2);margin:0 0 16px}
+.proseblock p:last-child{margin-bottom:0}
+.proseblock b{color:var(--tx3)}
+
+.ideawrap{padding:60px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:76vh;max-width:1040px;margin:0 auto}
+.ideawrap .t-eyebrow{margin-bottom:22px}
+.ideawrap .ideastatement{font-family:var(--fd);font-weight:800;font-size:clamp(28px,5.4vw,62px);line-height:1.14;max-width:880px;margin:0 0 20px}
+.ideawrap .ideasub{font-size:15px;color:var(--tx2);max-width:560px}
+
+.splitpair{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:18px 0 8px;padding-top:20px;border-top:1px solid var(--line)}
+.splitcol .splitlabel{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin-bottom:10px}
+.splitcol.pos .splitlabel{color:var(--ac)}
+.splitcol.neg .splitlabel{color:#ff8a7e}
+.env-light .splitcol.neg .splitlabel,.env-accent .splitcol.neg .splitlabel{color:#b23f2f}
+.splitbody div{font-size:13.5px;color:var(--tx);padding:6px 0;line-height:1.55}
+@media (max-width:640px){.splitpair{grid-template-columns:1fr;gap:18px}}
+
+.fieldstrip{display:flex;flex-wrap:wrap;gap:0;margin:10px 0 18px;border-top:1px solid var(--line)}
+.fitem{flex:1 1 180px;padding:13px 20px 13px 0;border-bottom:1px solid var(--line)}
+.fitem b{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px}
+.fitem span{font-size:13.5px;color:var(--tx)}
+
+.bignum{margin:14px 0 8px}
+.bignum .bnval{font-family:var(--fd);font-weight:800;font-size:clamp(34px,6.4vw,64px);color:var(--ac);line-height:1}
+.bignum .bnlabel{font-size:12px;color:var(--tx2);margin-top:6px;max-width:440px;text-transform:uppercase;letter-spacing:.04em}
+
+.sowhat{margin:18px 0 6px;padding:14px 0 0;border-top:1px solid var(--line)}
+.sowhat-eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);margin-bottom:7px}
+.sowhat-text{font-size:14.5px;color:var(--tx);line-height:1.6;max-width:640px}
+
+.jtbd{margin:2px 0 44px;max-width:760px}
+.jtbd b{display:block;color:var(--ac);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-family:var(--fb);font-weight:800}
+.jtbd span{font-family:var(--fd);font-weight:700;font-size:clamp(19px,2.6vw,27px);line-height:1.35;display:block}
+
+.segswitch{display:flex;align-items:center;gap:16px;margin:0 0 18px}
+.segswitch button{background:none;border:1px solid var(--line2);width:34px;height:34px;border-radius:50%;cursor:pointer;color:var(--tx);font:700 15px var(--fb)}
+.seglabel{font-family:var(--fd);font-weight:800;font-size:13px;letter-spacing:.06em;color:var(--tx3);min-width:64px;text-align:center}
+.segpanel2{display:none}
+.segpanel2.active{display:block;animation:segfade .35s ease}
+@keyframes segfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.hjourney{position:relative;margin:4px 0 0}
+.hjourney-line{position:relative;display:flex;justify-content:space-between;padding:0 2px}
+.hjourney-line:before{content:'';position:absolute;left:0;right:0;top:9px;height:2px;background:var(--line2);z-index:0}
+.hjourney-step{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;flex:1;background:none;border:none;font:inherit;color:inherit;padding:0}
+.hjourney-dot{width:13px;height:13px;border-radius:50%;background:var(--bg);border:2px solid var(--line2);transition:all .15s;display:block}
+.hjourney-step.active .hjourney-dot{border-color:var(--ac);background:var(--ac);transform:scale(1.2)}
+.hjourney-label{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);text-align:center;max-width:96px}
+.hjourney-step.active .hjourney-label{color:var(--tx)}
+.hjourney-detail{margin-top:34px;padding:26px 0 0;border-top:1px solid var(--line);font-size:16px;color:var(--tx);min-height:50px;line-height:1.6;max-width:680px}
+.hjourney-vert{display:none;position:relative;margin:30px 0 8px;padding-left:24px}
+.hjourney-vert:before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line2)}
+.hjourney-vert .jstep{position:relative;margin-bottom:16px}
+.hjourney-vert .jstep:last-child{margin-bottom:0}
+.hjourney-vert .jdot{position:absolute;left:-24px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--ac)}
+.hjourney-vert b{display:block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ac);margin-bottom:3px}
+.hjourney-vert span{font-size:13.5px;color:var(--tx);line-height:1.5}
+@media (max-width:760px){.hjourney-line,.hjourney-detail{display:none}.hjourney-vert{display:block}}
+
+.itemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 0 10px}
+.itemcard{background:var(--bg);padding:20px 22px}
+.itemcard.accent{box-shadow:inset 3px 0 0 var(--ac)}
+.itemcard .ibadge{display:inline-block;font-size:13px;margin-bottom:6px}
+.itemcard h5{margin:0 0 10px;font-family:var(--fd);font-weight:700;font-size:15px;color:var(--tx)}
+.itemcard .ifield{margin:0 0 9px;font-size:13px}
+.itemcard .ifield:last-child{margin-bottom:0}
+.itemcard .ifield b{display:block;color:var(--tx3);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.itemcard .ifield span{color:var(--tx)}
+.itemcard .reflink{display:inline-block;margin-top:8px;font-size:11px;color:var(--ac)}
+
+.vfunnel{display:flex;flex-direction:column;align-items:center;margin:16px 0 8px}
+.vfunnel .stage{width:100%;margin:0 auto;border-top:1px solid var(--line);padding:22px 4px 20px;text-align:center;position:relative}
+.vfunnel .stage:first-child{border-top:none}
+.vfunnel .stage:not(:first-child):before{content:'↓';position:absolute;left:50%;top:-13px;transform:translateX(-50%);color:var(--ac);font-weight:700;background:var(--bg);width:22px;height:22px;line-height:20px;border-radius:50%;border:1px solid var(--line2)}
+.vfunnel .stagelabel{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);font-weight:700;margin-bottom:6px}
+.vfunnel .stage h5{margin:0 0 10px;font-family:var(--fd);font-weight:700;font-size:16px}
+.vfunnel .stage .f{font-size:12.5px;color:var(--tx2);margin:4px auto;max-width:480px;text-align:left}
+.vfunnel .stage .f b{color:var(--tx3);font-weight:600}
+
+.flow{display:flex;flex-direction:column;align-items:center;margin:14px 0}
+.flownode{width:100%;max-width:640px;border:1px solid var(--line2);border-radius:4px;padding:18px 24px;text-align:left}
+.flownode .fnorder{font:800 10px var(--fd);color:var(--ac);letter-spacing:.08em}
+.flownode .fnstage{font:800 10px var(--fb);letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin:4px 0 6px}
+.flownode h5{margin:0 0 6px;font-family:var(--fd);font-size:17px;font-weight:700}
+.flownode .fnf{font-size:12.5px;color:var(--tx2);margin:3px 0}
+.flownode .fnf b{color:var(--tx3);font-weight:600}
+.flowconnector{display:flex;flex-direction:column;align-items:center;padding:12px 0;color:var(--tx3);font-size:11.5px;text-align:center;max-width:460px;line-height:1.5}
+.flowconnector .arrow{width:2px;height:24px;background:var(--line2);margin:4px 0}
+
+.orbit{position:relative;width:min(600px,88vw);aspect-ratio:1;margin:30px auto 10px}
+.orbit svg{position:absolute;inset:0;width:100%;height:100%}
+.orbit-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:116px;height:116px;border-radius:50%;background:var(--ac);color:var(--acink);display:flex;align-items:center;justify-content:center;text-align:center;font:800 13px var(--fd);letter-spacing:.03em;text-transform:uppercase;padding:10px;z-index:2}
+.orbit-node{position:absolute;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line2);border-radius:999px;padding:9px 15px;font:700 11.5px var(--fb);color:var(--tx);white-space:normal;max-width:148px;text-align:center;z-index:2}
+
+.posmap-wrap{margin:10px 0 10px}
+.posmap{position:relative;width:100%;max-width:620px;aspect-ratio:1;margin:30px auto 46px;border-left:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.posmap .axlabel{position:absolute;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+.posmap .ax-top{top:-20px;left:50%;transform:translateX(-50%)}
+.posmap .ax-bottom{bottom:-20px;left:50%;transform:translateX(-50%)}
+.posmap .ax-left{left:0;bottom:-20px}
+.posmap .ax-right{right:0;bottom:-20px}
+.posmap-dot{position:absolute;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;background:var(--ac);border:2px solid var(--bg);cursor:pointer}
+.posmap-dot.weak{background:var(--tx3);border-style:dashed}
+.posmap-label{position:absolute;transform:translate(-50%,var(--loff,8px));font-size:11px;font-weight:700;color:var(--tx);white-space:nowrap;pointer-events:none}
+.posmap-opp{position:absolute;transform:translate(-50%,-50%);text-align:center;max-width:170px;pointer-events:none}
+.posmap-opp .ocircle{width:32px;height:32px;border:1.5px dashed var(--ac);border-radius:50%;margin:0 auto 8px}
+.posmap-opp .otext{font-size:10.5px;color:var(--tx2);line-height:1.4}
+.posmap-note{font-size:12px;color:var(--tx3);max-width:560px;margin:0 0 6px}
+
+@media print{.floatnav,.dotrail,.navoverlay{display:none!important}}
 </style>
 </head>
 <body>
@@ -238,6 +311,7 @@ async function api(path, opt) {
 }
 
 function slug(i) { return 'sec-' + i; }
+const pad2 = n => String(n).padStart(2, '0');
 
 function readTime(blocks) {
   const words = blocks.map(b => (b.x || b.v || b.k || '')).join(' ').trim().split(/\s+/).filter(Boolean).length;
@@ -355,21 +429,25 @@ async function enterEdit() {
 }
 
 /* =====================================================================
-   МОДУЛЬНИЙ РЕНДЕРЕР (Strategy Website) — свіжі публікації несуть DATA.modules:
-   groups[] → modules[] → sections[] (text/fields/list/refs), а не плаский
-   список блоків. Кожен тип секції отримує свій UI-компонент (сегменти —
-   вкладки, конкуренти/ризики/гіпотези — картки, етапи воронки — степпер),
-   замість суцільного потоку тексту. Якщо modules відсутні (старе
-   посилання, опубліковане до цього оновлення) — працює старий рендер
-   нижче (renderDoc/blockHtml), повністю без змін.
+   V2 PRESENTATION ENGINE — groups[] → modules[] → sections[]. Кожне macro-
+   chapter (group) отримує власне візуальне середовище (env-dark/light/accent,
+   циклічно, не більше 2 поспіль однакових) і для кожного типу контенту —
+   окремий, структурно відмінний компонент (journey-лінія, funnel, positioning
+   map, orbit-діаграма, маніфест, повноекранна заява), а не один суцільний
+   список однакових карток у фіксованій колонці. Якщо DATA.modules відсутні
+   (старе посилання) — працює legacy-рендер вище, без змін.
    ===================================================================== */
 const ICON = { insights: '💡', opportunities: '✦', commOpps: '✦', risks: '⚠', priorities: '◆', hypotheses: '🧪' };
 let EDITMAP = [];
 function edAttr(desc) { if (!EDIT) return ''; const idx = EDITMAP.length; EDITMAP.push(desc); return ` contenteditable="true" class="edit" data-eidx="${idx}"`; }
+// для елементів, що вже мають свій семантичний class — додає "edit" до НЬОГО Ж атрибута,
+// а не другим class="" (два class= в одному тезі — невалідний HTML і браузер бере лише перший)
+function clsEd(base, desc) {
+  if (!EDIT) return ` class="${base}"`;
+  const idx = EDITMAP.length; EDITMAP.push(desc);
+  return ` class="${base} edit" contenteditable="true" data-eidx="${idx}"`;
+}
 
-// заголовки-«розділи» (chapter screens) — по одному канонічному теглайну на групу модулів;
-// background-variant циклічно змінюється між главами, щоб сторінка не виглядала однією
-// нескінченною чорною стрічкою, без фабрикації жодних даних проєкту
 const CHAPTER_TAGS = {
   research: 'Де ми стоїмо зараз: ринок, аудиторія та конкурентне поле, з яких починається стратегія.',
   brand: 'Хто ми: платформа бренду, позиціонування та ідея, що тримає комунікацію разом.',
@@ -381,10 +459,9 @@ const CHAPTER_TAGS = {
   cross: 'Як канали працюють разом: наскрізна воронка та передача естафети між точками контакту.',
   custom: 'Додаткові матеріали стратегії.'
 };
-const BG_VARIANTS = ['v0', 'v1', 'v2'];
+// кожен macro-розділ має власне візуальне середовище; сусідні — не більше 2 поспіль однакових
+const ENV_MAP = { research: 'dark', brand: 'dark', smm: 'light', meta: 'dark', tiktok: 'accent', ttads: 'dark', google: 'light', cross: 'light', custom: 'dark' };
 
-// пари протилежних полів (say/don't-say, use/avoid…) — рендеряться як один split-блок,
-// а не як окремі однакові картки
 const KNOWN_PAIRS = [
   { a: 'sayThis', b: 'notThis', al: 'Говоримо', bl: 'Не говоримо' },
   { a: 'allowed', b: 'forbidden', al: 'Можна', bl: 'Не можна' },
@@ -392,8 +469,6 @@ const KNOWN_PAIRS = [
   { a: 'use', b: 'avoid', al: 'Використовуємо', bl: 'Уникаємо' },
   { a: 'strengths', b: 'weaknesses', al: 'Сильні сторони', bl: 'Слабкі сторони' },
 ];
-// коротке числове значення ("34%", "~2.1М", "x3") — показуємо як окрему велику заяву,
-// а не ховаємо в дрібну картку серед інших полів
 function isBigNum(v) {
   const s = String(v || '').trim();
   if (!s || s.length > 22) return false;
@@ -402,6 +477,12 @@ function isBigNum(v) {
 function renderSoWhat(text) {
   if (!text) return '';
   return `<div class="sowhat"><div class="sowhat-eyebrow">Що це означає для стратегії</div><div class="sowhat-text">${esc(text)}</div></div>`;
+}
+// коротке речення як "хедлайн" для data-story секцій Дослідження; якщо речення не знайдено
+// (немає крапки/знаку), просто обрізає по слову — повний текст лишається в тому ж editable-полі
+function splitHeadline(text) {
+  text = String(text || '').trim();
+  return text;
 }
 
 function wordCountModules(groups) {
@@ -431,24 +512,31 @@ function heroStats(groups) {
   return stats.slice(0, 4);
 }
 
-function renderTextSec(gi, mi, si, sec) {
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="proseblock"><p${edAttr({ kind: 'sectext', gi, mi, si })}>${esc(sec.text || '')}</p></div>`;
+function renderTextSec(gi, mi, si, sec, story) {
+  const txt = sec.text || '';
+  let h = `<div class="${story ? 'story ' : ''}reveal">`;
+  if (story) {
+    const big = txt.length <= 170;
+    h += `<div class="t-eyebrow" style="margin-bottom:18px">${esc(sec.title)}</div>`;
+    h += `<div${clsEd(big ? 'headline' : 'sub', { kind: 'sectext', gi, mi, si })}>${esc(splitHeadline(txt))}</div>`;
+  } else {
+    h += `<div class="m-subtitle">${esc(sec.title)}</div><div class="proseblock"><p${edAttr({ kind: 'sectext', gi, mi, si })}>${esc(txt)}</p></div>`;
+  }
   if (sec.implication) h += renderSoWhat(sec.implication);
   if (sec.hypotheses && sec.hypotheses.length) h += `<blockquote>Гіпотези (потребують перевірки): ${esc(sec.hypotheses.join(' | '))}</blockquote>`;
   return h + `</div>`;
 }
-// Поля ('fields'-секції) — більше НЕ суцільна сітка однакових карток (стара .stats-поведінка).
-// Кожне значення класифікується: коротке число → велика заява (.bignum); відома пара
-// протилежних полів (say/don't-say тощо) → split-панель; решта коротких полів → горизонтальна
-// "стрічка" без рамок (.fieldstrip); довгі описові поля → проза (.proseblock). CARD ≠ default.
+// Поля — НЕ суцільна сітка однакових карток. Коротке число → велика заява (.bignum);
+// відома пара протилежних полів → split-блок; решта коротких полів → "стрічка" без рамок;
+// довгі описові поля → проза. CARD ≠ default.
 function renderFieldsSec(gi, mi, si, sec) {
   const present = sec.fields.filter(f => f.v);
   if (!present.length) return '';
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4>`;
+  let h = `<div class="reveal"><div class="m-subtitle">${esc(sec.title)}</div>`;
 
   const bigs = [], rest0 = [];
   present.forEach(f => (isBigNum(f.v) ? bigs : rest0).push(f));
-  bigs.forEach(f => { h += `<div class="bignum"><div class="bnval"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(f) })}>${esc(f.v)}</div><div class="bnlabel">${esc(f.l)}</div></div>`; });
+  bigs.forEach(f => { h += `<div class="bignum"><div${clsEd('bnval', { kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(f) })}>${esc(f.v)}</div><div class="bnlabel">${esc(f.l)}</div></div>`; });
 
   const used = new Set();
   KNOWN_PAIRS.forEach(p => {
@@ -467,16 +555,14 @@ function renderFieldsSec(gi, mi, si, sec) {
   if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
-// Платформа бренду — не сітка карток, а "маніфест": eyebrow + велика заява (essence/mission)
-// + тріада МІСІЯ—ЦІННОСТІ—ОБІЦЯНКА + решта полів прозою
+// Платформа бренду — "маніфест": велика заява без рамки + тріада МІСІЯ—ЦІННОСТІ—ОБІЦЯНКА
+// (типографіка, не картки) + решта полів прозою
 function renderManifesto(gi, mi, si, sec) {
   const present = sec.fields.filter(f => f.v); if (!present.length) return '';
   const f = k => present.find(x => x.k === k);
   const big = f('essence') || f('brandEssence') || f('mission') || f('purpose');
-  // без h4.sub: заголовок секції тут дублює заголовок модуля ("Платформа бренду" = "Платформа
-  // бренду" в CFG), тож маніфест починається одразу з eyebrow — без потрійного повтору назви
-  let h = `<div class="reveal"><div class="manifesto"><div class="eyebrow">Хто ми</div>`;
-  if (big) h += `<div class="bigstatement"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
+  let h = `<div class="reveal"><div class="manifesto"><div class="t-eyebrow" style="margin-bottom:22px">Хто ми</div>`;
+  if (big) h += `<div${clsEd('bigstatement', { kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
   const triadDefs = [{ k: 'mission', l: 'Місія' }, { k: 'values', l: 'Цінності' }, { k: 'promise', l: 'Обіцянка' }];
   const triad = triadDefs.map(d => ({ d, fl: f(d.k) })).filter(x => x.fl && x.fl !== big);
   if (triad.length) h += `<div class="triad">${triad.map(x => `<div><b>${esc(x.d.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(x.fl) })}>${esc(x.fl.v)}</span></div>`).join('')}</div>`;
@@ -487,27 +573,36 @@ function renderManifesto(gi, mi, si, sec) {
   if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
-// Велика ідея — окрема повноцінна заява на весь блок, ніколи не картка
+// Велика ідея — повноекранна заява на всю ширину вікна (fullbleed + власне env-accent),
+// без рамки/картки навколо тексту; self-contained (власні frame, диспетчер більше не огортає)
 function renderBigIdea(gi, mi, si, sec) {
-  const present = sec.fields.filter(f => f.v); if (!present.length) return renderFieldsSec(gi, mi, si, sec);
+  const present = sec.fields.filter(f => f.v); if (!present.length) return `<div class="frame-narrow">${renderFieldsSec(gi, mi, si, sec)}</div>`;
   const f = k => present.find(x => x.k === k);
-  const big = f('bigIdea'); if (!big) return renderFieldsSec(gi, mi, si, sec);
+  const big = f('bigIdea'); if (!big) return `<div class="frame-narrow">${renderFieldsSec(gi, mi, si, sec)}</div>`;
   const keyMsg = f('keyMessage'), supp = f('supporting');
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4>`;
-  h += `<div class="bigidea-block"><div class="ideastatement"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
-  if (keyMsg) h += `<div class="ideasub"${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(keyMsg) })}>${esc(keyMsg.v)}</div>`;
-  h += `</div>`;
-  if (supp) h += `<div class="proseblock"><p><b>${esc(supp.l)}.</b> <span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(supp) })}>${esc(supp.v)}</span></p></div>`;
+  let h = `<div class="fullbleed env-accent reveal"><div class="ideawrap">`;
+  h += `<div class="t-eyebrow">Велика ідея</div>`;
+  h += `<div${clsEd('ideastatement', { kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(big) })}>${esc(big.v)}</div>`;
+  if (keyMsg) h += `<div${clsEd('ideasub', { kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(keyMsg) })}>${esc(keyMsg.v)}</div>`;
+  h += `</div></div>`;
+  if (supp) {
+    const fi = sec.fields.indexOf(supp);
+    h += `<div class="frame-narrow reveal"><div class="proseblock"><p><b>${esc(supp.l)}.</b> <span${edAttr({ kind: 'secfieldv', gi, mi, si, fi })}>${esc(supp.v)}</span></p></div></div>`;
+  }
   const used = new Set([big, keyMsg, supp].filter(Boolean));
   const rest = present.filter(x => !used.has(x));
-  if (rest.length) h += `<div class="fieldstrip">${rest.map(x => `<div class="fitem"><b>${esc(x.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi: sec.fields.indexOf(x) })}>${esc(x.v)}</span></div>`).join('')}</div>`;
-  if (sec.implication) h += renderSoWhat(sec.implication);
-  return h + `</div>`;
+  if (rest.length || sec.implication) {
+    h += `<div class="frame-narrow reveal">`;
+    if (rest.length) h += `<div class="fieldstrip">${rest.map(x => { const fi = sec.fields.indexOf(x); return `<div class="fitem"><b>${esc(x.l)}</b><span${edAttr({ kind: 'secfieldv', gi, mi, si, fi })}>${esc(x.v)}</span></div>`; }).join('')}</div>`;
+    if (sec.implication) h += renderSoWhat(sec.implication);
+    h += `</div>`;
+  }
+  return h;
 }
 function renderRefsSec(sec) {
   if (!sec.refs || !sec.refs.length) return '';
   const cards = sec.refs.map(r => `<div class="srccard">${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}</div>`).join('');
-  return `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="srclist">${cards}</div></div>`;
+  return `<div class="reveal"><div class="m-subtitle">${esc(sec.title)}</div><div class="srclist">${cards}</div></div>`;
 }
 function itemCardHtml(gi, mi, si, it, ii, groups, icon, accent) {
   let h = `<div class="itemcard${accent ? ' accent' : ''}">`;
@@ -519,135 +614,303 @@ function itemCardHtml(gi, mi, si, it, ii, groups, icon, accent) {
 }
 function renderItemGrid(gi, mi, si, sec, groups, icon, accent) {
   if (!sec.items || !sec.items.length) return '';
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="itemgrid">${sec.items.map((it, ii) => itemCardHtml(gi, mi, si, it, ii, groups, icon, accent)).join('')}</div>`;
+  let h = `<div class="reveal"><div class="m-subtitle">${esc(sec.title)}</div><div class="itemgrid">${sec.items.map((it, ii) => itemCardHtml(gi, mi, si, it, ii, groups, icon, accent)).join('')}</div>`;
   if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
-// Сегменти ЦА — не плоска сітка карток: JTBD виокремлюється як велика цитата-заява,
-// а шлях (контекст → потреба → біль → тригер → бар'єр → результат → меседж → офер)
-// рендериться як звʼязана вертикальна таймлайн-лінія; решта полів — легка "стрічка"
+// Сегменти ЦА — split-screen (зліва перемикач, справа — JTBD окремою заявою + горизонтальна
+// journey-лінія на десктопі з click-деталями; у режимі редагування — надійний вертикальний
+// список з повноцінним contenteditable на кожному кроці, щоб нічого не загубити при збереженні)
 const JOURNEY_KEYS = ['context', 'need', 'pain', 'trigger', 'barrier', 'outcome', 'message', 'offer'];
 function renderSegments(gi, mi, si, sec) {
   if (!sec.items || !sec.items.length) return '';
-  const key = `${gi}-${mi}-${si}`;
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="segtabs">`;
-  h += sec.items.map((it, ii) => `<button type="button" class="segtab${ii === 0 ? ' active' : ''}" data-seg="${key}-${ii}">${esc((it.id ? it.id + ' · ' : '') + it.title)}</button>`).join('');
-  h += `</div>`;
-  h += sec.items.map((it, ii) => {
+  const uid = `seg-${gi}-${mi}-${si}`;
+  const panels = sec.items.map((it, ii) => {
     const present = (it.fields || []).filter(f => f.v);
     const ff = k => present.find(x => x.k === k);
     const jtbd = ff('jtbd');
-    let panel = `<div class="segpanel${ii === 0 ? ' active' : ''}" data-segpanel="${key}-${ii}"><h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title)}</h5>`;
-    if (jtbd) panel += `<div class="jtbd-statement"><b>Job to be done</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(jtbd) })}>${esc(jtbd.v)}</span></div>`;
     const journeyFields = JOURNEY_KEYS.map(k => ff(k)).filter(Boolean);
-    if (journeyFields.length) panel += `<div class="journey">${journeyFields.map(f => `<div class="jstep"><div class="jdot"></div><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
     const used = new Set([jtbd, ...journeyFields].filter(Boolean));
     const rest = present.filter(f => !used.has(f));
-    if (rest.length) panel += `<div class="fieldstrip">${rest.map(f => `<div class="fitem"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
-    return panel + `</div>`;
+    let p = `<div class="segpanel2${(ii === 0 || EDIT) ? ' active' : ''}" data-segpanel2="${uid}-${ii}">`;
+    p += `<div class="t-eyebrow" style="margin-bottom:8px">${esc(it.id || ('Сегмент ' + (ii + 1)))}</div>`;
+    p += `<h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })} style="font-family:var(--fd);font-weight:800;font-size:clamp(20px,3vw,30px);margin:0 0 26px">${esc(it.title)}</h5>`;
+    if (jtbd) p += `<div class="jtbd"><b>Job to be done</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(jtbd) })}>${esc(jtbd.v)}</span></div>`;
+    if (journeyFields.length) {
+      if (EDIT) {
+        p += `<div class="hjourney-vert" style="display:block">${journeyFields.map(f => `<div class="jstep"><div class="jdot"></div><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
+      } else {
+        p += `<div class="hjourney"><div class="hjourney-line">`;
+        p += journeyFields.map((f, fi2) => `<button type="button" class="hjourney-step${fi2 === 0 ? ' active' : ''}" data-val="${esc(f.v)}"><span class="hjourney-dot"></span><span class="hjourney-label">${esc(f.l)}</span></button>`).join('');
+        p += `</div><div class="hjourney-detail">${esc(journeyFields[0].v)}</div></div>`;
+        p += `<div class="hjourney-vert">${journeyFields.map(f => `<div class="jstep"><div class="jdot"></div><b>${esc(f.l)}</b><span>${esc(f.v)}</span></div>`).join('')}</div>`;
+      }
+    }
+    if (rest.length) p += `<div class="fieldstrip">${rest.map(f => `<div class="fitem"><b>${esc(f.l)}</b><span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(f) })}>${esc(f.v)}</span></div>`).join('')}</div>`;
+    return p + `</div>`;
   }).join('');
-  if (sec.implication) h += renderSoWhat(sec.implication);
-  return h + `</div>`;
+  const left = `<div class="reveal">
+      <div class="t-eyebrow" style="margin-bottom:16px">${esc(sec.title)}</div>
+      ${EDIT ? '' : `<div class="segswitch">
+        <button type="button" data-segprev="${uid}">←</button>
+        <div class="seglabel">01 / ${pad2(sec.items.length)}</div>
+        <button type="button" data-segnext="${uid}">→</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">${sec.items.map((it, ii) => `<button type="button" class="segdot" data-segjump="${uid}-${ii}" style="width:${ii === 0 ? 9 : 7}px;height:${ii === 0 ? 9 : 7}px;border-radius:50%;border:none;cursor:pointer;background:${ii === 0 ? 'var(--ac)' : 'var(--line2)'}"></button>`).join('')}</div>`}
+    </div>`;
+  const right = `<div class="reveal" data-segpanels="${uid}">${panels}</div>`;
+  let h = `<div class="frame-split">${left}${right}</div>`;
+  if (sec.implication) h += `<div class="frame-narrow">${renderSoWhat(sec.implication)}</div>`;
+  return h;
 }
+// Воронка — справжня звужувана форма (кожен наступний етап вужчий), не ряд однакових карток
+// зі стрілками збоку
 function renderFunnel(gi, mi, si, sec) {
   if (!sec.items || !sec.items.length) return '';
+  const n = sec.items.length;
   const stages = sec.items.map((it, ii) => {
     const stageF = (it.fields || []).find(f => f.k === 'stage');
     const rest = (it.fields || []).filter(f => f.k !== 'stage');
     const label = (stageF && stageF.v) || it.title || ('Етап ' + (ii + 1));
-    let c = `<div class="stage"><div class="stagelabel">${esc(label)}</div>`;
+    const wpct = n > 1 ? Math.max(42, 100 - ii * (50 / (n - 1))) : 100;
+    let c = `<div class="stage" style="max-width:${wpct}%"><div class="stagelabel">${esc(label)}</div>`;
     c += `<h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title || label)}</h5>`;
     rest.forEach(f => { if (!f.v) return; const fi = it.fields.indexOf(f); c += `<div class="f"><b>${esc(f.l)}:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi })}>${esc(f.v)}</span></div>`; });
     return c + `</div>`;
   }).join('');
-  let h = `<div class="reveal"><h4 class="sub">${esc(sec.title)}</h4><div class="funnel">${stages}</div>`;
+  let h = `<div class="reveal"><div class="m-subtitle">${esc(sec.title)}</div><div class="vfunnel">${stages}</div>`;
   if (sec.implication) h += renderSoWhat(sec.implication);
   return h + `</div>`;
 }
-function renderSection(gi, mi, si, sec, groups, modId) {
-  if (sec.kind === 'text') return renderTextSec(gi, mi, si, sec);
+// Карта позиціонування конкурентів — вісі "масовий/експертний" та "доступний/преміум",
+// позиція кожного конкурента рахується ТІЛЬКИ з його власних полів (positioning/usp/price/
+// valueProp) за ключовими словами; коли сигналу немає — крапка лишається у центрі з позначкою
+// "недостатньо даних" замість вигаданої точної позиції. Нижче — повні картки з деталями
+// (конкуренти — дійсно дискретні сутності, картки тут доречні)
+const EXPERT_WORDS = ['експерт', 'нішев', 'спеціаліз', 'вузьк', 'профі'];
+const MASS_WORDS = ['масов', 'широк', 'універсал', 'загальн'];
+const PREMIUM_WORDS = ['преміум', 'ексклюзив', 'дорог', 'люкс', 'елітн'];
+const BUDGET_WORDS = ['бюджет', 'дешев', 'доступн', 'економ', 'недорог'];
+function scoreWords(text, words) { let s = 0; words.forEach(w => { if (text.includes(w)) s++; }); return s; }
+function competitorAxes(it) {
+  const t = (it.fields || []).filter(f => ['positioning', 'usp', 'price', 'valueProp'].includes(f.k)).map(f => f.v || '').join(' ').toLowerCase();
+  const ex = scoreWords(t, EXPERT_WORDS), ma = scoreWords(t, MASS_WORDS), pr = scoreWords(t, PREMIUM_WORDS), bu = scoreWords(t, BUDGET_WORDS);
+  const x = Math.max(-1, Math.min(1, ex - ma)), y = Math.max(-1, Math.min(1, pr - bu));
+  return { x, y, confident: (ex || ma || pr || bu) > 0 };
+}
+function renderCompetitorMap(gi, mi, si, sec, groups) {
+  if (!sec.items || !sec.items.length) return '';
+  const positioned = sec.items.map((it, ii) => ({ it, ii, ...competitorAxes(it) }));
+  const seen = {};
+  positioned.forEach(p => {
+    const key = Math.round(p.x * 2) + '_' + Math.round(p.y * 2);
+    const n = seen[key] = (seen[key] || 0) + 1;
+    if (n > 1) p.x = Math.max(-1, Math.min(1, p.x + (n % 2 ? 1 : -1) * 0.18 * Math.ceil(n / 2)));
+  });
+  // уникнення накладання підписів: якщо дві точки опиняються близько по горизонталі в одному
+  // ряду, нижній підпис зсувається додатково вниз, щоб текст не зливався в нечитабельну кашу
+  const dotsData = positioned.map(p => ({ p, left: 50 + p.x * 38, top: 50 - p.y * 38, loff: 8 }));
+  dotsData.slice().sort((a, b) => a.left - b.left).forEach((cur, i, arr) => {
+    if (i === 0) return;
+    const prev = arr[i - 1];
+    if (Math.abs(cur.top - prev.top) < 7 && (cur.left - prev.left) < 11) cur.loff = prev.loff + 16;
+  });
+  const dots = dotsData.map(({ p, left, top, loff }) => {
+    const pos = (p.it.fields || []).find(f => f.k === 'positioning');
+    const usp = (p.it.fields || []).find(f => f.k === 'usp');
+    const tip = [pos && pos.v, usp && usp.v].filter(Boolean).join(' · ') || 'Недостатньо даних для точного позиціонування';
+    return `<div class="posmap-dot${p.confident ? '' : ' weak'}" style="left:${left}%;top:${top}%" title="${esc(tip)}"></div><div class="posmap-label" style="left:${left}%;top:${top}%;--loff:${loff}px">${esc(p.it.title)}</div>`;
+  }).join('');
+  const quads = { pp: 0, pm: 0, bp: 0, bm: 0 };
+  positioned.forEach(p => { quads[(p.y >= 0 ? 'p' : 'b') + (p.x >= 0 ? 'p' : 'm')]++; });
+  const emptiest = Object.keys(quads).reduce((a, b) => quads[a] <= quads[b] ? a : b);
+  const qCoord = { pp: [76, 24], pm: [24, 24], bp: [76, 76], bm: [24, 76] }[emptiest];
+  const conc = findSection(groups, 'competitors', 'conclusions');
+  const whitespace = conc && (conc.fields || []).find(f => f.k === 'whitespace');
+  let opp = '';
+  if (whitespace && whitespace.v) { const t = whitespace.v.length > 90 ? whitespace.v.slice(0, 88) + '…' : whitespace.v; opp = `<div class="posmap-opp" style="left:${qCoord[0]}%;top:${qCoord[1]}%"><div class="ocircle"></div><div class="otext">${esc(t)}</div></div>`; }
+  let h = `<div class="frame-canvas"><div class="reveal">
+    <div class="t-eyebrow" style="margin-bottom:10px">${esc(sec.title)}</div>
+    <div class="posmap-note">Карта побудована за формулюваннями з аналізу (не з виміряних даних) — орієнтовне розташування, не точні координати.</div>
+    <div class="posmap-wrap"><div class="posmap">
+      <div class="axlabel ax-top">Преміум</div><div class="axlabel ax-bottom">Доступний</div>
+      <div class="axlabel ax-left">Масовий</div><div class="axlabel ax-right">Експертний</div>
+      ${dots}${opp}
+    </div></div>
+  </div></div>`;
+  h += `<div class="frame-wide">${renderItemGrid(gi, mi, si, sec, groups, null, false)}</div>`;
+  return h;
+}
+// Кросканальна воронка — один звʼязаний потік (вузли за реальним порядком order), підписи
+// на зʼєднувачах — реальний текст handoff, а не вигадані стрілки між окремими картками
+function renderCrossFlow(gi, mi, si, sec) {
+  if (!sec.items || !sec.items.length) return '';
+  const rows = sec.items.map((it, ii) => ({ it, ii })).sort((a, b) => {
+    const oa = (a.it.fields || []).find(f => f.k === 'order'), ob = (b.it.fields || []).find(f => f.k === 'order');
+    const na = oa && parseFloat(oa.v), nb = ob && parseFloat(ob.v);
+    if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    return a.ii - b.ii;
+  });
+  let h = `<div class="frame-narrow"><div class="reveal"><div class="m-subtitle">${esc(sec.title)}</div><div class="flow">`;
+  rows.forEach((row, idx) => {
+    const { it, ii } = row;
+    const ff = k => (it.fields || []).find(f => f.k === k);
+    const channel = ff('channel'), stage = ff('stage'), role = ff('role'), handoff = ff('handoff'), kpi = ff('kpi'), order = ff('order');
+    h += `<div class="flownode"><div class="fnorder">${order && order.v ? esc(order.v) : pad2(idx + 1)}</div>`;
+    if (stage) h += `<div class="fnstage">${esc(stage.v)}</div>`;
+    h += `<h5${edAttr({ kind: 'itemtitle', gi, mi, si, ii })}>${esc(it.title || (channel && channel.v) || '')}</h5>`;
+    if (channel && it.title !== channel.v) h += `<div class="fnf"><b>Канал:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(channel) })}>${esc(channel.v)}</span></div>`;
+    if (role) h += `<div class="fnf"><b>Роль:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(role) })}>${esc(role.v)}</span></div>`;
+    if (kpi) h += `<div class="fnf"><b>KPI:</b> <span${edAttr({ kind: 'itemfieldv', gi, mi, si, ii, fi: it.fields.indexOf(kpi) })}>${esc(kpi.v)}</span></div>`;
+    h += `</div>`;
+    if (idx < rows.length - 1) h += `<div class="flowconnector"><div class="arrow"></div>${handoff && handoff.v ? esc(handoff.v) : ''}<div class="arrow"></div></div>`;
+  });
+  h += `</div>`;
+  if (sec.implication) h += renderSoWhat(sec.implication);
+  return h + `</div></div>`;
+}
+// SMM-рубрикатор — радіальна "екосистема контенту" (БРЕНД у центрі + рубрики по колу),
+// а не список/картки
+function renderSmmOrbit(gi, mi, si, sec) {
+  if (!sec.items || !sec.items.length) return '';
+  const n = sec.items.length;
+  const nodes = sec.items.map((it, ii) => {
+    const angle = (ii / n) * 2 * Math.PI - Math.PI / 2;
+    return { it, ii, x: 50 + Math.cos(angle) * 38, y: 50 + Math.sin(angle) * 38 };
+  });
+  const lines = nodes.map(nd => `<line x1="50%" y1="50%" x2="${nd.x}%" y2="${nd.y}%" stroke="var(--line2)" stroke-width="1"/>`).join('');
+  const nodeHtml = nodes.map(nd => `<div${clsEd('orbit-node', { kind: 'itemtitle', gi, mi, si, ii: nd.ii })} style="left:${nd.x}%;top:${nd.y}%">${esc(nd.it.title)}</div>`).join('');
+  let h = `<div class="frame-canvas"><div class="reveal">
+    <div class="t-eyebrow" style="margin-bottom:26px">${esc(sec.title)}</div>
+    <div class="orbit"><svg>${lines}</svg><div class="orbit-center">Бренд</div>${nodeHtml}</div>
+  </div></div>`;
+  if (sec.implication) h += `<div class="frame-narrow">${renderSoWhat(sec.implication)}</div>`;
+  return h;
+}
+function renderSection(gi, mi, si, sec, groups, modId, groupKey) {
+  if (sec.kind === 'text') return `<div class="frame-wide">${renderTextSec(gi, mi, si, sec, groupKey === 'research')}</div>`;
   if (sec.kind === 'fields') {
-    if (modId === 'brand' && sec.key === 'platform') return renderManifesto(gi, mi, si, sec);
+    if (modId === 'brand' && sec.key === 'platform') return `<div class="frame-wide">${renderManifesto(gi, mi, si, sec)}</div>`;
     if (modId === 'communication' && sec.key === 'bigidea') return renderBigIdea(gi, mi, si, sec);
-    return renderFieldsSec(gi, mi, si, sec);
+    return `<div class="frame-narrow">${renderFieldsSec(gi, mi, si, sec)}</div>`;
   }
-  if (sec.kind === 'refs') return renderRefsSec(sec);
+  if (sec.kind === 'refs') return `<div class="frame-narrow">${renderRefsSec(sec)}</div>`;
   if (sec.kind === 'list') {
     if (modId === 'audience' && sec.key === 'segments') return renderSegments(gi, mi, si, sec);
-    if (sec.isFunnel) return renderFunnel(gi, mi, si, sec);
-    return renderItemGrid(gi, mi, si, sec, groups, ICON[sec.key], sec.key === 'insights');
+    if (modId === 'competitors' && sec.key === 'matrix') return renderCompetitorMap(gi, mi, si, sec, groups);
+    if (modId === 'cross_funnel' && sec.key === 'nodes') return renderCrossFlow(gi, mi, si, sec);
+    if (modId === 'smm_rubrics' && sec.key === 'posts') return renderSmmOrbit(gi, mi, si, sec);
+    if (sec.isFunnel) return `<div class="frame-narrow">${renderFunnel(gi, mi, si, sec)}</div>`;
+    return `<div class="frame-wide">${renderItemGrid(gi, mi, si, sec, groups, ICON[sec.key], sec.key === 'insights')}</div>`;
   }
   return '';
 }
-function renderModule(gi, mi, mod, groups) {
-  let h = `<div class="modtitle reveal">${esc(mod.title)}</div>`;
-  if (mod.custom) return h + `<div class="reveal"><p class="b"${edAttr({ kind: 'modtext', gi, mi })}>${esc(mod.text || '')}</p></div>`;
-  (mod.sections || []).forEach((sec, si) => { h += renderSection(gi, mi, si, sec, groups, mod.id); });
+function renderModule(gi, mi, mod, groups, groupKey) {
+  let h = `<div class="frame-narrow" style="padding-bottom:0"><div class="m-modtitle reveal">${esc(mod.title)}</div></div>`;
+  if (mod.custom) return h + `<div class="frame-narrow"><div class="reveal"><p${clsEd('b', { kind: 'modtext', gi, mi })}>${esc(mod.text || '')}</p></div></div>`;
+  (mod.sections || []).forEach((sec, si) => { h += renderSection(gi, mi, si, sec, groups, mod.id, groupKey); });
   return h;
 }
 function renderGroup(gi, g, groups) {
   const tag = CHAPTER_TAGS[g.groupKey] || '';
-  // перший розділ одразу під hero — без додаткового фонового акценту (там і так є blob),
-  // щоб не накопичувати яскравість; далі варіанти циклічно чергуються
-  const variant = gi === 0 ? '' : BG_VARIANTS[(gi - 1) % BG_VARIANTS.length];
-  let h = `<div class="chapter-bg ${variant}"><div class="chapter reveal" id="sec-${gi}">
-      <div class="chapter-num"><i></i>Розділ ${String(gi + 1).padStart(2, '0')} / ${String(groups.length).padStart(2, '0')}</div>
-      <h2 class="sec"><span>${esc(g.label)}</span></h2>
-      ${tag ? `<div class="chapter-tag">${esc(tag)}</div>` : ''}
+  const env = ENV_MAP[g.groupKey] || 'dark';
+  let h = `<div class="mchapter-env env-${env}" id="sec-${gi}">`;
+  h += `<div class="mchapter reveal">
+      <div class="mnum"><i></i>Розділ ${pad2(gi + 1)} / ${pad2(groups.length)}</div>
+      <h2 class="t-chapter mtitle">${esc(g.label)}</h2>
+      ${tag ? `<div class="mtag">${esc(tag)}</div>` : ''}
     </div>`;
-  g.modules.forEach((mod, mi) => { h += renderModule(gi, mi, mod, groups); });
+  g.modules.forEach((mod, mi) => { h += renderModule(gi, mi, mod, groups, g.groupKey); });
   h += `</div>`;
   return h;
 }
 function renderSourcesSection(sources, gi) {
   if (!sources || !sources.length) return '';
   const cards = sources.map(s => `<div class="srccard"><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>${s.date ? ' · ' + esc(s.date) : ''}${s.evidence ? `<div class="note">${esc(s.evidence)}</div>` : ''}</div>`).join('');
-  return `<div class="sec-wrap reveal"><h2 class="sec" id="sec-${gi}"><i></i><span>Джерела</span></h2></div><div class="reveal"><div class="srclist">${cards}</div></div>`;
+  return `<div class="mchapter-env env-dark" id="sec-${gi}"><div class="frame-wide" style="padding-top:70px;padding-bottom:70px"><div class="reveal"><div class="t-eyebrow" style="margin-bottom:20px">Джерела</div><div class="srclist">${cards}</div></div></div></div>`;
 }
 function renderHeroModules() {
   const groups = DATA.modules;
-  let h = `<div class="hero"><div class="brand"><i></i>BESSARAB M.A.</div><h1>Стратегія: <span${edAttr({ kind: 'name' })}>${esc(DATA.name)}</span></h1>`;
-  if (DATA.meta) h += `<div class="meta"${edAttr({ kind: 'meta' })}>${esc(DATA.meta)}</div>`;
+  let h = `<div class="mhero"><div class="mhero-brand"><i></i><span>BESSARAB M.A.</span></div>`;
+  h += `<h1 class="t-display">Стратегія: <span${edAttr({ kind: 'name' })}>${esc(DATA.name)}</span></h1>`;
+  if (DATA.meta) h += `<div${clsEd('meta', { kind: 'meta' })}>${esc(DATA.meta)}</div>`;
   const hs = heroStats(groups);
-  if (hs.length) h += `<div class="herostats">${hs.map(s => `<div class="herostat"><b>${s.v}</b><span>${esc(s.l)}</span></div>`).join('')}</div>`;
-  h += `<div class="readtime"><i></i>~${readTimeModules(groups)} хв читання</div>`;
-  h += `<div class="hero-scroll"><i></i>Гортайте</div>`;
+  if (hs.length) h += `<div class="mhero-nums">${hs.map(s => `<div class="mhero-num"><b>${s.v}</b><span>${esc(s.l)}</span></div>`).join('')}</div>`;
+  h += `<div class="mhero-scroll"><i></i>~${readTimeModules(groups)} хв · гортайте</div>`;
   h += `</div>`;
   return h;
 }
 
-let GROUP_COUNT = 0;
+let GROUP_COUNT = 0, GROUP_LABELS = [];
 function renderModulesDoc() {
   EDITMAP = [];
   const groups = DATA.modules;
   GROUP_COUNT = groups.length;
-  let body = ''; groups.forEach((g, gi) => { body += renderGroup(gi, g, groups); });
+  GROUP_LABELS = groups.map(g => g.label);
+  let body = renderHeroModules();
+  groups.forEach((g, gi) => { body += renderGroup(gi, g, groups); });
   const srcGi = groups.length;
   body += renderSourcesSection(DATA.sources, srcGi);
-  const tocItems = groups.map((g, gi) => ({ i: gi, x: g.label }));
-  if (DATA.sources && DATA.sources.length) tocItems.push({ i: srcGi, x: 'Джерела' });
-  const toc = (!EDIT && tocItems.length) ? `<nav class="toc"><div class="toc-inner"><div class="toc-chapter" id="tocChapter">Розділ 01 / ${String(groups.length).padStart(2, '0')}</div><div class="toc-brand"><i></i>Зміст</div>${tocItems.map(it => `<a href="#sec-${it.i}" data-target="sec-${it.i}">${esc(it.x)}</a>`).join('')}<div class="toc-progress">~${readTimeModules(groups)} хв читання</div></div></nav>` : '';
+
+  const navItems = groups.map((g, gi) => ({ i: gi, x: g.label }));
+  if (DATA.sources && DATA.sources.length) navItems.push({ i: srcGi, x: 'Джерела' });
+
+  const floatnav = EDIT ? '' : `<div class="floatnav"><button class="floatnav-pill" id="navToggle"><span class="nn" id="navNum">${pad2(1)}/${pad2(groups.length)}</span><span class="nl" id="navLabel">${esc(groups[0] ? groups[0].label : '')}</span></button></div>`;
+  const dotrail = EDIT ? '' : `<div class="dotrail" id="dotrail">${navItems.map((it, di) => `<button type="button" data-dotjump="sec-${it.i}" class="${di === 0 ? 'active' : ''}" title="${esc(it.x)}"></button>`).join('')}</div>`;
+  const overlay = EDIT ? '' : `<div class="navoverlay" id="navOverlay"><button class="nclose" id="navClose">✕</button><div class="nlist">${navItems.map(it => `<a href="#sec-${it.i}" data-target="sec-${it.i}">${esc(it.x)}</a>`).join('')}</div></div>`;
+
   const root = $('#root');
-  root.innerHTML = `<div class="page">${toc}<div class="wrap">${renderHeroModules()}${body}</div></div>
+  root.innerHTML = `${floatnav}${dotrail}${overlay}<div class="mpage">${body}</div>
     ${EDIT ? '<div class="editbadge">Режим редагування</div>' : ''}
     <div class="bar no-print">
       ${EDIT ? `<button class="btn" id="cancelBtn">Скасувати</button><button class="btn pri" id="saveBtn" ${DIRTY ? '' : 'disabled'}>💾 Зберегти</button>` : `<button class="btn" id="editBtn">✎ Редагувати</button>`}
     </div>`;
+
   if (EDIT) {
     root.querySelectorAll('.edit').forEach(el => el.addEventListener('input', () => { DIRTY = true; const b = $('#saveBtn'); if (b) b.disabled = false; }));
     $('#saveBtn').onclick = saveEditsModules;
     $('#cancelBtn').onclick = () => { if (DIRTY && !confirm('Скасувати незбережені правки?')) return; EDIT = false; DIRTY = false; load(); };
   } else {
     $('#editBtn').onclick = enterEditModules;
-    root.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', e => {
-      e.preventDefault(); const t = document.getElementById(a.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('#navToggle')?.addEventListener('click', () => $('#navOverlay')?.classList.add('open'));
+    $('#navClose')?.addEventListener('click', () => $('#navOverlay')?.classList.remove('open'));
+    $('#navOverlay')?.addEventListener('click', e => { if (e.target.id === 'navOverlay') $('#navOverlay')?.classList.remove('open'); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#navOverlay')?.classList.remove('open'); });
+    root.querySelectorAll('.navoverlay a').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault(); $('#navOverlay')?.classList.remove('open');
+      const t = document.getElementById(a.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+    root.querySelectorAll('[data-dotjump]').forEach(b => b.addEventListener('click', () => {
+      const t = document.getElementById(b.dataset.dotjump); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }));
   }
-  root.querySelectorAll('.segtab').forEach(btn => btn.addEventListener('click', () => {
-    const key = btn.dataset.seg; const scope = btn.closest('.reveal') || root;
-    scope.querySelectorAll('.segtab').forEach(b => b.classList.toggle('active', b === btn));
-    scope.querySelectorAll('.segpanel').forEach(p => p.classList.toggle('active', p.dataset.segpanel === key));
-  }));
+
+  root.querySelectorAll('[data-segpanels]').forEach(panelWrap => {
+    const uid = panelWrap.dataset.segpanels;
+    const scope = panelWrap.closest('.frame-split') || root;
+    const panels = [...panelWrap.querySelectorAll('.segpanel2')];
+    const dots = [...scope.querySelectorAll(`[data-segjump^="${uid}-"]`)];
+    const labelEl = scope.querySelector('.seglabel');
+    let idx = 0;
+    function show(i) {
+      idx = ((i % panels.length) + panels.length) % panels.length;
+      panels.forEach((p, pi) => p.classList.toggle('active', pi === idx));
+      dots.forEach((d, di) => { const on = di === idx; d.style.background = on ? 'var(--ac)' : 'var(--line2)'; d.style.width = on ? '9px' : '7px'; d.style.height = on ? '9px' : '7px'; });
+      if (labelEl) labelEl.textContent = pad2(idx + 1) + ' / ' + pad2(panels.length);
+    }
+    scope.querySelector(`[data-segprev="${uid}"]`)?.addEventListener('click', () => show(idx - 1));
+    scope.querySelector(`[data-segnext="${uid}"]`)?.addEventListener('click', () => show(idx + 1));
+    dots.forEach((d, di) => d.addEventListener('click', () => show(di)));
+  });
+  root.querySelectorAll('.hjourney').forEach(hj => {
+    const steps = [...hj.querySelectorAll('.hjourney-step')];
+    const detail = hj.querySelector('.hjourney-detail');
+    steps.forEach((s, i) => s.addEventListener('click', () => {
+      steps.forEach((x, xi) => x.classList.toggle('active', xi === i));
+      if (detail) detail.textContent = s.dataset.val;
+    }));
+  });
+
   revealCheck();
 }
 
@@ -688,7 +951,8 @@ async function load() {
 }
 load();
 
-// прогрес-бар читання + підсвітка активного пункту меню (глобально, не залежить від рендеру)
+// прогрес-бар читання + підсвітка активного розділу у floatnav/dotrail/overlay (і в legacy .toc,
+// якщо використовується старий рендер) — глобально, не залежить від того, який рендер активний
 let ticking = false;
 function onScroll() {
   if (ticking) return; ticking = true;
@@ -698,15 +962,21 @@ function onScroll() {
     const max = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
     const pct = max > 0 ? Math.min(100, (scrolled / max) * 100) : 0;
     const pb = $('#progress'); if (pb) pb.style.width = pct + '%';
-    const secs = document.querySelectorAll('.chapter[id], h2.sec[id]');
+    const secs = document.querySelectorAll('.mchapter-env[id], h2.sec[id]');
     if (secs.length) {
       let current = null;
       secs.forEach(s => { if (s.getBoundingClientRect().top < 140) current = s.id; });
       document.querySelectorAll('.toc a').forEach(a => a.classList.toggle('active', a.dataset.target === current));
-      if (current && GROUP_COUNT) {
+      if (current) {
+        document.querySelectorAll('[data-dotjump]').forEach(d => d.classList.toggle('active', d.dataset.dotjump === current));
+        document.querySelectorAll('.navoverlay a').forEach(a => a.classList.toggle('active', a.dataset.target === current));
         const m = /^sec-(\d+)$/.exec(current);
-        const tc = $('#tocChapter');
-        if (tc && m) { const n = +m[1]; tc.textContent = n < GROUP_COUNT ? `Розділ ${String(n + 1).padStart(2, '0')} / ${String(GROUP_COUNT).padStart(2, '0')}` : 'Джерела'; }
+        if (m && GROUP_COUNT) {
+          const n = +m[1];
+          const nn = $('#navNum'), nl = $('#navLabel');
+          if (nn) nn.textContent = pad2(Math.min(n + 1, GROUP_COUNT)) + '/' + pad2(GROUP_COUNT);
+          if (nl) nl.textContent = n < GROUP_COUNT ? GROUP_LABELS[n] : 'Джерела';
+        }
       }
     }
     revealCheck();
