@@ -189,11 +189,11 @@ CFG.RULES = [
     brand: 'mandatory', valueprop: 'mandatory', communication: 'mandatory', architectB: 'mandatory' } },
   { id: 'content', when: { anyHas: ['instagram', 'facebook'] }, enable: {
     smm_audit: 'mandatory', smm_visual: 'mandatory', smm_rubrics: 'mandatory', smm_sound: 'recommended', smm_examples: 'recommended', smm_contests: 'optional' } },
-  { id: 'meta', when: { has: 'meta_ads' }, enable: { meta_audit: 'mandatory', meta_audience: 'mandatory', meta_strategy: 'mandatory', meta_launch: 'mandatory', meta_creative: 'mandatory' }, sections: { competitors: ['ext_meta'] } },
+  { id: 'meta', when: { has: 'meta_ads' }, enable: { meta_audit: 'mandatory', meta_comp_ads: 'recommended', meta_audience: 'mandatory', meta_strategy: 'mandatory', meta_launch: 'mandatory', meta_creative: 'mandatory' }, sections: { competitors: ['ext_meta'] } },
   { id: 'tiktok_org', when: { has: 'tiktok_org' }, enable: { tt_org: 'mandatory' }, sections: { competitors: ['ext_tiktok'] } },
   { id: 'tiktok_ads', when: { has: 'tiktok_ads' }, enable: { tta_strategy: 'mandatory', tta_creative: 'mandatory' }, sections: { competitors: ['ext_tiktok'] } },
   { id: 'tiktok_syn', when: { all: [{ has: 'tiktok_org' }, { has: 'tiktok_ads' }] }, enable: { tt_synergy: 'mandatory' } },
-  { id: 'google', when: { has: 'google_ads' }, enable: { g_audit: 'mandatory', g_intent: 'mandatory', g_structure: 'mandatory' }, sections: { competitors: ['ext_google'] } },
+  { id: 'google', when: { has: 'google_ads' }, enable: { g_audit: 'mandatory', g_comp_ads: 'recommended', g_intent: 'mandatory', g_structure: 'mandatory' }, sections: { competitors: ['ext_google'] } },
   { id: 'google_shop', when: { all: [{ has: 'google_ads' }, { brief: { bizModel: 'ecommerce' } }] }, sections: { g_structure: ['shopping'] } },
   { id: 'cross', when: { channelsGt: 1 }, enable: { cross_funnel: 'mandatory' } },
   { id: 'paid_syn', when: { anyHas: ['meta_ads', 'tiktok_ads', 'google_ads'] }, enable: { synergy_paid: 'mandatory' } },
@@ -334,11 +334,18 @@ CFG.MODULES = [
     desc: 'Чекліст первинного аудиту (Business Manager, Pixel, CAPI, кампанії, аудиторії, креативи, tracking)',
     role: 'AI не бачить рекламний кабінет. Для кожного пункту: що відомо з брифу (client_data), що НЕ відомо, і що конкретно перевірити в кабінеті. Не вигадуй стан Pixel/CAPI/кампаній.',
     sections: [FLD('audit', 'Первинний аудит', 'bm:Business Manager|pixel:Pixel|capi:CAPI|account:Рекламний акаунт|campaigns:Кампанії|audiences:Аудиторії|creatives:Креативи|results:Результати|analytics:Аналітика|funnel:Воронка|tracking:Відстеження')] },
+  { id: 'meta_comp_ads', group: 'meta', agent: 'meta', title: 'Meta · Аналіз реклами конкурентів', impl: false, claims: false, requires: 'competitors', brief: [...BK.comp, 'niche', 'geo', 'products'], deps: { hard: [], soft: ['competitors'] },
+    desc: 'Креативи конкурентів із Бібліотеки реклами Meta (з активними посиланнями), офери, меседжі, формати, тривалість показу',
+    role: 'Проаналізуй рекламу ТІЛЬКИ конкурентів із брифу на основі ДАНИХ ПАРСИНГУ Бібліотеки реклами Meta (реклама[]: id, текст, cta, формат, старт, днів_показу, активна, посадкова). Не вигадуй оголошень: у «Розборі креативів» використовуй ТІЛЬКИ ті adId, що є в даних парсингу, і копіюй їх без змін (посилання на оголошення додає система). Якщо оголошення показується довго й активне (днів_показу ≥ 30) — це сигнал, що креатив, ймовірно, працює; формулюй як гіпотезу, бо витрат і конверсій Бібліотека реклами не показує. Якщо даних парсингу для конкурента немає — у «Реклама по конкурентах» пиши «Немає даних: запустіть парсинг Meta Ads у Центрі досліджень», а «Розбір креативів» залиш порожнім масивом. Не вигадуй бюджети й результати конкурентів.',
+    sections: [
+      LIST('byComp', 'Реклама по конкурентах', 'name:Конкурент|libLink:Бібліотека реклами (посилання)|activity:Активність (скільки активних оголошень, як давно тестують)|formats:Формати (Image / Video / Carousel…)|offers:Офери|messages:Меседжі та хуки|cta:CTA|landings:Посадкові сторінки|angles:Креативні кути|gaps:Чого вони НЕ роблять', { titleField: 'name', competitorRows: true, auto: ['libLink'], post: 'adlibComp' }),
+      LIST('creatives', 'Розбір креативів', 'name:Конкурент|adId:ID оголошення (точно з даних парсингу)|link:Посилання на оголошення в Бібліотеці реклами|format:Формат|running:Показується (з якої дати, скільки днів, активне чи ні)|hook:Хук (перший екран / перше речення)|message:Головний меседж|offer:Офер|cta:CTA|angle:Креативний кут|why:Чому, ймовірно, працює (гіпотеза)|use:Що беремо / чого уникаємо', { titleField: 'name', auto: ['link'], post: 'adlibAds', max: 15 }),
+      FLD('conclusions', 'Висновки для нашої реклами', 'patterns:Повторювані патерни в ніші|saturated:Перенасичені підходи|whitespace:Вільні кути й формати|tests:Гіпотези для тесту в Meta|avoid:Чого уникати')] },
   { id: 'meta_audience', group: 'meta', agent: 'meta', title: 'Meta · Адаптація аудиторій', impl: false, brief: [], deps: { hard: ['audience', 'valueprop', 'communication'], soft: ['avatars'] },
     desc: 'Маркетинговий сегмент → Аудиторія в Meta → Message → Offer → Креативний кут',
     role: 'НЕ створюй сегменти заново. Для кожного сегмента з аналізу аудиторії визнач, як його знайти в Meta (interest/behavior/lookalike/custom — як гіпотези для тестування), і привʼяжи Message/Offer/Креативний кут з контексту.',
     sections: [LIST('adapt', 'Адаптація сегментів для Meta', 'segmentId:Сегмент (ID)|metaAudience:Аудиторія в Meta|targeting:Гіпотези таргетингу|message:Повідомлення|offer:Оффер|angle:Креативний кут', { titleField: 'segmentId', ref: 'segmentId' })] },
-  { id: 'meta_strategy', group: 'meta', agent: 'meta', title: 'Meta · Рекламна стратегія Facebook / Instagram', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'competitors', 'valueprop', 'communication', 'smm_rubrics', 'architectB', 'meta_audience'], soft: ['meta_audit'] },
+  { id: 'meta_strategy', group: 'meta', agent: 'meta', title: 'Meta · Рекламна стратегія Facebook / Instagram', impl: false, brief: ['budget', 'goals', 'mainGoal', 'avgCheck'], deps: { hard: ['audience', 'competitors', 'valueprop', 'communication', 'smm_rubrics', 'architectB', 'meta_audience'], soft: ['meta_audit', 'meta_comp_ads'] },
     desc: 'Роль Meta Ads, цілі, воронка: acquisition, warm, retargeting, conversion, retention',
     role: 'Роль Meta Ads береш з ролей каналів (Архітектор B). Використай висновки аналізу конкурентів (розширення Meta). Бюджет — тільки з брифу, інакше «Немає даних».',
     sections: [FLD('role', 'Роль і цілі', 'role:Роль Meta Ads|objectives:Рекламні цілі|budgetLogic:Логіка розподілу бюджету'), LIST('funnel', 'Funnel', 'stage:Етап (acquisition / warm / retargeting / conversion / retention)|goal:Ціль|audience:Аудиторії|structure:Структура кампаній|kpi:KPI', { titleField: 'stage' })] },
@@ -346,7 +353,7 @@ CFG.MODULES = [
     desc: 'Поетапний launch plan',
     role: 'Створи поетапний launch plan (3–5 етапів).',
     sections: [LIST('stages', 'План запуску', 'stage:Етап|goal:Ціль|audience:Аудиторія|offer:Офер|message:Повідомлення|creative:Креатив|landing:Посадкова|action:Очікувана дія|kpi:KPI', { titleField: 'stage' })] },
-  { id: 'meta_creative', group: 'meta', agent: 'meta', title: 'Meta · Комунікація та креативна стратегія', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['meta_strategy', 'communication'], soft: ['smm_visual'] },
+  { id: 'meta_creative', group: 'meta', agent: 'meta', title: 'Meta · Комунікація та креативна стратегія', impl: false, brief: ['likedBrands', 'dislikedBrands', 'refs'], deps: { hard: ['meta_strategy', 'communication'], soft: ['smm_visual', 'meta_comp_ads'] },
     desc: 'Формати креативів: Format → Hook → Message → Offer → CTA; референси',
     role: 'Для кожного релевантного формату (Static, Carousel, Dynamic, Catalog, Reels Ads, Stories Ads, UGC, Video) дай Format → Hook → Message → Offer → CTA. Нерелевантні формати (наприклад Catalog без каталогу) познач у полі relevant як «Ні» з причиною.',
     sections: [LIST('formats', 'Формати креативів', 'format:Формат|relevant:Релевантність (Так/Ні + чому)|hook:Хук|message:Повідомлення|offer:Оффер|cta:CTA', { titleField: 'format' }), { key: 'refs', title: 'Креативні референси (зберігаються вручну)', kind: 'refs', manual: true }] },
@@ -376,11 +383,20 @@ CFG.MODULES = [
     desc: 'Первинний аудит (з брифу) та що перевірити в акаунті',
     role: 'AI не бачить акаунт. Що відомо з брифу, чого не відомо, що перевірити (конверсії, кампанії, пошукові запити, landing).',
     sections: [FLD('audit', 'Аудит', 'state:Що відомо з брифу|unknown:Чого не відомо|toCheck:Що перевірити|tracking:Відстеження конверсій')] },
-  { id: 'g_intent', group: 'google', agent: 'google', title: 'Google Ads · Пошуковий намір і попит', web: true, impl: false, brief: [...BK.core], deps: { hard: ['audience', 'valueprop', 'competitors'], soft: ['g_audit'] },
+  { id: 'g_comp_ads', group: 'google', agent: 'google', title: 'Google Ads · Аналіз реклами конкурентів', web: true, impl: false, claims: true, requires: 'competitors', brief: [...BK.comp, 'niche', 'geo', 'products', 'site'], deps: { hard: [], soft: ['competitors'] },
+    desc: 'Реклама конкурентів у Google: офери, заголовки, посадкові, ключові запити (гіпотези з підставою) та мінус-слова',
+    role: 'Проаналізуй Google-рекламу ТІЛЬКИ конкурентів із брифу. Джерела: web search по сайтах і посадкових сторінках конкурентів (title, H1, офери, ціни, формулювання) та ДАНІ ПАРСИНГУ Центру прозорості реклами Google (якщо є: creativeId, формат, днів показу). Ключові запити — це ГІПОТЕЗИ: виводь їх із реальних формулювань на сторінках конкурентів (вказуй URL у полі basis) та з пошукового наміру; якщо підстави немає, пиши «гіпотеза». НЕ вигадуй обсяги пошуку, CPC, позиції, бюджети й «ключові слова, за якими конкурент точно рекламується» — реальні дані дає лише Keyword Planner / Semrush / SpyFu, тому в полі check вказуй, що перевірити там. Якщо PM додав у коментарях експорт ключових слів — використай його як факт. У «Розборі креативів» використовуй ТІЛЬКИ creativeId з даних парсингу (посилання додає система); без парсингу залиш масив порожнім.',
+    sections: [
+      LIST('byComp', 'Реклама по конкурентах', 'name:Конкурент|domain:Домен сайту|transparency:Центр прозорості реклами Google (посилання)|offers:Офери й УТП в оголошеннях та на посадкових|headlines:Типові заголовки та формулювання|landings:Посадкові сторінки|positioning:Позиціювання в пошуку|signals:Розширення, ціни, акції|gaps:Слабкі місця', { titleField: 'name', competitorRows: true, auto: ['transparency'], post: 'gTranspComp' }),
+      LIST('creatives', 'Креативи з Центру прозорості (за даними парсингу)', 'name:Конкурент|creativeId:ID креативу (точно з даних парсингу)|link:Посилання на креатив|format:Формат|running:Скільки днів показується|note:Що видно / що беремо', { titleField: 'name', auto: ['link'], post: 'gAds', max: 15 }),
+      LIST('keywords', 'Ключові запити (гіпотези з підставою)', 'cluster:Кластер|keyword:Запит|intent:Намір (інформаційний / комерційний / транзакційний / брендовий)|competitors:Чиї сторінки/оголошення це підтверджують|basis:Підстава (URL сторінки конкурента або «гіпотеза»)|match:Тип відповідності (рекомендація)|check:Що перевірити (Keyword Planner / Semrush / SpyFu)|serp:Живе пошукове посилання', { titleField: 'keyword', min: 12, max: 30, auto: ['serp'], post: 'gKeywords' }),
+      TXT('negatives', 'Мінус-слова (гіпотези для перевірки в звіті пошукових запитів)'),
+      FLD('conclusions', 'Висновки для нашої реклами', 'competition:Де конкуренція, ймовірно, найвища|whitespace:Вільні ніші запитів|usp:Що в оголошеннях робимо краще|tests:Гіпотези для тесту')] },
+  { id: 'g_intent', group: 'google', agent: 'google', title: 'Google Ads · Пошуковий намір і попит', web: true, impl: false, brief: [...BK.core], deps: { hard: ['audience', 'valueprop', 'competitors'], soft: ['g_audit', 'g_comp_ads'] },
     desc: 'Роль Google Ads, пошуковий намір, категорії попиту, brand / non-brand',
     role: 'Побудуй карту пошукового наміру для цього бізнесу. Не вигадуй обсяги пошуку та CPC — можеш назвати ЛИШЕ якщо є джерело; інакше вказуй, що обсяги потрібно перевірити в Keyword Planner.',
     sections: [FLD('role', 'Роль', 'role:Роль Google Ads|demand:Демандні категорії'), LIST('intents', 'Пошуковий намір', 'intent:Намір|examples:Приклади запитів (гіпотези)|segment:Сегмент|stage:Етап|offer:Офер', { titleField: 'intent' }), FLD('brandSplit', 'Брендові та небрендові запити', 'brand:Брендовий пошук|nonBrand:Небрендовий пошук')] },
-  { id: 'g_structure', group: 'google', agent: 'google', title: 'Google Ads · Структура, KPI, бюджет', impl: false, brief: ['budget', 'bizModel', 'site', 'mainGoal', 'avgCheck'], deps: { hard: ['g_intent', 'valueprop', 'communication'], soft: [] },
+  { id: 'g_structure', group: 'google', agent: 'google', title: 'Google Ads · Структура, KPI, бюджет', impl: false, brief: ['budget', 'bizModel', 'site', 'mainGoal', 'avgCheck'], deps: { hard: ['g_intent', 'valueprop', 'communication'], soft: ['g_comp_ads'] },
     desc: 'Структура кампаній, Search, PMax (за потреби), Shopping (для e-commerce), remarketing, tracking',
     role: 'Shopping та Performance Max НЕ обовʼязкові: спочатку дай вердикт релевантності з обґрунтуванням за бізнес-моделлю; план — тільки якщо релевантно. Бюджет — тільки з брифу.',
     sections: [FLD('structure', 'Структура кампаній', 'structure:Структура кампаній|search:Пошук|remarketing:Ремаркетинг|landings:Посадкові сторінки|offers:Офери'), FLD('pmax', 'Performance Max (якщо доречно)', 'relevance:Релевантність (Так/Ні + чому)|plan:План (якщо релевантно)'), FLD('shopping', 'Shopping (інтернет-магазин)', 'plan:План Shopping|feed:Вимоги до фіду', { ext: true }), FLD('tracking', 'Tracking, KPI, бюджет', 'tracking:Відстеження конверсій|kpi:KPI|budget:Бюджет')] },
@@ -548,14 +564,17 @@ function requirementMsg(p, id) {
 
 /* ---------- Бриф: completeness, хеші ---------- */
 const briefFlat = () => CFG.BRIEF.flatMap(s => s.fields);
-function briefLabel(k) { if (k === 'competitors') return 'Конкуренти'; if (k === '@parsed') return 'Дані парсингу'; const f = briefFlat().find(x => x.k === k); return f ? f.l : k; }
+function briefLabel(k) { if (k === 'competitors') return 'Конкуренти'; if (k === '@parsed') return 'Дані парсингу'; if (k.startsWith('@parsed:')) return 'Дані парсингу ' + k.slice(8); const f = briefFlat().find(x => x.k === k); return f ? f.l : k; }
 function briefVal(p, k) {
   if (k === 'competitors') return competitorsOf(p).map(c => [c.name, c.site, c.instagram, c.facebook, c.tiktok]);
+  if (k.startsWith('@parsed:')) { const pl = k.slice(8); const a = []; Object.entries(p.parsed.comp).forEach(([c, o]) => { if (o[pl]) a.push(c + pl + o[pl].fetchedAt); }); return a.sort(); }
   if (k === '@parsed') { const a = []; Object.entries(p.parsed.own).forEach(([k, v]) => a.push('o' + k + v.fetchedAt)); Object.entries(p.parsed.comp).forEach(([c, o]) => Object.entries(o).forEach(([k, v]) => a.push(c + k + v.fetchedAt))); return a.sort(); }
   return p.brief[k] == null ? '' : p.brief[k];
 }
-const PARSED_USE = { competitors: 'both', smm_audit: 'own', tt_org: 'both', tta_strategy: 'comp', meta_strategy: 'comp' };
-const briefKeysOf = def => (def.brief || []).concat(PARSED_USE[def.id] ? ['@parsed'] : []);
+const PARSED_USE = { competitors: 'both', smm_audit: 'own', tt_org: 'both', tta_strategy: 'comp', meta_strategy: 'comp', meta_comp_ads: 'comp', g_comp_ads: 'comp' };
+// модулі, яким потрібні дані парсингу лише однієї платформи (реклама конкурентів)
+const PARSED_ONLY = { meta_comp_ads: 'meta_ads', g_comp_ads: 'google_ads' };
+const briefKeysOf = def => (def.brief || []).concat(PARSED_ONLY[def.id] ? ['@parsed:' + PARSED_ONLY[def.id]] : PARSED_USE[def.id] ? ['@parsed'] : []);
 const bh = (p, k) => hash(JSON.stringify(briefVal(p, k)));
 function completeness(p) {
   let tot = 0, got = 0; const miss = [];
@@ -638,17 +657,19 @@ function lockedContext(p, id) {
   const d = depsOf(p, id); const ids = [...new Set(d.hard.concat(d.soft))].filter(x => isLocked(p, x) && hasOutput(p.modules[x]));
   return ids.map(x => { const m = p.modules[x]; const o = {}; Object.entries(m.sections).forEach(([k, s]) => { o[k] = compactSec(s); }); return `### ${titleOf(p, x)} [${x}]\n` + JSON.stringify(o); }).join('\n\n');
 }
-function parsedCompact(pr) {
+function parsedCompact(pr, detailed) {
   if (!pr) return null; const st = pr.stats || {};
   const o = { платформа: pr.platform, акаунт: pr.handle, зібрано: pr.fetchedAt && pr.fetchedAt.slice(0, 10), профіль: pr.profile || undefined, статистика: { ...st, top: undefined } };
   if (pr.posts) o.топ_публікацій = (st.top || []).slice(0, 5).map(x => ({ url: x.url, тип: x.type, лайки: x.likes, коментарі: x.comments, перегляди: x.views, текст: (x.caption || '').slice(0, 140) }));
-  if (pr.ads) o.реклама = pr.ads.slice(0, 8).map(a => ({ текст: (a.text || '').slice(0, 200), cta: a.cta, формат: a.format, старт: a.start, активна: a.active, link: a.link }));
+  if (pr.ads && detailed) o.реклама = pr.ads.slice(0, 25).map(a => ({ id: a.id, сторінка: a.page, заголовок: a.title || undefined, текст: (a.text || '').slice(0, 300) || undefined, cta: a.cta, формат: a.format, старт: a.start, днів_показу: a.days, активна: a.active, версій_креативу: a.versions || undefined, посадкова: a.link || undefined }));
+  else if (pr.ads) o.реклама = pr.ads.slice(0, 8).map(a => ({ текст: (a.text || '').slice(0, 200), cta: a.cta, формат: a.format, старт: a.start, активна: a.active, link: a.link }));
   return o;
 }
 function parsedContext(p, id) {
   const u = PARSED_USE[id]; if (!u) return ''; const out = [];
   if (u === 'own' || u === 'both') Object.entries(p.parsed.own).forEach(([k, v]) => out.push({ власний_акаунт: parsedCompact(v) }));
-  if (u === 'comp' || u === 'both') competitorsOf(p).forEach(c => { const o = p.parsed.comp[c.id] || {}; Object.entries(o).forEach(([k, v]) => out.push({ конкурент: c.name, дані: parsedCompact(v) })); });
+  const only = PARSED_ONLY[id];
+  if (u === 'comp' || u === 'both') competitorsOf(p).forEach(c => { const o = p.parsed.comp[c.id] || {}; const ent = Object.entries(o).filter(([k]) => !only || k === only); if (only && !ent.length) out.push({ конкурент: c.name, дані: 'НЕМАЄ ДАНИХ ПАРСИНГУ ' + only + ' — не вигадуй оголошень цього конкурента' }); ent.forEach(([k, v]) => out.push({ конкурент: c.name, дані: parsedCompact(v, !!only) })); });
   return out.length ? '## ДАНІ ПАРСИНГУ (реальні, зібрані через парсер — це факти зовнішнього дослідження)\n' + JSON.stringify(out) : '';
 }
 function libraryContext(p, id) {
@@ -676,7 +697,7 @@ function schemaExample(p, id, only) {
     let data;
     if (s.kind === 'text') data = '<текст>';
     else if (s.kind === 'fields') { data = {}; s.fields.forEach(f => data[f.k] = '<' + f.l + '>'); }
-    else { const it = {}; s.fields.forEach(f => it[f.k] = '<' + f.l + '>'); data = [it]; hints.push(`- "${s.key}" («${s.title}»): масив об'єктів${s.min ? `, ${s.min}–${s.max} елементів` : ''}.` + (s.competitorRows ? ' По одному запису на КОЖНОГО конкурента з брифу: ' + competitorsOf(p).map(c => c.name).join('; ') + '. Поле name — точно як у брифі.' : '') + (s.ref ? ` Поле ${s.ref} — ID існуючого сегмента з аналізу аудиторії (S1, S2…).` : '') + (s.fixedChecks ? ' Рівно ці перевірки: ' + s.fixedChecks.map(x => '«' + x + '»').join('; ') + '.' : '')); }
+    else { const it = {}; s.fields.filter(f => !(s.auto || []).includes(f.k)).forEach(f => it[f.k] = '<' + f.l + '>'); data = [it]; hints.push(`- "${s.key}" («${s.title}»): масив об'єктів${s.min ? `, ${s.min}–${s.max} елементів` : s.max ? `, до ${s.max} елементів (може бути порожнім масивом [], якщо даних немає)` : ''}.` + (s.competitorRows ? ' По одному запису на КОЖНОГО конкурента з брифу: ' + competitorsOf(p).map(c => c.name).join('; ') + '. Поле name — точно як у брифі.' : '') + (s.ref ? ` Поле ${s.ref} — ID існуючого сегмента з аналізу аудиторії (S1, S2…).` : '') + (s.fixedChecks ? ' Рівно ці перевірки: ' + s.fixedChecks.map(x => '«' + x + '»').join('; ') + '.' : '')); }
     const o = { data }; if (def.impl) o.implication = { learned: '<Що ми дізналися>', why: '<Чому це важливо>', impact: '<Як це впливає на стратегію>', action: '<Що конкретно ми робимо>' };
     if (def.claims) o.claims = [{ text: '<ключове твердження>', type: 'client_data|external_research|ai_inference|ai_hypothesis', source: '<URL або null>' }];
     sch.sections[s.key] = o;
@@ -717,6 +738,37 @@ function addSource(p, s) {
   const o = { id: uid('src'), url: s.url, title: s.title || '', date: s.date || new Date().toISOString().slice(0, 10), evidence: s.evidence || '', type: s.type || 'external_research', moduleId: s.moduleId || '', sectionKey: s.sectionKey || '', by: s.by || S.user }; p.sources.push(o); return o;
 }
 function segmentIds(p) { const m = p.modules.audience; const s = m && m.sections.segments; return s ? s.data.map(x => x.id) : []; }
+/* ---------- Посилання на рекламу: формує КОД із даних парсингу, а не AI ---------- */
+const compByName = (p, n) => { n = String(n || '').trim().toLowerCase(); return n ? competitorsOf(p).find(c => { const x = c.name.trim().toLowerCase(); return x === n || x.includes(n) || n.includes(x); }) : null; };
+const parsedOf = (p, c, pl) => (c && (p.parsed.comp[c.id] || {})[pl]) || null;
+const adLibSearch = (name, country, pageId) => 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=' + encodeURIComponent(country || 'UA') + (pageId ? '&view_all_page_id=' + encodeURIComponent(pageId) : '&q=' + encodeURIComponent(name) + '&search_type=keyword_unordered') + '&media_type=all';
+const domainOf = u => String(u || '').trim().replace(/^https?:\/\/(www\.)?/i, '').replace(/[/?#].*$/, '');
+const cleanId = v => String(v == null ? '' : v).trim().replace(/[^A-Za-z0-9_-]/g, '');
+function pickParsedAds(p, arr, warn, pl, idKey, label) {
+  const kept = []; let bad = 0;
+  arr.forEach(it => {
+    const c = compByName(p, it.name); const r = parsedOf(p, c, pl); const id = cleanId(it[idKey]);
+    const real = r && id && (r.ads || []).find(a => cleanId(a.id) === id);
+    if (!real) { bad++; return; }
+    it.name = c.name; it[idKey] = id; it.link = real.libUrl || (pl === 'meta_ads' ? 'https://www.facebook.com/ads/library/?id=' + encodeURIComponent(id) : ''); kept.push(it);
+  });
+  arr.length = 0; kept.forEach(x => arr.push(x));
+  if (bad) warn.push(`Відкинуто ${bad} запис(ів): ID немає в даних парсингу (AI не вигадує оголошення й посилання)`);
+  if (!arr.length) warn.push(`Немає розбору креативів: запустіть парсинг «${label}» у Центрі досліджень для кожного конкурента й перегенеруйте модуль`);
+}
+const SECTION_POST = {
+  adlibComp(p, arr) { arr.forEach(it => { const c = compByName(p, it.name); const r = parsedOf(p, c, 'meta_ads'); it.libLink = adLibSearch(c ? c.name : it.name, r && r.country, r && r.pageId); }); },
+  adlibAds(p, arr, warn) { pickParsedAds(p, arr, warn, 'meta_ads', 'adId', 'Meta Ads'); },
+  gTranspComp(p, arr) { arr.forEach(it => { const c = compByName(p, it.name); const r = parsedOf(p, c, 'google_ads'); const adv = r && r.profile && r.profile.advertiserId; const cty = (r && r.country) || 'UA'; const dom = domainOf((c && c.site) || it.domain);
+    it.transparency = adv ? 'https://adstransparency.google.com/advertiser/' + encodeURIComponent(adv) + '?region=' + encodeURIComponent(cty) : 'https://adstransparency.google.com/?region=' + encodeURIComponent(cty) + (dom ? ' (введіть у пошуку домен: ' + dom + ')' : ''); }); },
+  gAds(p, arr, warn) { pickParsedAds(p, arr, warn, 'google_ads', 'creativeId', 'Google Ads'); },
+  gKeywords(p, arr, warn) {
+    arr.forEach(it => { it.serp = it.keyword ? 'https://www.google.com/search?hl=uk&q=' + encodeURIComponent(it.keyword) : ''; });
+    const noBasis = arr.filter(it => !/https?:\/\//i.test(it.basis || '') && !/гіпотез/i.test(it.basis || '')).length;
+    if (noBasis) warn.push(`${noBasis} запит(ів) без підстави (URL сторінки конкурента або позначки «гіпотеза») — перевірте перед використанням`);
+    warn.push('Усі запити — гіпотези: обсяги, CPC і реальні ключові слова конкурентів перевіряються в Keyword Planner / Semrush / SpyFu');
+  },
+};
 function normSection(p, def, s, raw, cites) {
   const warn = []; const sec = { data: null, implication: null, claims: [], warnings: warn, generatedAt: nowIso() };
   let d = raw && typeof raw === 'object' && 'data' in raw ? raw.data : raw;
@@ -731,6 +783,7 @@ function normSection(p, def, s, raw, cites) {
       arr = kept;
       const got = arr.map(i => i.name.toLowerCase()); const lack = competitorsOf(p).filter(c => !got.some(g => g.includes(c.name.trim().toLowerCase()) || c.name.trim().toLowerCase().includes(g))); if (lack.length) warn.push('Немає аналізу для: ' + lack.map(c => c.name).join(', '));
     }
+    if (s.post && SECTION_POST[s.post]) SECTION_POST[s.post](p, arr, warn);
     if (s.ids) arr.forEach((it, i) => { it.id = s.ids + (i + 1); });
     if (s.ref) { const ids = segmentIds(p); arr.forEach(it => { it[s.ref] = (it[s.ref] || '').trim().toUpperCase(); if (!ids.includes(it[s.ref])) { warn.push(`Невалідний зв'язок із сегментом «${it[s.ref] || '—'}» у «${it[s.titleField] || it.name || ''}» (немає такого сегмента)`); it._invalid = true; } }); }
     if (s.min && arr.length < s.min) warn.push(`Замало елементів: ${arr.length} (очікувалось ≥ ${s.min})`);
@@ -862,11 +915,11 @@ async function parseTarget(platform, handle, key, country) {
   const p = S.project; if (!handle || !handle.trim()) return toast('Порожній акаунт', true);
   const tag = key + '|' + platform; S.ui.parsing = S.ui.parsing || {}; S.ui.parsing[tag] = true; render();
   try {
-    const res = await runJob('parse', { platform, handle: handle.trim(), country: country || 'UA', limit: 20 });
+    const res = await runJob('parse', { platform, handle: handle.trim(), country: country || 'UA', limit: platform === 'meta_ads' || platform === 'google_ads' ? 30 : 20 });
     if (key === 'own') p.parsed.own[platform] = res; else { p.parsed.comp[key] = p.parsed.comp[key] || {}; p.parsed.comp[key][platform] = res; }
-    const url = platform === 'meta_ads' ? 'https://www.facebook.com/ads/library/?q=' + encodeURIComponent(handle) : (/^https?:/.test(handle) ? handle : platform === 'instagram' ? igUrl(handle) : platform === 'tiktok' ? 'https://www.tiktok.com/@' + res.handle : 'https://www.facebook.com/' + handle);
+    const url = platform === 'meta_ads' ? adLibSearch(handle, country || 'UA') : platform === 'google_ads' ? 'https://adstransparency.google.com/?region=' + encodeURIComponent(country || 'UA') : (/^https?:/.test(handle) ? handle : platform === 'instagram' ? igUrl(handle) : platform === 'tiktok' ? 'https://www.tiktok.com/@' + res.handle : 'https://www.facebook.com/' + handle);
     const st = res.stats || {};
-    addSource(p, { url, title: 'Парсинг ' + platform + ': ' + (res.handle || handle), evidence: `Знято ${res.fetchedAt.slice(0, 10)}: ${st.count || 0} ${res.ads ? 'оголошень' : 'публікацій'}` + (st.avgLikes != null ? `, сер. лайків ${st.avgLikes}` : '') + (st.postsPerWeek ? `, ${st.postsPerWeek} публ./тиж.` : ''), moduleId: key === 'own' ? 'smm_audit' : 'competitors', sectionKey: key === 'own' ? 'audit' : 'matrix' });
+    addSource(p, { url, title: 'Парсинг ' + platform + ': ' + (res.handle || handle), evidence: `Знято ${res.fetchedAt.slice(0, 10)}: ${st.count || 0} ${res.ads ? 'оголошень' : 'публікацій'}` + (st.avgLikes != null ? `, сер. лайків ${st.avgLikes}` : '') + (st.postsPerWeek ? `, ${st.postsPerWeek} публ./тиж.` : ''), moduleId: key === 'own' ? 'smm_audit' : platform === 'meta_ads' ? 'meta_comp_ads' : platform === 'google_ads' ? 'g_comp_ads' : 'competitors', sectionKey: key === 'own' ? 'audit' : platform === 'meta_ads' || platform === 'google_ads' ? 'creatives' : 'matrix' });
     logEv(p, `Парсинг ${platform}: ${res.handle || handle}`); touch('Парсинг: ' + platform + ' ' + (res.handle || handle)); toast('Дані зібрано: ' + (res.handle || handle));
   } catch (e) { toast('Парсинг: ' + e.message, true); }
   finally { delete S.ui.parsing[tag]; render(); }
@@ -1686,6 +1739,8 @@ const closeModal = () => { $('#overlay').innerHTML = ''; };
 A.mbg = (el, ev) => { if (ev.target === el) closeModal(); };
 A.closeModal = closeModal;
 const nl = s => esc(s).replace(/\n/g, '<br>');
+const linkLabel = u => { let m; if ((m = u.match(/facebook\.com\/ads\/library\/\?id=([\w-]+)/))) return 'Оголошення ' + m[1] + ' ↗'; if (/facebook\.com\/ads\/library/.test(u)) return 'Бібліотека реклами Meta ↗'; if (/adstransparency\.google\.com\/advertiser\/[^/?]+\/creative\//.test(u)) return 'Креатив у Центрі прозорості Google ↗'; if (/adstransparency\.google\.com/.test(u)) return 'Центр прозорості реклами Google ↗'; if (/google\.com\/search/.test(u)) return 'Видача Google ↗'; return u.replace(/^https?:\/\/(www\.)?/, '').replace(/&amp;/g, '&').slice(0, 60); };
+const vh = v => esc(v).replace(/https?:\/\/(?:(?!&quot;|&#39;|&#x27;|&lt;|&gt;)[^\s<>"'])+/g, m => { const t = m.match(/[.,;:)\]]+$/); const u = t ? m.slice(0, -t[0].length) : m; return `<a href="${u}" target="_blank" rel="noopener noreferrer">${linkLabel(u)}</a>${t ? t[0] : ''}`; });
 const linkOf = u => isUrl(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60))}</a>` : esc(u || '');
 
 function go(view, page) { S.view = view; if (page) S.page = page; render(); $('#main').scrollTop = 0; }
@@ -1906,12 +1961,17 @@ function secHtml(p, id, s, edit) {
   const ea = (i, f) => `data-e="1" data-m="${id}" data-s="${s.key}" data-i="${i}" data-f="${f}"`;
   let body = '';
   if (s.kind === 'text') body = edit ? `<textarea ${ea('', '')} style="min-height:120px">${esc(sec.data)}</textarea>` : `<div style="white-space:pre-wrap">${esc(sec.data)}</div>`;
-  else if (s.kind === 'fields') body = s.fields.map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(sec.data[f.k], ea('', f.k)) : esc(sec.data[f.k])}</div></div>`).join('');
+  else if (s.kind === 'fields') body = s.fields.map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(sec.data[f.k], ea('', f.k)) : vh(sec.data[f.k])}</div></div>`).join('');
   else {
     if (id === 'cross_funnel' && s.key === 'nodes') body += `<div class="row" style="margin-bottom:8px">${sec.data.map((n, i) => `${i ? '<span class="muted">→</span>' : ''}<span class="chip ac">${esc(n.stage)} · ${esc(n.channel)}</span>`).join('')}</div>`;
-    body += sec.data.map((it, i) => `<div class="item"><div class="ih">${it.id ? chip(it.id, 'ac') : ''}${esc(it[s.titleField] || 'Елемент ' + (i + 1))}${it._invalid ? chip('⚠ невалідний зв\'язок', 'warn') : ''}${it.verdict ? verdictChip(it.verdict) : ''}</div><div class="ib">${s.fields.filter(f => f.k !== s.titleField && f.k !== 'verdict').map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(it[f.k], ea(i, f.k)) : esc(it[f.k])}</div></div>`).join('')}</div></div>`).join('') || '<div class="muted">Порожньо</div>';
+    body += sec.data.map((it, i) => `<div class="item"><div class="ih">${it.id ? chip(it.id, 'ac') : ''}${esc(it[s.titleField] || 'Елемент ' + (i + 1))}${it._invalid ? chip('⚠ невалідний зв\'язок', 'warn') : ''}${it.verdict ? verdictChip(it.verdict) : ''}</div><div class="ib">${s.fields.filter(f => f.k !== s.titleField && f.k !== 'verdict').map(f => `<div class="kv"><div class="k">${esc(f.l)}</div><div class="v">${edit ? inp(it[f.k], ea(i, f.k)) : vh(it[f.k])}</div></div>`).join('')}</div></div>`).join('') || '<div class="muted">Порожньо</div>';
   }
   return `<div class="sec"><div class="sh">${esc(s.title)} ${sec.edited ? chip('✎ відредаговано') : ''} ${s.ext ? chip('розширення', 'info') : ''} ${(sec.warnings || []).length ? chip('⚠ ' + sec.warnings.length, 'warn') : ''}</div><div class="sb">${body}${implHtml(sec.implication)}${claimsHtml(sec.claims)}</div></div>`;
+}
+function parseNeed(p, id) {
+  const pl = PARSED_ONLY[id]; if (!pl) return ''; const comps = competitorsOf(p); if (!comps.length) return '';
+  const miss = comps.filter(c => !(p.parsed.comp[c.id] || {})[pl]).map(c => c.name); if (!miss.length) return '';
+  return `<div class="infobox">Щоб у розборі були <b>реальні посилання</b> на ${pl === 'meta_ads' ? 'оголошення з Бібліотеки реклами Meta' : 'креативи з Центру прозорості реклами Google'}, спершу зберіть дані парсингу. Ще не спарсено: <b>${miss.map(esc).join(', ')}</b>. <a data-act="tab" data-t="parse" style="cursor:pointer">Відкрити парсинг →</a>${S.status && S.status.parser ? '' : ' <span class="muted">(на сервері не задано APIFY_TOKEN)</span>'}</div>`;
 }
 function modCard(p, id, forceOpen) {
   const def = CFG.M[id]; const R = resolveRules(p); const level = R.levels[id]; const m = p.modules[id]; const st = statusOf(p, id); const open = forceOpen || S.ui.open[id];
@@ -1923,6 +1983,7 @@ function modCard(p, id, forceOpen) {
   if (bl.length && !has) h += `<div class="infobox">Очікує затвердження: ${bl.map(b => `<a data-act="jump" data-id="${b.id}" style="cursor:pointer">${esc(titleOf(p, b.id))}</a> (${b.why})`).join(', ')}.</div>`;
   else if (bl.length) h += `<div class="infobox">Залежності не зафіксовано: ${bl.map(b => esc(titleOf(p, b.id))).join(', ')}.</div>`;
   if (rq) h += `<div class="warnbox">${esc(rq)}</div>`;
+  h += parseNeed(p, id);
   if (st.k === 'stale') h += `<div class="warnbox"><b>↻ Потрібно оновити:</b><br>${st.reasons.map(esc).join('<br>')}</div>`;
   if (m && m.error) h += `<div class="errbox"><b>Помилка:</b> ${esc(m.error)}</div>`;
   const w = warningsOf(m); if (w.length && has) { const cnt = new Map(); w.forEach(x => cnt.set(x, (cnt.get(x) || 0) + 1)); h += `<div class="warnbox"><b>⚠ Потребує перевірки:</b><ul style="margin:4px 0 0;padding-left:18px">${[...cnt].slice(0, 8).map(([x, n]) => `<li>${esc(x)}${n > 1 ? ' (×' + n + ')' : ''}</li>`).join('')}</ul></div>`; }
@@ -1991,20 +2052,21 @@ function sourcesHtml(p) {
 A.addSrc = () => { const p = S.project; const u = $('#sr_u').value.trim(); if (!u && !$('#sr_e').value.trim()) return toast('Вкажіть URL або evidence', true); p.sources.push({ id: uid('src'), url: u, title: $('#sr_t').value.trim(), date: $('#sr_d').value.trim(), evidence: $('#sr_e').value.trim(), type: $('#sr_ty').value, moduleId: $('#sr_m').value, sectionKey: '', by: S.user }); touch(); render(); };
 A.delSrc = el => { S.project.sources.splice(+el.dataset.i, 1); touch(); render(); };
 function statsHtml(r) {
-  if (!r) return ''; const s = r.stats || {}; const parts = [`<b>${s.count || 0}</b> ${r.ads ? 'оголошень' : 'публікацій'}`]; if (r.ads) { parts.push(`активних: ${s.active}`); } else { if (s.avgLikes != null) parts.push('сер. лайків ' + s.avgLikes); if (s.avgComments != null) parts.push('коментарів ' + s.avgComments); if (s.avgViews != null) parts.push('переглядів ' + s.avgViews); if (s.postsPerWeek) parts.push(s.postsPerWeek + ' публ./тиж.'); }
+  if (!r) return ''; const s = r.stats || {}; const parts = [`<b>${s.count || 0}</b> ${r.ads ? 'оголошень' : 'публікацій'}`]; if (r.ads) { parts.push(`активних: ${s.active}`); if (s.longRunning != null) parts.push(`показуються ≥ 30 днів: ${s.longRunning}`); } else { if (s.avgLikes != null) parts.push('сер. лайків ' + s.avgLikes); if (s.avgComments != null) parts.push('коментарів ' + s.avgComments); if (s.avgViews != null) parts.push('переглядів ' + s.avgViews); if (s.postsPerWeek) parts.push(s.postsPerWeek + ' публ./тиж.'); }
   if (r.profile && r.profile.followers != null) parts.push('підписників ' + r.profile.followers);
   const fm = Object.entries(s.formats || {}).map(([k, v]) => k + ' ' + v).join(', '); const tg = (s.topHashtags || []).slice(0, 6).map(t => '#' + t).join(' ');
-  return `<div class="sm t2" style="margin-top:4px">${parts.join(' · ')}${fm ? '<br>Формати: ' + esc(fm) : ''}${tg ? '<br>' + esc(tg) : ''}<br><span class="muted">зібрано ${fmtDate(r.fetchedAt)}</span></div>`;
+  return `<div class="sm t2" style="margin-top:4px">${parts.join(' · ')}${fm ? '<br>Формати: ' + esc(fm) : ''}${tg ? '<br>' + esc(tg) : ''}<br><span class="muted">зібрано ${fmtDate(r.fetchedAt)}</span>${adsListHtml(r)}</div>`;
 }
+function adsListHtml(r) { if (!r || !r.ads || !r.ads.length) return ''; return '<div style="margin-top:4px">' + r.ads.slice(0, 5).map(a => a.libUrl ? `<div><a href="${esc(a.libUrl)}" target="_blank" rel="noopener noreferrer">${esc(a.id || 'оголошення')}</a> <span class="muted">· ${esc(a.format || '—')}${a.days != null ? ' · ' + a.days + ' дн.' : ''}${a.active === false ? ' · вимкнено' : ''}</span></div>` : '').join('') + (r.ads.length > 5 ? `<div class="muted">… ще ${r.ads.length - 5} (усі потрапляють до AI)</div>` : '') + '</div>'; }
 function parseRow(label, platform, handle, key, r, country) {
   const busy = S.ui.parsing && S.ui.parsing[key + '|' + platform];
   return `<div class="row" style="padding:6px 0;border-bottom:1px dashed var(--line);align-items:flex-start"><div style="width:110px"><b>${label}</b></div><div style="flex:1;min-width:0"><div class="sm">${esc(handle || '—')}</div>${statsHtml(r)}</div><button class="btn sm" data-act="parse" data-pl="${platform}" data-h="${esc(handle)}" data-key="${key}" data-cty="${esc(country || '')}" ${!handle || busy || !S.status.parser ? 'disabled' : ''}>${busy ? '<span class="spinner"></span>' : r ? '↻ Оновити' : 'Спарсити'}</button></div>`;
 }
 function parseHtml(p) {
-  const meta = p.services.includes('meta_ads'); const cty = S.ui.adCountry || 'UA';
+  const meta = p.services.includes('meta_ads'), gads = p.services.includes('google_ads'); const cty = S.ui.adCountry || 'UA';
   let h = `<div class="infobox">Парсинг збирає <b>публічні</b> дані (пости, метрики, реклама) через зовнішній парсер на сервері. Результати стають зовнішніми джерелами й потрапляють у контекст AI як факти. Метрики, яких парсер не повернув, AI не вигадує.</div>${S.status.parser ? '' : '<div class="warnbox">На сервері не налаштовано APIFY_TOKEN — парсинг недоступний (див. README).</div>'}`;
   h += `<div class="card"><h3>Власні акаунти клієнта (для аудиту контенту)</h3>${parseRow('Instagram', 'instagram', p.brief.instagram, 'own', p.parsed.own.instagram)}${parseRow('TikTok', 'tiktok', p.brief.tiktok, 'own', p.parsed.own.tiktok)}${parseRow('Facebook', 'facebook', p.brief.facebook, 'own', p.parsed.own.facebook)}</div>`;
-  h += `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${meta ? `<label class="sm">Країна для Бібліотека реклами: <input type="text" data-adc="1" value="${esc(cty)}" style="width:60px;display:inline-block"></label>` : ''}</div>` + (competitorsOf(p).map(c => { const o = p.parsed.comp[c.id] || {}; return `<h4>${esc(c.name)}</h4>${parseRow('Instagram', 'instagram', c.instagram, c.id, o.instagram)}${parseRow('TikTok', 'tiktok', c.tiktok, c.id, o.tiktok)}${parseRow('Facebook', 'facebook', c.facebook, c.id, o.facebook)}${meta ? parseRow('Meta Ads', 'meta_ads', c.name, c.id, o.meta_ads, cty) : ''}`; }).join('') || '<div class="muted">Додайте конкурентів у Брифі</div>') + `</div>`;
+  h += `<div class="card"><div class="row"><h3 style="margin:0">Конкуренти</h3>${meta || gads ? `<label class="sm">Країна для Бібліотеки реклами / Центру прозорості: <input type="text" data-adc="1" value="${esc(cty)}" style="width:60px;display:inline-block"></label>` : ''}</div>` + (competitorsOf(p).map(c => { const o = p.parsed.comp[c.id] || {}; return `<h4>${esc(c.name)}</h4>${parseRow('Instagram', 'instagram', c.instagram, c.id, o.instagram)}${parseRow('TikTok', 'tiktok', c.tiktok, c.id, o.tiktok)}${parseRow('Facebook', 'facebook', c.facebook, c.id, o.facebook)}${meta ? parseRow('Meta Ads', 'meta_ads', c.name, c.id, o.meta_ads, cty) : ''}${gads ? parseRow('Google Ads', 'google_ads', domainOf(c.site), c.id, o.google_ads, cty) : ''}`; }).join('') || '<div class="muted">Додайте конкурентів у Брифі</div>') + `</div>`;
   return h;
 }
 A.parse = el => parseTarget(el.dataset.pl, el.dataset.h, el.dataset.key, el.dataset.cty);
